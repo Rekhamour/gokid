@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/house_search"
+        android:icon="@drawable/btn_home"
+        android:title="Home"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/lens_search"
+        android:icon="@drawable/btn_location"
+        android:title="share"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/filter_search"
+        android:icon="@drawable/btn_misc"
+        android:title="share"
+        app:showAsAction="always" />
+
+</menu>

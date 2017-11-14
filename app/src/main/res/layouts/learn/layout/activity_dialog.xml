@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey"
+    tools:context="com.gokids.yoda_tech.gokidsapp.learn.activity.DialogActivity">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="Select Topic"
+            android:textColor="@color/black"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:id="@+id/selectTopic"
+            android:gravity="center_vertical|center_horizontal"
+            />
+
+
+        <android.support.design.widget.TabLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_below="@+id/selectTopic"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:id="@+id/tablayout"
+            android:background="@drawable/custom_drawable"
+            app:tabTextColor="@color/black"
+            app:tabTextAppearance="@style/TabText"
+            app:tabSelectedTextColor="@color/black"
+            >
+
+        </android.support.design.widget.TabLayout>
+
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/button"
+            android:background="@drawable/select_button"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Select"
+            android:textColor="#fff"
+            android:elevation="2dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+
+        <android.support.v4.view.ViewPager
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/tablayout"
+            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/viewpager" />
+
+    </RelativeLayout>
+
+
+
+</android.support.design.widget.CoordinatorLayout>

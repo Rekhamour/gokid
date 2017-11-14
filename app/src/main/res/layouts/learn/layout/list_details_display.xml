@@ -1,0 +1,194 @@
+
+
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingBottom="30dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/amountText"
+        android:textColor="@color/red_500"
+        android:textSize="16sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/amount"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="16sp"
+        android:id="@+id/kidSAffText"
+        android:textStyle="bold"
+        android:textColor="@color/red_500"
+        />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratings"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        style="?android:attr/ratingBarStyle"
+        android:textColor="@color/black"
+        android:numStars="5"
+        android:stepSize="0.01"
+        tools:text="* * "
+        android:isIndicator="true"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="16sp"
+        android:id="@+id/AgeRangeText"
+        android:textStyle="bold"
+        android:textColor="@color/red_500"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/ageRange"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="16sp"
+        android:id="@+id/providerText"
+        android:textStyle="bold"
+        android:textColor="@color/red_500"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/provider"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="16sp"
+        android:id="@+id/detailsText"
+        android:textStyle="bold"
+        android:textColor="@color/red_500"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/details"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="16sp"
+        android:id="@+id/addressText"
+        android:textStyle="bold"
+        android:textColor="@color/red_500"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/address"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="16sp"
+        android:id="@+id/contactText"
+        android:textStyle="bold"
+        android:textColor="@color/red_500"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/contactNumbers"
+        android:textSize="15sp"
+        android:text="+65 6458 8156"
+        android:textColor="@color/black"
+
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="16sp"
+        android:id="@+id/emailText"
+        android:textStyle="bold"
+        android:textColor="@color/red_500"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/email"
+        android:textSize="15sp"
+        android:textColor="@color/blue"
+        />
+
+
+</LinearLayout>
+
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:background="@color/white">
+
+    <TextView
+        android:clickable="true"
+        android:id="@+id/fromgallery"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Pick from gallery"
+        android:textColor="#263238"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:clickable="true"
+        android:id="@+id/fromcamera"
+        android:layout_below="@+id/fromgallery"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="5dp"
+        android:text="Capture with camera"
+        android:textColor="#263238"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:clickable="true"
+        android:id="@+id/remove_pic"
+        android:layout_below="@+id/fromcamera"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_marginTop="5dp"
+        android:text="Remove picture"
+        android:textColor="#263238"
+        android:textSize="18sp"/>
+
+
+</RelativeLayout>

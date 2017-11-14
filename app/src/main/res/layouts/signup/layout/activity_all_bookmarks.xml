@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+android:orientation="vertical"
+    tools:context="com.gokids.yoda_tech.gokidsapp.bookmark.activity.AllBookmarksActivity">
+    <Spinner
+        android:layout_width="match_parent"
+        android:id="@+id/bookmark_filter"
+        android:layout_marginTop="@dimen/dp10margin"
+        android:layout_marginBottom="@dimen/dp10margin"
+        android:entries="@array/bookmark_arrays"
+        tools:listitem="@layout/spinner_single_row"
+        android:layout_height="wrap_content"></Spinner>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:id="@+id/rv_bookmark"
+        android:scrollbars="vertical"
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

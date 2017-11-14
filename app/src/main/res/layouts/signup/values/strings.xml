@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="eat">Eat</string>
+    <string name="shop">Shop</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="refer_friend">Refer Friend</string>
+    <string name="my_bookmark">My Bookmarks</string>
+    <string name="add_kids_details">Add kids Details</string>
+    <string name="Apperals"><![CDATA[Apperals & Accessories]]></string>
+    <string name="education">Education</string>
+    <string name="Kidswear">Kids Wear</string>
+    <string name="Maternity">Maternity</string>
+    <string name="shoe">Shoe</string>
+    <string name="toy">Toys</string>
+    <string name="hello_world">open</string>
+    <string name="search_hint">Search by Restaurant Name and Address</string>
+    <string-array name="bookmark_arrays">
+        <item>All</item>
+        <item>Food</item>
+        <item>Shopping</item>
+        <item>Medical</item>
+        <item>Entertainment</item>
+
+    </string-array>
+</resources>

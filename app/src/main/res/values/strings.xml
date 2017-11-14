@@ -1,0 +1,127 @@
+<resources>
+    <string name="app_name">GoKids</string>
+    <string name="location_runtime">Please grant access to location</string>
+    <string name="browse">I just want to browse</string>
+    <string name="kid">Kid</string>
+
+
+
+    //LEARN
+
+
+    <string name="learn">Learn</string>
+    <string name="beginner">Beginner</string>
+    <string name="inter">Intermediate</string>
+    <string name="advance">Advanced</string>
+    <string name="academics">Academics</string>
+    <string name="arts">Arts &amp; Crafts</string>
+    <string name="sports">Sports</string>
+    <string name="base_url">http://52.77.82.210/api/</string>
+    <string name="viewTopics">viewAllTopics</string>
+    <string name="listClass">List Of Classes</string>
+
+    <string name="viewProvider">viewAllLearnProvider/</string>
+    <string name="latitude">latitude/</string>
+    <string name="longitude">longitude/</string>
+    <string name="level">level/</string>
+    <string name="subTopic">subTopic/</string>
+    <string name="location">location/</string>
+    <string name="provider">provider/</string>
+    <string name="limitStart">limitStart/</string>
+    <string name="count">count/</string>
+
+    <string name="addDeleteReview">addDeleteReview/</string>
+    <string name="reviewee">reviewee/</string>
+    <string name="review">review/</string>
+    <string name="email">email/</string>
+    <string name="emailID">test1gokids@yahoo.com/</string>
+    <string name="reviewID">reviewID/-</string>
+
+    <string name="setRate">setRate/</string>
+    <string name="classURL">class/</string>
+    <string name="categoryItem">categoryItem/</string>
+    <string name="rate">rate/</string>
+
+
+    <string name="setBookMark">setBookMark/</string>
+    <string name="bookmark">bookmark/</string>
+
+    <string name="action_home">Home</string>
+    <string name="action_share">Share</string>
+    <string name="action_location">Location</string>
+
+    <string name="viewAllBookmarks">viewAllBookmarks/</string>
+
+    <string name="viewReviewPerReviewee">viewReviewPerReviewee/</string>
+
+    <string name="open_drawer">Drawer Open</string>
+
+
+    //SignUp
+
+    <string name="email_text">Email</string>
+    <string name="pass_text">Password</string>
+    <string name="currentpass_text">Current Password</string>
+    <string name="newpass_text">New Password</string>
+    <string name="emailad_text">Email Address</string>
+    <string name="phone_no_text">Phone Number</string>
+    <string name="city_text">City</string>
+    <string name="username_text">Username</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+
+    <string name="api_login">login/</string>
+    <string name="api_password">password/</string>
+    <string name="api_fb">fb/</string>
+    <string name="api_google">google/</string>
+
+
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_forgot_password">Forgot Password</string>
+    <string name="facebook_app_id">1999975430291979</string>
+    <string name="fb_login_protocol_scheme">fb1999975430291979</string>
+
+
+    <string name="another_kid_text">Do you have another kid?</string>
+    <string-array name="medicals_array">
+        <item>Medical Type</item>
+        <item>Doctor</item>
+        <item>Clinic</item>
+        <item>Hospital</item>
+        <item>Pharmacy</item>
+        <item>Child Care</item>
+    </string-array>
+    <string-array name="spec_array">
+        <item>Specialization</item>
+        <item>Pediatrician</item>
+        <item>Emergency Doctor</item>
+        <item>Ophthalmologist</item>
+        <item>EENT Doctor</item>
+        <item>Dentist</item>
+        <item>General Physician</item>
+    </string-array>
+    <string name="title_activity_search_result">SearchResultActivity</string>
+    <string name="title_activity_medical_detail">MedicalDetail</string>
+    <string name="google_maps_key">AIzaSyA8aYFFn9WGLf6Kg_W2Jsm8kRd6cKgXfbI</string>
+
+    <string name="title_activity_Food_list">Food</string>
+    <string name="oops">Oops something went wrong,Please try again later</string>
+    <string-array name="agearray">
+        <item>Select Age</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+
+
+
+    
+
+</resources>

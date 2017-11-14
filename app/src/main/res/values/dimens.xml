@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="dp5margin">5dp</dimen>
+    <dimen name="dp10margin">10dp</dimen>
+    <dimen name="dp20margin">20dp</dimen>
+
+    <dimen name="normal_margin">10dp</dimen>
+    <dimen name="listviewSize">320dp</dimen>
+    <dimen name="search_elevation">8dp</dimen>
+    <dimen name="recycler_margin">74dp</dimen>
+    <dimen name="empty_text">25sp</dimen>
+    <dimen name="image_he_width">42dp</dimen>
+    <dimen name="drawer_list_height">52dp</dimen>
+    <dimen name="design_navigation_icon_size" tools:override="true">40dp</dimen>
+
+
+
+</resources>

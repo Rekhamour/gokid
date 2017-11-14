@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:padding="5dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="70dp"
+        android:id="@+id/kid_icon"
+        android:src="@drawable/boy"
+        android:layout_height="70dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:minWidth="100dp"
+            android:text="boy"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/kid_icon"
+            android:id="@+id/age_kid"
+            android:layout_marginRight="10dp"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content">
+    <Button
+        android:layout_width="100dp"
+        android:layout_marginLeft="5dp"
+        android:text="Edit"
+        android:textSize="20sp"
+        android:id="@+id/edit_detail"
+        android:background="@drawable/grey_outline_reactangle"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="@color/red_700"
+
+        android:layout_height="match_parent" />
+        <ImageView
+            android:layout_width="50dp"
+            android:padding="20dp"
+            android:id="@+id/delete_detail"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/grey_outline_circle"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:src="@drawable/ic_cancel"
+
+            android:layout_height="50dp" />
+
+    </LinearLayout>
+        </LinearLayout>
+
+</RelativeLayout>
+</RelativeLayout>

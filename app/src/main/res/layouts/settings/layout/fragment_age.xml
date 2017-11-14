@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.gokids.yoda_tech.gokidsapp.settings.fragment.AgeFragment">
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/zeroHeightView"
+        android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:text="How old is your Boy ?"
+        android:layout_above="@+id/circularSeekBar"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_marginTop="@dimen/dp40margin"
+        />
+
+<!--
+    <com.gokids.yoda_tech.gokidsapp.settings.model.CircularSeekBar
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_above="@+id/zeroHeightView"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/circularSeekBar"
+        android:layout_margin="@dimen/dp10margin"
+        app:max="10"
+        app:circle_color="@android:color/tab_indicator_text"
+
+        />
+-->
+
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_above="@+id/zeroHeightView"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_margin="@dimen/dp10margin"
+        android:text="0"
+        android:textSize="24sp"
+        android:id="@+id/seekBarText"
+
+        />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seek_bar_age"
+        android:layout_below="@+id/zeroHeightView"
+        android:layout_margin="@dimen/dp20margin"
+        android:max="10"
+
+        />
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:id="@+id/age_continue"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp20margin"
+        android:layout_marginRight="@dimen/dp20margin"
+        android:background="@drawable/continue_bg"
+        android:textColor="@color/white"
+        android:text="Continue"
+        />
+
+
+</RelativeLayout>

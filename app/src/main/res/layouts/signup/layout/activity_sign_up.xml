@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.gokids.yoda_tech.gokidsapp.signup.activity.SignUpActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        >
+
+        <android.support.design.widget.TabLayout
+            android:layout_width="250dp"
+            android:layout_height="35dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/sign_tab"
+            android:background="@drawable/custom_drawable"
+            app:tabTextColor="@color/black"
+            app:tabSelectedTextColor="@color/black">
+
+        </android.support.design.widget.TabLayout>
+
+        <android.support.v4.view.ViewPager
+            android:layout_width="wrap_content"
+            android:layout_below="@+id/sign_tab"
+            android:layout_height="wrap_content"
+            android:id="@+id/viewpager_signup" />
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="@dimen/dp5margin"
+            android:id="@+id/homeClick"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/holo_blue_dark"/>
+
+
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

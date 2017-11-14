@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/half_white"
+    tools:context="com.swasthik.manoj2prabhakar.gokids_learn.activity.ProviderDetailsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:theme="@style/CustomTheme"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:title="@string/learn"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            />
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/nestedScroll"
+        >
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:id="@+id/imageTo"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:id="@+id/relative"
+
+            >
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v4.view.ViewPager>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorHeight="0dp"
+                />
+
+        </RelativeLayout>
+
+
+
+        <include layout="@layout/list_details_display" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_horizontal|center_vertical"
+                android:id="@+id/reviewText"
+                android:text="Reviews"
+                android:textColor="@color/red_500"
+
+                />
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_horizontal"
+                android:textSize="14sp"
+                android:layout_toRightOf="@+id/reviewText"
+                android:background="@drawable/bg_circle_fill"
+                android:textColor="@color/colorWhite"
+                android:id="@+id/numRating"
+                android:textStyle="bold"
+                android:gravity="center_horizontal|center_vertical"
+                />
+
+        </RelativeLayout>
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listViewReview"
+            android:layout_marginTop="10dp"
+            android:scrollbars="vertical"
+            >
+
+        </ListView>
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:id="@+id/buttonReview"
+            android:background="@drawable/select_button"
+            android:layout_gravity="center_horizontal"
+            android:text="Add Review"
+            android:textColor="#fff"
+            android:elevation="2dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@color/black" />
+
+
+
+    </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/fab"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_call"
+        />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:src="@drawable/btn_bookmark_n"
+        app:layout_anchor="@id/relative"
+        app:layout_anchorGravity="bottom|right|end"
+        app:borderWidth="0dp"
+        android:backgroundTint="@color/colorWhite"
+        android:adjustViewBounds="true"
+        app:fabSize="normal"
+        android:elevation="0dp"
+        />
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>
+

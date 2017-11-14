@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/single_row_bookmark"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="@drawable/rounded_corner_reactangle"
+    android:paddingBottom="2dp"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/bookmark_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gradient_bg" >
+            <ImageView
+                android:layout_width="30dp"
+                android:id="@+id/bookmark_flag"
+                android:src="@drawable/btn_badge_red_3x"
+                android:layout_height="30dp" />
+
+        </FrameLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/bookmark_name"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="8dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/medical_address"
+        android:textColor="#ffffff"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/bookmark_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/distance_container"
+        android:layout_margin="8dp"
+        android:textColor="#ffffff" />
+
+    <LinearLayout
+        android:id="@+id/distance_container_bookmark"
+        android:background="#993333"
+        android:alpha="0.7"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_width="90dp"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/bookmark_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_weight="1"
+            android:layout_margin="8dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/bookmark_kidsfinity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+
+</RelativeLayout>

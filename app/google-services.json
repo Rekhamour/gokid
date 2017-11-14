@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "760619933820",
+    "project_id": "mygokids"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760619933820:android:450c0396c972297a",
+        "android_client_info": {
+          "package_name": "com.gokids.yoda_tech.gokids"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760619933820-ao5s6dpl25f9rt7j2m95jbaj94n4o14c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gokids.yoda_tech.gokids",
+            "certificate_hash": "fb70b7f78bfac10b30973ae0f44764c682ab4180"
+          }
+        },
+        {
+          "client_id": "760619933820-lq2ghhpkdqei6bgajqdsqvbme1uc2nit.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdKjb9YDeN96sc7G5Q9Ke8EjEGcPVAuIs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

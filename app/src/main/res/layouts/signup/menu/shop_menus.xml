@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/appereals"
+        android:title="@string/Apperals"/>
+    <item
+        android:id="@+id/education"
+        android:title="@string/education"/>
+    <item
+        android:id="@+id/kidswear"
+        android:title="@string/Kidswear"/>
+    <item
+        android:id="@+id/maternity"
+        android:title="@string/Maternity"/>
+    <item
+        android:id="@+id/shoe"
+        android:title="@string/shoe"/>
+
+
+</menu>

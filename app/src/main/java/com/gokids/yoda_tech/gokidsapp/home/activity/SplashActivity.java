@@ -26,8 +26,9 @@ public class SplashActivity extends AppCompatActivity {
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         final ImageView imageView = (ImageView) findViewById(R.id.imageView);
 
-        latlon= Utils.getLatLong(SplashActivity.this);
         progressBar.setVisibility(View.INVISIBLE);
+        latlon= Utils.getLatLong(SplashActivity.this);
+
 
 
 

@@ -18,9 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.view.ViewGroup;
-
-import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.EditText;
+
 import android.widget.PopupMenu;
 import android.widget.TextView;
 

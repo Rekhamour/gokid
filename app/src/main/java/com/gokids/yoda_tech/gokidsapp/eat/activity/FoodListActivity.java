@@ -105,6 +105,13 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
                     //Intent intententer = new Intent(FoodListActivity.this, Entertainment.class);
                     //startActivity(intententer);
                 }
+                else if (position == 0) {
+                    getSupportActionBar().setTitle("Food");
+
+                    //Intent intententer = new Intent(FoodListActivity.this, Entertainment.class);
+                    //startActivity(intententer);
+                }
+
 
             }
 

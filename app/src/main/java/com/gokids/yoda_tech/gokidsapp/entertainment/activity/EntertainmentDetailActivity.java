@@ -115,6 +115,8 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
     private TextView endtime;
     private RatingBar addRatingView;
     private float selectedratings;
+    private Date enddate;
+    private Date startdate;
 
 
     @Override
@@ -146,6 +148,21 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
         mViewpager = (ViewPager) findViewById(R.id.entertainment_image_pager);
         mViewpager.setAdapter(new ImageSLiderAdapter(EntertainmentDetailActivity.this,m.getImages()));
         indicator = (CircleIndicator) findViewById(R.id.entertainment_indicator);
+        String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        DateFormat formatter = new SimpleDateFormat(DATE_FORMAT_PATTERN);
+
+        Log.e(TAG,"startdate parsing "+ m.getStartDate());
+        Log.e(TAG,"enddate parsing"+ m.getEndDate());
+        try {
+            startdate = formatter.parse(m.getStartDate());
+            enddate = formatter.parse(m.getEndDate());
+            Log.e(TAG,"startdate parsing "+ startdate);
+            Log.e(TAG,"enddate parsing"+ enddate);
+        } catch (ParseException e) {
+            Log.e(TAG," parce exception");
+
+            e.printStackTrace();
+        }
         getRatings();
         addRatingView.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
@@ -178,15 +195,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
         }, 2500, 2500);
 
         setSupportActionBar(toolbar);
-        DateFormat formatter = new SimpleDateFormat("MM-dd-yyyy ");
-        try {
-            Date startdate = formatter.parse(m.getStartDate());
-            Date enddate = formatter.parse(m.getEndDate());
-            Log.e(TAG,"startdate"+ startdate.toString());
-            Log.e(TAG,"enddate"+ enddate.toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
 
 
         //toolbar.setTitle(m.getRestaurantName());
@@ -198,8 +207,8 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
         address.setText(m.getAddress()+","+m.getPostal());
         email.setText(m.getEmail());
         website.setText(m.getWebsite());
-        timing.setText("SartDate: "+ m.getStartDate());
-        endtime.setText("EndDate: "+ m.getEndDate());
+        timing.setText("SartDate: "+ m.getStartDate().substring(0,11).replaceAll("\"",""));
+        endtime.setText("EndDate: "+ m.getEndDate().substring(0,11).replaceAll("\"",""));
         knownfor.setText(m.getEntertainmentdetail());
         String speci = "";
         if(!m.getDistance().equalsIgnoreCase("nan"))

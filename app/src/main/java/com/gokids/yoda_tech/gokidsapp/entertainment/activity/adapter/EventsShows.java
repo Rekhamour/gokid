@@ -30,6 +30,7 @@ import com.gokids.yoda_tech.gokidsapp.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokidsapp.eat.model.MainBean;
 import com.gokids.yoda_tech.gokidsapp.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokidsapp.utils.Constants;
+import com.gokids.yoda_tech.gokidsapp.utils.Urls;
 import com.gokids.yoda_tech.gokidsapp.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -79,7 +80,6 @@ public class EventsShows extends Fragment implements FoodAdapter.ItemClickCallba
     private String PATH;
     private String dte;
     private LinearLayout calendarLL;
-    private boolean isLoaded =false,isVisibleToUser;
     private String flagfirst="";
 
 
@@ -185,7 +185,7 @@ public class EventsShows extends Fragment implements FoodAdapter.ItemClickCallba
     }
     public int getTotalRestaurants(final String category) {
         Ion.with(getActivity())
-                .load("http://52.77.82.210/api/categoryTotalCount/category/CLS3/subCategory/"+mtabcategory)
+                .load(Urls.BASE_URL+"api/categoryTotalCount/category/CLS3/subCategory/"+mtabcategory)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
@@ -408,128 +408,15 @@ public class EventsShows extends Fragment implements FoodAdapter.ItemClickCallba
         }
         else if(item.getItemId()==R.id.house_search)
         {
-            //getActivity().startActivity(new Intent(getActivity(), GoKidsHome.class));
-            Intent intent= new Intent(getActivity(), GoKidsHome.class);
-            intent.putExtra("flag","0");
-            startActivity(intent);
-            getActivity().finish();
+           Utils.NavigatetoHome(getActivity());
 
         } else if (item.getItemId() == R.id.filter_search) {
             PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.filter_search));
-            //Inflating the Popup using xml file
-            popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.filter_distance_only) {
-
-                        Log.e("log", "i m in sort distance here");
-                        Collections.sort(list, new Comparator<MainBean>() {
-                            @Override
-                            public int compare(MainBean lhs, MainBean rhs) {
-
-                                return lhs.getDistance().compareTo(rhs.getDistance());
-
-
-                            }
-                        });
-                        adapter.notifyDataSetChanged();
-
-                    }
-                    return true;
-                }
-            });
-
-            popup.show();
+            Utils.getfilterDistanceEntertainment(getActivity(),list,popup,adapter);
         } else if (item.getItemId() == R.id.lens_search) {
 
-            final AlertDialog.Builder builder= new AlertDialog.Builder(getActivity());
-            LayoutInflater inflater = getLayoutInflater(null);
-            final View dialogView = inflater.inflate(R.layout.search_layout, null);
-            builder.setView(dialogView);
-            final AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-            // builder.setView(R.layout.search_layout);
-            final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
-            Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
-            searchbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String query = queryTv.getText().toString().toLowerCase();
+            Utils.getSearchDialogEntertainment(getActivity(),list,food_rv_list,flagfirst);
 
-                    final ArrayList<MainBean> filteredList = new ArrayList<>();
-
-                    for (int i = 0; i < list.size(); i++) {
-                        final String   restaurantName= list.get(i).getEntertainmentTitle().toLowerCase();
-
-                        final String location   = list.get(i).getAddress().toLowerCase();
-                        if (restaurantName.contains(query)) {
-                            Log.e(TAG," resaurant name" + query);
-                            filteredList.add(list.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            Log.e(TAG," location name" + query);
-
-                            filteredList.add(list.get(i));
-                        }
-                    }
-
-                    food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    EntertainlistAdapter mAdapter = new EntertainlistAdapter(getActivity(),filteredList, flagfirst);
-                    food_rv_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                    alertDialog.dismiss();
-
-
-
-
-                }
-            });
-            /*SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView = (SearchView) item.getActionView();
-            //searchViewItem.expandActionView();
-            searchView.setQueryHint("Search by Name");
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-            searchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by defaul
-
-            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-                public boolean onQueryTextChange(String newText) {
-                    // This is your adapter that will be filtered
-                    //projectsAdapter.getFilter().filter(newText);
-                    String query = newText.toLowerCase();
-
-                    final ArrayList<MainBean> filteredList = new ArrayList<>();
-
-                    for (int i = 0; i < list.size(); i++) {
-                        final String  restaurantName= list.get(i).getEntertainmentTitle().toLowerCase();
-
-                        final String location = list.get(i).getAddress().toLowerCase();
-                        if (restaurantName.contains(query)) {
-
-                            filteredList.add(list.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            filteredList.add(list.get(i));
-                        }
-                    }
-
-                    food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    EntertainlistAdapter mAdapter = new EntertainlistAdapter(getActivity(),filteredList);
-                    food_rv_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();  // data set changed
-
-                    return true;
-                }
-
-                public boolean onQueryTextSubmit(String query) {
-                    // **Here you can get the value "query" which is entered in the search box.**
-
-
-                    return true;
-                }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);*/
         }
         return super.onOptionsItemSelected(item);
 

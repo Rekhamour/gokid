@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:fontFamily="sans-serif"
-        android:text="Food"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold" />
     <android.support.v4.widget.SwipeRefreshLayout

@@ -24,11 +24,18 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
@@ -40,6 +47,10 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.gokids.yoda_tech.gokidsapp.R;
+import com.gokids.yoda_tech.gokidsapp.eat.adapter.HintAdapter;
+import com.gokids.yoda_tech.gokidsapp.eat.model.MainBean;
+import com.gokids.yoda_tech.gokidsapp.entertainment.activity.adapter.EntertainlistAdapter;
+import com.gokids.yoda_tech.gokidsapp.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokidsapp.learn.Util.AllTopics;
 import com.gokids.yoda_tech.gokidsapp.learn.Util.Classes;
 import com.gokids.yoda_tech.gokidsapp.learn.Util.Contacts;
@@ -49,10 +60,16 @@ import com.gokids.yoda_tech.gokidsapp.learn.Util.Reviews;
 import com.gokids.yoda_tech.gokidsapp.learn.Util.SubTopic;
 import com.gokids.yoda_tech.gokidsapp.learn.Util.Topics;
 import com.gokids.yoda_tech.gokidsapp.learn.activity.DialogActivity;
+import com.gokids.yoda_tech.gokidsapp.medical.adapter.MedicalAdapter;
+import com.gokids.yoda_tech.gokidsapp.shop.activity.adapter.ShoplistAdapter;
 import com.gokids.yoda_tech.gokidsapp.signup.activity.SignUpActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -65,6 +82,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -82,6 +101,10 @@ public class Utils {
     private static LocationManager mLocationManager;
     private static long LOCATION_REFRESH_TIME=5000;
     private static float LOCATION_REFRESH_DISTANCE=500;
+    private static RecyclerView hintlistview;
+    private static LinearLayoutManager lm;
+    private static ArrayList<String> hintlist= new ArrayList<>();
+    private static HintAdapter hintadapter;
 
     public static boolean checkStatus(Context context, String jSONString){
 
@@ -1031,7 +1054,315 @@ public class Utils {
 
 
     }
+    public static void getSearchDialogEntertainment(final Context context, final ArrayList<MainBean> list, final RecyclerView rv_list, final String firstflag)
+    {
+        final AlertDialog.Builder builder= new AlertDialog.Builder(context);
+        //LayoutInflater inflater = context.getLayoutInflater(null);
+
+        final View dialogView = LayoutInflater.from(context).inflate(R.layout.search_layout, null);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        // builder.setView(R.layout.search_layout);
+        final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
+        Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
+        hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
+        lm= new LinearLayoutManager(context);
+        hintlistview.setLayoutManager(lm);
+        hintlist.clear();
+        hintlistview.removeAllViews();
+        hintadapter=  new HintAdapter(context,hintlist);
+        hintlistview.setAdapter(hintadapter);
+        queryTv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                hintlist.clear();
+
+                Utils.getHints( s.toString(),context,hintadapter,hintlist);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        searchbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String query = queryTv.getText().toString().toLowerCase();
+
+                final ArrayList<MainBean> filteredList = new ArrayList<>();
+
+                for (int i = 0; i < list.size(); i++) {
+                    final String restaurantName = list.get(i).getEntertainmentTitle().toLowerCase();
+
+                    final String location = list.get(i).getAddress().toLowerCase();
+                    if (restaurantName.contains(query)) {
+                        Log.e(TAG, " resaurant name" + query);
+                        filteredList.add(list.get(i));
+                    } else if (location.contains(query)) {
+                        Log.e(TAG, " location name" + query);
+
+                        filteredList.add(list.get(i));
+                    }
+                }
+
+                rv_list.setLayoutManager(new LinearLayoutManager(context));
+                EntertainlistAdapter mAdapter = new EntertainlistAdapter(context, filteredList,firstflag);
+                rv_list.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+                alertDialog.dismiss();
+            }
+        });
+    }
+    public static void getSearchDialog(final Context context, final ArrayList<MainBean> list, final RecyclerView rv_list)
+    {
+        final AlertDialog.Builder builder= new AlertDialog.Builder(context);
+        //LayoutInflater inflater = context.getLayoutInflater(null);
+
+        final View dialogView = LayoutInflater.from(context).inflate(R.layout.search_layout, null);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        // builder.setView(R.layout.search_layout);
+        final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
+        Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
+        hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
+        lm= new LinearLayoutManager(context);
+        hintlistview.setLayoutManager(lm);
+        hintlist.clear();
+        hintlistview.removeAllViews();
+        hintadapter=  new HintAdapter(context,hintlist);
+        hintlistview.setAdapter(hintadapter);
+        queryTv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                hintlist.clear();
+
+                Utils.getHints( s.toString(),context,hintadapter,hintlist);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        searchbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String query = queryTv.getText().toString().toLowerCase();
+
+                final ArrayList<MainBean> filteredList = new ArrayList<>();
+
+                for (int i = 0; i < list.size(); i++) {
+                    final String restaurantName = list.get(i).getShopName().toLowerCase();
+
+                    final String location = list.get(i).getAddress().toLowerCase();
+                    if (restaurantName.contains(query)) {
+                        Log.e(TAG, " resaurant name" + query);
+                        filteredList.add(list.get(i));
+                    } else if (location.contains(query)) {
+                        Log.e(TAG, " location name" + query);
+
+                        filteredList.add(list.get(i));
+                    }
+                }
+
+                rv_list.setLayoutManager(new LinearLayoutManager(context));
+                ShoplistAdapter mAdapter = new ShoplistAdapter(context, filteredList);
+                rv_list.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+                alertDialog.dismiss();
+            }
+        });
+    }
+    public static void getHints(String searchhint, Context context, final HintAdapter hintAdapter, final ArrayList<String> hintlist) {
+        Ion.with(context)
+                .load("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+searchhint+"&location=1.3521,103.8198&radius=1000&key=AIzaSyAVFxqmmNDjbLUEZ7mDqN-65VqHtc0xvTk")
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        if (result != null) {
+                            if (result.has("predictions")) {
+
+                                JsonArray predictions = result.getAsJsonArray("predictions");
+                                if (predictions.size() > 0) {
+                                    for (int i = 0; i < predictions.size(); i++) {
+                                        JsonObject obj = predictions.get(i).getAsJsonObject();
+                                        String description = obj.get("description").getAsString();
+                                        hintlist.add(description);
+
+                                    }
+                                }
+                                hintAdapter.notifyDataSetChanged();
+                            }
+                        }
+                    }
+                });
+    }
+    public static void getfilterDistance(Context context, final ArrayList<MainBean> list, PopupMenu popup, final ShoplistAdapter adapter)
+    {
+
+        popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.filter_distance_only) {
+
+                    Log.e("log", "i m in sort distance here");
+                    Collections.sort(list, new Comparator<MainBean>() {
+                        @Override
+                        public int compare(MainBean lhs, MainBean rhs) {
+
+                            return lhs.getDistance().compareTo(rhs.getDistance());
+
+
+                        }
+                    });
+                    adapter.notifyDataSetChanged();
+
+                }
+                return true;
+            }
+        });
+
+        popup.show();
+
+    }
+    public static void getfilterDistanceEntertainment(Context context, final ArrayList<MainBean> list, PopupMenu popup, final EntertainlistAdapter adapter)
+    {
+
+        popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.filter_distance_only) {
+
+                    Log.e("log", "i m in sort distance here");
+                    Collections.sort(list, new Comparator<MainBean>() {
+                        @Override
+                        public int compare(MainBean lhs, MainBean rhs) {
+
+                            return lhs.getDistance().compareTo(rhs.getDistance());
+
+
+                        }
+                    });
+                    adapter.notifyDataSetChanged();
+
+                }
+                return true;
+            }
+        });
+
+        popup.show();
+
+    }
+    public static  void NavigatetoHome(Context context)
+    {
+        Intent intent= new Intent(context, GoKidsHome.class);
+        intent.putExtra("flag","0");
+        context.startActivity(intent);
+        ((Activity) context).finish();
+
+    }
+    public static void getSearchMedical(final Context context, final ArrayList<MainBean> list, final RecyclerView rvlist)
+    {
+        final AlertDialog.Builder builder= new AlertDialog.Builder(context);
+        final View dialogView = LayoutInflater.from(context).inflate(R.layout.search_layout, null);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        // builder.setView(R.layout.search_layout);
+        final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
+        Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
+        searchbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String query = queryTv.getText().toString().toLowerCase();
+
+                final ArrayList<MainBean> filteredList = new ArrayList<>();
+
+                for (int i = 0; i < list.size(); i++) {
+                    final String   restaurantName= list.get(i).getName().toLowerCase();
+
+                    final String location   = list.get(i).getAddress().toLowerCase();
+                    if (restaurantName.contains(query)) {
+                        Log.e(TAG," resaurant name" + query);
+                        filteredList.add(list.get(i));
+                    }
+                    else if(location.contains(query))
+                    {
+                        Log.e(TAG," location name" + query);
+
+                        filteredList.add(list.get(i));
+                    }
+                }
+
+                rvlist.setLayoutManager(new LinearLayoutManager(context));
+                MedicalAdapter mAdapter = new MedicalAdapter(filteredList);
+                rvlist.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+                alertDialog.dismiss();
 
 
 
+
+            }
+        });
+
+    }
+    public static void getfilterDistanceMedical(Context context, final ArrayList<MainBean> list, PopupMenu popup, final MedicalAdapter adapter)
+    {
+        popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.filter_distance_only) {
+
+                    Log.e("log", "i m in sort distance here");
+                    Collections.sort(list, new Comparator<MainBean>() {
+                        @Override
+                        public int compare(MainBean lhs, MainBean rhs) {
+
+                            return lhs.getDistance().compareTo(rhs.getDistance());
+
+
+                        }
+                    });
+                    adapter.notifyDataSetChanged();
+
+                }
+                return true;
+            }
+        });
+
+        popup.show();
+
+    }
+
+    public static String getLastofMonth() {
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DATE, -1);
+
+        Date lastDayOfMonth = calendar.getTime();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = df.format(lastDayOfMonth);
+        return formattedDate.toString();
+    }
 }
+

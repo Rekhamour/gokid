@@ -14,6 +14,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,6 +31,7 @@ import android.widget.TextView;
 
 import com.gokids.yoda_tech.gokidsapp.R;
 import com.gokids.yoda_tech.gokidsapp.eat.adapter.FoodAdapter;
+import com.gokids.yoda_tech.gokidsapp.eat.adapter.HintAdapter;
 import com.gokids.yoda_tech.gokidsapp.eat.model.Contact;
 import com.gokids.yoda_tech.gokidsapp.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokidsapp.eat.model.MainBean;
@@ -52,10 +55,10 @@ import java.util.Comparator;
  */
 
 public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClickCallback,SwipeRefreshLayout.OnRefreshListener {
-    RecyclerView food_rv_list;
-    TextView numFoods;
+    RecyclerView rvdatalistview;
+    TextView numdata;
     ShoplistAdapter adapter;
-    ArrayList<MainBean> list;
+    ArrayList<MainBean> datalist;
     String  category= "Eat";
     public int  mCount =  0;
     Context ctx;
@@ -69,11 +72,15 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
     private static final String getTotalRestarants = BASE_URL+ "api/viewTotalRestaurants/latitude/1.3224070/longitude/103.9443650/email/%20test1gokids@yahoo.com/limitStart/0/count/2/sortBy/Distance/searchBy/";
     private String TAG = getClass().getName();
     private int total;
-    private SwipeRefreshLayout swipe_food;
+    private SwipeRefreshLayout swipeView;
     private SharedPreferences prefrence;
     private int countlimit = 50;
     private Location latlon;
-    private LinearLayout listmap_LL;
+    private LinearLayout datalistmap_LL;
+    private RecyclerView hintdatalistview;
+    private LinearLayoutManager lm;
+    private ArrayList<String> hintdatalist= new ArrayList<>();
+    private HintAdapter hintadapter;
 
     public static ApperealsFragment newInstance(){
         ApperealsFragment itemOnFragment = new ApperealsFragment();
@@ -85,28 +92,28 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view  = inflater.inflate(R.layout.fragment_food, container, false);
         prefrence = getActivity().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,Context.MODE_PRIVATE);
-        food_rv_list = (RecyclerView) view.findViewById(R.id.food_rv_list);
-        swipe_food = (SwipeRefreshLayout) view.findViewById(R.id.swipe_food);
-        numFoods = (TextView)view. findViewById(R.id.food_num);
-        listmap_LL = (LinearLayout)view. findViewById(R.id.listmap_LL);
-        listmap_LL.setVisibility(View.GONE);
+        rvdatalistview = (RecyclerView) view.findViewById(R.id.food_rv_list);
+        swipeView = (SwipeRefreshLayout) view.findViewById(R.id.swipe_food);
+        numdata = (TextView)view. findViewById(R.id.food_num);
+        datalistmap_LL = (LinearLayout)view. findViewById(R.id.listmap_LL);
+        datalistmap_LL.setVisibility(View.GONE);
         ctx= getActivity();
         setHasOptionsMenu(true);
        total= getTotalRestaurants(category);
-        list = new ArrayList<>();
-        swipe_food.setOnRefreshListener(this);
+        datalist = new ArrayList<>();
+        swipeView.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
-        food_rv_list.setLayoutManager(layoutManager);
-        adapter = new ShoplistAdapter(getActivity(),list);
-        food_rv_list.setAdapter(adapter);
+        rvdatalistview.setLayoutManager(layoutManager);
+        adapter = new ShoplistAdapter(getActivity(),datalist);
+        rvdatalistview.setAdapter(adapter);
         latlon= Utils.getLatLong(getActivity());
 
-        swipe_food.post(new Runnable() {
+        swipeView.post(new Runnable() {
                             @Override
                             public void run() {
-                                swipe_food.setRefreshing(true);
-                                list.clear();
-                                food_rv_list.removeAllViewsInLayout();
+                                swipeView.setRefreshing(true);
+                                datalist.clear();
+                                rvdatalistview.removeAllViewsInLayout();
                                 getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,countlimit);
                             }
                         }
@@ -136,7 +143,7 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
                             }
                             String category_actual = "Apparel & Aceessories";
 
-                            numFoods.setText(total + " " + category_actual);
+                            numdata.setText(total + " " + category_actual);
                         }
                     }
                 });
@@ -174,7 +181,7 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
                             System.out.println(result);
                             String status = String.valueOf(result.get("status")).replace("\"", "");
                             if (status.equalsIgnoreCase("200")) {
-                                swipe_food.setRefreshing(false);
+                                swipeView.setRefreshing(false);
                                 loading = true;
                                 Log.e(TAG, " i m if status" + status);
 
@@ -246,12 +253,12 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
                                             }
                                             Log.e(TAG, "images array size" + images.size());
                                             m.setImages(images);
-                                            list.add(m);
+                                            datalist.add(m);
                                             mCount++;
                                         }
 
                                         adapter.notifyDataSetChanged();
-                                        swipe_food.setRefreshing(false);
+                                        swipeView.setRefreshing(false);
                                     }
                                 }
                             }
@@ -259,7 +266,7 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
                             if (total > count) {
                                 Log.d(TAG, "total_posts is greater ");
 
-                                food_rv_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                                rvdatalistview.addOnScrollListener(new RecyclerView.OnScrollListener() {
                                     @Override
                                     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                                         super.onScrollStateChanged(recyclerView, newState);
@@ -282,7 +289,7 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
                                                 if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                                                     Log.d(TAG, "total count " + totalItemCount + "visibleItemCount + pastVisiblesItems " + visibleItemCount + pastVisiblesItems);
                                                     loading = false;
-                                                    swipe_food.setRefreshing(true);
+                                                    swipeView.setRefreshing(true);
                                                     Log.v(TAG, "Last Item Wow !");
                                                     // apiCall(mCount);
                                                     int lmCount= mCount+50;
@@ -312,14 +319,14 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
                     }
                 });
 
-        return list;
+        return datalist;
     }
 
 
     @Override
     public void onRefresh() {
-        list.clear();
-        food_rv_list.removeAllViewsInLayout();
+        datalist.clear();
+        rvdatalistview.removeAllViewsInLayout();
         if (adapter != null)
             adapter.notifyDataSetChanged();
         getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,total);
@@ -343,128 +350,14 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
         else if(item.getItemId()==R.id.house_search)
         {
            // getActivity().startActivity(new Intent(getActivity(), GoKidsHome.class));
-            Intent intent= new Intent(getActivity(), GoKidsHome.class);
-            intent.putExtra("flag","0");
-            startActivity(intent);
-            getActivity().finish();
+            Utils.NavigatetoHome(getActivity());
 
         } else if (item.getItemId() == R.id.filter_search) {
             PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.filter_search));
-            //Inflating the Popup using xml file
-            popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.filter_distance_only) {
-
-                        Log.e("log", "i m in sort distance here");
-                        Collections.sort(list, new Comparator<MainBean>() {
-                            @Override
-                            public int compare(MainBean lhs, MainBean rhs) {
-
-                                return lhs.getDistance().compareTo(rhs.getDistance());
-
-
-                            }
-                        });
-                        adapter.notifyDataSetChanged();
-
-                    }
-                    return true;
-                }
-            });
-
-            popup.show();
-
+            Utils.getfilterDistance(getActivity(),datalist,popup,adapter);
         } else if (item.getItemId() == R.id.lens_search) {
+            Utils.getSearchDialog(getActivity(),datalist,rvdatalistview);
 
-            final AlertDialog.Builder builder= new AlertDialog.Builder(getActivity());
-            LayoutInflater inflater = getLayoutInflater(null);
-            final View dialogView = inflater.inflate(R.layout.search_layout, null);
-            builder.setView(dialogView);
-            final AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-            // builder.setView(R.layout.search_layout);
-            final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
-            Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
-            searchbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String query = queryTv.getText().toString().toLowerCase();
-
-                    final ArrayList<MainBean> filteredList = new ArrayList<>();
-
-                    for (int i = 0; i < list.size(); i++) {
-                        final String restaurantName = list.get(i).getShopName().toLowerCase();
-
-                        final String location   = list.get(i).getAddress().toLowerCase();
-                        if (restaurantName.contains(query)) {
-                            Log.e(TAG," resaurant name" + query);
-                            filteredList.add(list.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            Log.e(TAG," location name" + query);
-
-                            filteredList.add(list.get(i));
-                        }
-                    }
-
-                    food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    ShoplistAdapter mAdapter = new ShoplistAdapter(getActivity(),filteredList);
-                    food_rv_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                    alertDialog.dismiss();
-
-
-
-
-                }
-            });
-          /*  SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView = (SearchView) item.getActionView();
-            //searchViewItem.expandActionView();
-            searchView.setQueryHint("Search by Name");
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-            searchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by defaul
-
-            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-                public boolean onQueryTextChange(String newText) {
-                    // This is your adapter that will be filtered
-                    //projectsAdapter.getFilter().filter(newText);
-                    String query = newText.toLowerCase();
-
-                    final ArrayList<MainBean> filteredList = new ArrayList<>();
-
-                    for (int i = 0; i < list.size(); i++) {
-                        final String restaurantName = list.get(i).getShopName().toLowerCase();
-
-                        final String location = list.get(i).getAddress().toLowerCase();
-                        if (restaurantName.contains(query)) {
-
-                            filteredList.add(list.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            filteredList.add(list.get(i));
-                        }
-                    }
-
-                    food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    ShoplistAdapter mAdapter = new ShoplistAdapter(getActivity(),filteredList);
-                    food_rv_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();  // data set changed
-
-                    return true;
-                }
-
-                public boolean onQueryTextSubmit(String query) {
-                    // **Here you can get the value "query" which is entered in the search box.**
-
-
-                    return true;
-                }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);*/
         }
         return super.onOptionsItemSelected(item);
 

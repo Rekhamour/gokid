@@ -253,121 +253,12 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         else if(item.getItemId()==R.id.filter_search)
         {
             PopupMenu popup = new PopupMenu(SearchResultActivity.this, findViewById(R.id.filter_search));
-            //Inflating the Popup using xml file
-            popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.filter_distance_only) {
+            Utils.getfilterDistanceMedical(SearchResultActivity.this,list,popup,medicalAdapter);
 
-                        Log.e("log", "i m in sort distance here");
-                        Collections.sort(list, new Comparator<MainBean>() {
-                            @Override
-                            public int compare(MainBean lhs, MainBean rhs) {
-
-                                return lhs.getDistance().compareTo(rhs.getDistance());
-
-
-                            }
-                        });
-                      medicalAdapter.notifyDataSetChanged();
-
-                    }
-                    return true;
-                }
-            });
-
-            popup.show();
         }
         else if (item.getItemId() == R.id.lens_search) {
-            final AlertDialog.Builder builder= new AlertDialog.Builder(SearchResultActivity.this);
-            LayoutInflater inflater = getLayoutInflater();
-            final View dialogView = inflater.inflate(R.layout.search_layout, null);
-            builder.setView(dialogView);
-            final AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-            // builder.setView(R.layout.search_layout);
-            final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
-            Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
-            searchbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String query = queryTv.getText().toString().toLowerCase();
+            Utils.getSearchMedical(SearchResultActivity.this,list,medical_list);
 
-                    final ArrayList<MainBean> filteredList = new ArrayList<>();
-
-                    for (int i = 0; i < list.size(); i++) {
-                        final String   restaurantName= list.get(i).getName().toLowerCase();
-
-                        final String location   = list.get(i).getAddress().toLowerCase();
-                        if (restaurantName.contains(query)) {
-                            Log.e(TAG," resaurant name" + query);
-                            filteredList.add(list.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            Log.e(TAG," location name" + query);
-
-                            filteredList.add(list.get(i));
-                        }
-                    }
-
-                    medical_list.setLayoutManager(new LinearLayoutManager(SearchResultActivity.this));
-                    MedicalAdapter mAdapter = new MedicalAdapter(filteredList);
-                    medical_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                    alertDialog.dismiss();
-
-
-
-
-                }
-            });
-
-            /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView = (SearchView) item.getActionView();
-            //searchViewItem.expandActionView();
-            searchView.setQueryHint("Search by Name");
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-            searchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by defaul
-
-            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-                public boolean onQueryTextChange(String newText) {
-                    // This is your adapter that will be filtered
-                    //projectsAdapter.getFilter().filter(newText);
-                    String query = newText.toLowerCase();
-
-                    final ArrayList<MainBean> filteredList = new ArrayList<>();
-
-                    for (int i = 0; i < list.size(); i++) {
-                        final String   Name= list.get(i).getName().toLowerCase();
-
-                        final String location   = list.get(i).getAddress().toLowerCase();
-                        if (Name.contains(query)) {
-                            Log.e(TAG," resaurant name" + query);
-                            filteredList.add(list.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            Log.e(TAG," location name" + query);
-
-                            filteredList.add(list.get(i));
-                        }
-                    }
-
-                    medical_list.setLayoutManager(new LinearLayoutManager(SearchResultActivity.this));
-                    MedicalAdapter mAdapter = new MedicalAdapter(filteredList);
-                    medical_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-
-                    return true;
-                }
-
-                public boolean onQueryTextSubmit(String newText) {
-
-                    return true;
-                }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);*/
         }
         return super.onOptionsItemSelected(item);
     }

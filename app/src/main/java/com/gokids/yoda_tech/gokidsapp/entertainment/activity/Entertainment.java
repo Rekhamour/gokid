@@ -2,6 +2,7 @@ package com.gokids.yoda_tech.gokidsapp.entertainment.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -24,12 +25,16 @@ import devs.mulham.horizontalcalendar.HorizontalCalendar;
 public class Entertainment extends AppCompatActivity implements SearchView.OnQueryTextListener {
     String month= Utils.getMonth();
     private String tabTitles[] = new String[] { month + " Events", "Day Trips and Sightseeing", "Events and Shows","Indoor Entertainment","Outdoor Play","Summer Camp","Tours and City Walk"};
+    private Intent intent;
+    private int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entertainment);
-        getSupportActionBar().setTitle("Entertainment");
+        intent=getIntent();
+        pos=intent.getIntExtra("position",0);
+        getSupportActionBar().setTitle(tabTitles[pos]);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
          getSupportActionBar().setDisplayShowHomeEnabled(true);
         ViewPager viewPager = (ViewPager) findViewById(R.id.entertainment_viewpager);
@@ -41,6 +46,7 @@ public class Entertainment extends AppCompatActivity implements SearchView.OnQue
         PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.entertainment_tabs);
 
         tabsStrip.setViewPager(viewPager);
+        viewPager.setCurrentItem(pos);
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 1);
 

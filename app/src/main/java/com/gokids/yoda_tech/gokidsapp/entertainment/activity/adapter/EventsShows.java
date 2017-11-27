@@ -66,10 +66,8 @@ public class EventsShows extends Fragment implements FoodAdapter.ItemClickCallba
 
     LinearLayoutManager layoutManager;
     private static final String BASE_URL = "http://52.77.82.210/";
-    private  final String getAllrestaurants = BASE_URL + "api/viewAllRestaurants/latitude/1.3224070/longitude/103.9443650/email/%20test1gokids@yahoo.com/limitStart/0/count/2/sortBy/Distance/searchBy/" + category;
 
 
-    private static final String getTotalRestarants = BASE_URL+ "api/viewTotalRestaurants/latitude/1.3224070/longitude/103.9443650/email/%20test1gokids@yahoo.com/limitStart/0/count/2/sortBy/Distance/searchBy/";
     private String TAG = getClass().getName();
     private int total;
     private SwipeRefreshLayout swipe_food;
@@ -186,8 +184,10 @@ public class EventsShows extends Fragment implements FoodAdapter.ItemClickCallba
 
     }
     public int getTotalRestaurants(final String category) {
+        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +mtabcategory+ "/startDate/"+Utils.getCurrentdate()+"/endDate/"+Utils.getLastofMonth();
+        Log.e(TAG," total items"+ getTotals);
         Ion.with(getActivity())
-                .load(Urls.BASE_URL+"api/categoryTotalCount/category/CLS3/subCategory/"+mtabcategory)
+                .load(getTotals)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override

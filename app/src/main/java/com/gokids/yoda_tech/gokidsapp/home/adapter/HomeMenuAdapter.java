@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import com.gokids.yoda_tech.gokidsapp.R;
 import com.gokids.yoda_tech.gokidsapp.eat.activity.FoodListActivity;
 import com.gokids.yoda_tech.gokidsapp.entertainment.activity.Entertainment;
+import com.gokids.yoda_tech.gokidsapp.entertainment.activity.EntertainmentActivity;
 import com.gokids.yoda_tech.gokidsapp.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokidsapp.learn.activity.LearnActivity;
 import com.gokids.yoda_tech.gokidsapp.medical.activity.MedicalMainActivty;
@@ -84,7 +85,7 @@ public class HomeMenuAdapter extends BaseAdapter {
             case 1:
                 return Shopping.class;
             case 2:
-                return Entertainment.class;
+                return EntertainmentActivity.class;
             case 3:
                 return MedicalMainActivty.class;
             case 4:

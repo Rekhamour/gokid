@@ -57,6 +57,12 @@
             android:name=".learn.activity.LearnActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".entertainment.activity.EntertainmentActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/entertainment"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".learn.activity.DialogActivity"
             android:screenOrientation="portrait"

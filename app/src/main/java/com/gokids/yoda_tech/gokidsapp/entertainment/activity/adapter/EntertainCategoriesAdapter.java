@@ -3,6 +3,7 @@ package com.gokids.yoda_tech.gokidsapp.entertainment.activity.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +61,9 @@ public class EntertainCategoriesAdapter extends RecyclerView.Adapter<EntertainCa
         holder.cate_row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("ADapter","position"+position);
                 Intent intententer = new Intent(ctx, Entertainment.class);
+                intententer.putExtra("position",position);
                 ctx.startActivity(intententer);
             }
         });

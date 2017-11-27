@@ -30,6 +30,7 @@ import com.gokids.yoda_tech.gokidsapp.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokidsapp.eat.model.MainBean;
 import com.gokids.yoda_tech.gokidsapp.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokidsapp.utils.Constants;
+import com.gokids.yoda_tech.gokidsapp.utils.Urls;
 import com.gokids.yoda_tech.gokidsapp.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -183,8 +184,10 @@ public class OuterEntertainment extends Fragment implements FoodAdapter.ItemClic
 
     }
     public int getTotalRestaurants(final String category) {
+        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +mtabcategory+ "/startDate/"+Utils.getCurrentdate()+"/endDate/"+Utils.getLastofMonth();
+        Log.e(TAG," total items"+ getTotals);
         Ion.with(getActivity())
-                .load("http://52.77.82.210/api/categoryTotalCount/category/CLS3/subCategory/"+mtabcategory)
+                .load(getTotals)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override

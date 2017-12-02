@@ -105,7 +105,7 @@ public class OuterEntertainment extends Fragment implements FoodAdapter.ItemClic
         calendarLL = (LinearLayout)view. findViewById(R.id.calendarLL);
         ctx= getActivity();
         setHasOptionsMenu(true);
-       total= getTotalRestaurants(category);
+       total= getTotalRestaurants(Utils.getCurrentdate());
         list = new ArrayList<>();
         swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -128,6 +128,8 @@ public class OuterEntertainment extends Fragment implements FoodAdapter.ItemClic
                 dte=Utils.getselecteddate(date);
                 Log.e(TAG," date"+ dte);
                 final int startlimit= 0;
+                total= getTotalRestaurants(dte);
+
                 final int count=50;
                 swipe_food.post(new Runnable() {
                                     @Override
@@ -183,8 +185,8 @@ public class OuterEntertainment extends Fragment implements FoodAdapter.ItemClic
 
 
     }
-    public int getTotalRestaurants(final String category) {
-        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +mtabcategory+ "/startDate/"+Utils.getCurrentdate()+"/endDate/"+Utils.getLastofMonth();
+    public int getTotalRestaurants(final String date) {
+        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +mtabcategory+ "/startDate/"+date+"/endDate/"+Utils.getLastofMonth();
         Log.e(TAG," total items"+ getTotals);
         Ion.with(getActivity())
                 .load(getTotals)

@@ -70,36 +70,32 @@
                         android:layout_weight="1"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center"
-                        android:visibility="invisible"
+                        android:visibility="visible"
                         android:layout_height="wrap_content">
 
-                        <TextView
-                            android:layout_width="90dp"
-                            android:textColor="@color/red_700"
-                            android:gravity="center"
-                            android:id="@+id/shop_detail"
-                            android:textSize="25sp"
-                            android:layout_gravity="center_horizontal"
-                            android:background="@drawable/circle_with_redstroke"
-                            android:layout_height="90dp" />
+                        <ImageButton
+                            android:id="@+id/shop_detail_bookmark"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/btn_badge_3x"                             />
+
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:layout_gravity="end|center_vertical"
-                        android:layout_height="wrap_content">
-                        <ImageButton
-                            android:id="@+id/shop_detail_bookmark"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@drawable/btn_badge_3x" />
+                        android:orientation="horizontal"
+                        android:layout_height="match_parent">
 
                         <ImageButton
                             android:id="@+id/shop_detail_chat"
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:background="@drawable/btn_chat_3x" />
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"/>
 
                         <ImageButton
                             android:id="@+id/shop_detail_direction"

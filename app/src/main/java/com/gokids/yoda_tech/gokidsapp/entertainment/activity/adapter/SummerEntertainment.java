@@ -64,10 +64,8 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
 
     LinearLayoutManager layoutManager;
     private static final String BASE_URL = "http://52.77.82.210/";
-    private  final String getAllrestaurants = BASE_URL + "api/viewAllRestaurants/latitude/1.3224070/longitude/103.9443650/email/%20test1gokids@yahoo.com/limitStart/0/count/2/sortBy/Distance/searchBy/" + category;
 
 
-    private static final String getTotalRestarants = BASE_URL+ "api/viewTotalRestaurants/latitude/1.3224070/longitude/103.9443650/email/%20test1gokids@yahoo.com/limitStart/0/count/2/sortBy/Distance/searchBy/";
     private String TAG = getClass().getName();
     private int total;
     private SwipeRefreshLayout swipe_food;
@@ -105,7 +103,7 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
         calendarLL = (LinearLayout)view. findViewById(R.id.calendarLL);
         ctx= getActivity();
         setHasOptionsMenu(true);
-       total= getTotalRestaurants(category);
+       total= getTotalRestaurants(Utils.getCurrentdate());
         list = new ArrayList<>();
         swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -115,9 +113,6 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 1);
         latlon= Utils.getLatLong(getActivity());
-
-
-        /** start before 1 month from now */
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.MONTH, -1);
 
@@ -129,6 +124,8 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
                 Log.e(TAG," date"+ dte);
                 final int startlimit= 0;
                 final int count=50;
+                total= getTotalRestaurants(dte);
+
                 swipe_food.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -140,7 +137,6 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
                                     }
                                 }
                 );
-               // getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",startlimit,count);
             }
 
             @Override
@@ -157,7 +153,6 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
 
 
 
-       /// Utils.getCurrentdate();
 
 
             swipe_food.post(new Runnable() {
@@ -166,7 +161,7 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
                                     swipe_food.setRefreshing(true);
                                     list.clear();
                                     food_rv_list.removeAllViewsInLayout();
-                                    getRestaurants(Utils.getCurrentdate(), prefrence.getString("emailId", ""), latlon.getLatitude(), latlon.getLongitude(), "Distance", mCount, countlimit);
+                                    //getRestaurants(Utils.getCurrentdate(), prefrence.getString("emailId", ""), latlon.getLatitude(), latlon.getLongitude(), "Distance", mCount, countlimit);
                                 }
                             }
             );
@@ -183,8 +178,8 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
 
 
     }
-    public int getTotalRestaurants(final String category) {
-        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +mtabcategory+ "/startDate/"+Utils.getCurrentdate()+"/endDate/"+Utils.getLastofMonth();
+    public int getTotalRestaurants(final String date) {
+        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +mtabcategory+ "/startDate/"+date+"/endDate/"+Utils.getLastofMonth();
         Log.e(TAG," total items"+ getTotals);
         Ion.with(getActivity())
                 .load(getTotals)
@@ -210,19 +205,10 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
 
     public ArrayList<MainBean> getRestaurants(final String date, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
         mCount =  start;
-        String url = BASE_URL + "api/viewAllRestaurants/";
-        url += "/latitude/" + lat;
-        url += "/longitude/" + longi;
-        url += "/email/" + name;
 
-        url +="/limitStart/"+mCount+"/count/" + count;
-
-        if(name != null){
-            url += "/searchBy/" + category ;
-        }
 
             String dte= date;
-            PATH= BASE_URL + "api/viewAllEntertainments/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/"+mtabcategory+"/startDate/"+dte+"/endDate/"+dte+"/limitStart/"+ mCount+"/count/"+count+"/sortBy/Distance";
+            PATH= Urls.BASE_URL + "api/viewAllEntertainments/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/"+mtabcategory+"/startDate/"+dte+"/endDate/"+dte+"/limitStart/"+ mCount+"/count/"+count+"/sortBy/Distance";
             Log.e(TAG,"path in else"+PATH);
 
         // System.out.println(url);
@@ -249,8 +235,9 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
                                 Log.e("Foodfragment", "status" + status);
                                 String message = String.valueOf(result.get("message"));
                                 Log.e("Foodfragment", "message" + message);
-                                JsonArray res = result.getAsJsonArray("result");
                                 if(result.has("result")) {
+                                    JsonArray res = result.getAsJsonArray("result");
+
 
                                     if (res.size() > 0) {
                                         for (int i = 0; i < res.size(); i++) {

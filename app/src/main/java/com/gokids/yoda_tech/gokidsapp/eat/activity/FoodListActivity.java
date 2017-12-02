@@ -45,6 +45,7 @@ import com.gokids.yoda_tech.gokidsapp.shop.activity.adapter.ShopFragmentPagerAda
 import com.gokids.yoda_tech.gokidsapp.signup.activity.SignUpActivity;
 import com.gokids.yoda_tech.gokidsapp.utils.Constants;
 import com.gokids.yoda_tech.gokidsapp.utils.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,19 +69,7 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_list);
 
-        //getSupportActionBar().setTitle("Food");
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        initInstances();
-
-        // Toolbar toolbar = (Toolbar) findViewById(R.id.food_list_toolbar);
-
-        //   setSupportActionBar(toolbar);
-        //  getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //  getSupportActionBar().setDisplayShowHomeEnabled(true);
-        //  toolbar.setTitle("Food");
-
-
+            initInstances();
         PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.food_tabs);
          viewPager = (ViewPager) findViewById(R.id.food_viewpager);
         viewPager.setAdapter(new FoodFragmentPagerAdapter(getSupportFragmentManager(),
@@ -153,9 +142,21 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
         drawerToggle.syncState();
         drawerToggle.setHomeAsUpIndicator(R.drawable.img_hamburger_menu);
         drawerToggle.setDrawerIndicatorEnabled(false);
-
-
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
+        final SharedPreferences.Editor editor= prefs.edit();
         navigation = (NavigationView) findViewById(R.id.navigation_food);
+
+        Menu menu = navigation.getMenu();
+        MenuItem sign_out = menu.getItem(4);
+        if(prefs.contains("userId") && prefs.getInt("userId",0)!=0) {
+            Log.e("Signin fragment","userId "+  prefs.getInt("userId",0));
+
+
+        } else {
+            sign_out.setTitle("Sign In");
+        }
+
+
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

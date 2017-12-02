@@ -138,7 +138,7 @@ public class EducationFragment extends Fragment implements FoodAdapter.ItemClick
                             if (result.getAsJsonObject().get("status").getAsString().equals("200")) {
                                 total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
                             }
-                            String category_actual = "Educations";
+                            String category_actual = "Education";
 
                             numdata.setText(total + " " + category_actual);
                         }

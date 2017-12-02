@@ -14,7 +14,7 @@ import com.gokids.yoda_tech.gokidsapp.shop.activity.ToyFragment;
 
 public class ShopFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 6;
-    private String tabTitles[] = new String[] { "Apparel & Aceessories", "Education", "Kids Wear","Maternity","Shoes","Toys & Gifts"};
+    private String tabTitles[] = new String[] { "Apparel & Accessories", "Education", "Kids Wear","Maternity","Shoes","Toys & Gifts"};
     private Context context;
 
     public ShopFragmentPagerAdapter(FragmentManager fm, Context context) {

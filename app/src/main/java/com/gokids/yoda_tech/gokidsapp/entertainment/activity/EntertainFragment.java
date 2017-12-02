@@ -107,7 +107,7 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
         calendarLL = (LinearLayout)view. findViewById(R.id.calendarLL);
         ctx= getActivity();
         setHasOptionsMenu(true);
-       total= getTotalRestaurants(category);
+       total= getTotalRestaurants(Utils.getCurrentdate());
         list = new ArrayList<>();
         swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -131,6 +131,8 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
                 Log.e(TAG," date"+ dte);
                 final int startlimit= 0;
                 final int count=50;
+                total= getTotalRestaurants(dte);
+
                 swipe_food.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -185,8 +187,8 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
 
 
     }
-    public int getTotalRestaurants(final String category) {
-        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/CATSPE" + "/startDate/"+Utils.getCurrentdate()+"/endDate/"+Utils.getLastofMonth();
+    public int getTotalRestaurants(final String date) {
+        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/CATSPE" + "/startDate/"+date+"/endDate/"+Utils.getLastofMonth();
         Log.e(TAG," total items"+ getTotals);
         Ion.with(getActivity())
                 .load(getTotals)

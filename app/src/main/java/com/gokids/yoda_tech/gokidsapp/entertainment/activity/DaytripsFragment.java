@@ -106,7 +106,7 @@ public class DaytripsFragment extends Fragment implements FoodAdapter.ItemClickC
         calendarLL = (LinearLayout)view. findViewById(R.id.calendarLL);
         ctx= getActivity();
         setHasOptionsMenu(true);
-       total= getTotalRestaurants(category);
+       total= getTotalRestaurants(Utils.getCurrentdate());
         list = new ArrayList<>();
         swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
@@ -131,6 +131,8 @@ public class DaytripsFragment extends Fragment implements FoodAdapter.ItemClickC
                 Log.e(TAG," date"+ dte);
                 final int startlimit= 0;
                 final int count=50;
+                total= getTotalRestaurants(dte);
+
                 swipe_food.post(new Runnable() {
                                     @Override
                                     public void run() {
@@ -185,8 +187,8 @@ public class DaytripsFragment extends Fragment implements FoodAdapter.ItemClickC
 
 
     }
-    public int getTotalRestaurants(final String category) {
-        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +mtabcategory+ "/startDate/"+Utils.getCurrentdate()+"/endDate/"+Utils.getLastofMonth();
+    public int getTotalRestaurants(final String date) {
+        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +mtabcategory+ "/startDate/"+date+"/endDate/"+Utils.getLastofMonth();
         Log.e(TAG," total items"+ getTotals);
         Ion.with(getActivity())
                 .load(getTotals)
@@ -198,8 +200,8 @@ public class DaytripsFragment extends Fragment implements FoodAdapter.ItemClickC
 
                             if (result.getAsJsonObject().get("status").getAsString().equals("200")) {
                                 total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
+                            Log.e(TAG," totals "+total);
                             }
-                            String category_actual = "Restaurants";
 
                             numFoods.setText(total + " " + mtabTitles);
                         }

@@ -130,7 +130,7 @@ public class ToyFragment extends Fragment implements FoodAdapter.ItemClickCallba
                             if (result.getAsJsonObject().get("status").getAsString().equals("200")) {
                                 total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
                             }
-                            String category_actual = "Toys & gifts";
+                            String category_actual = "Toys & Gifts";
 
                             numList.setText(total + " " + category_actual);
                         }

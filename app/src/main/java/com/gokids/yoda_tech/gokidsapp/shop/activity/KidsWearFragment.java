@@ -134,7 +134,7 @@ public class KidsWearFragment extends Fragment implements FoodAdapter.ItemClickC
                             if (result.getAsJsonObject().get("status").getAsString().equals("200")) {
                                 total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
                             }
-                            String category_actual = "Kids Wears";
+                            String category_actual = "Kids Wear";
 
                             numFoods.setText(total + " " + category_actual);
                         }

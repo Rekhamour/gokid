@@ -141,7 +141,7 @@ public class ApperealsFragment extends Fragment implements FoodAdapter.ItemClick
                             if (result.getAsJsonObject().get("status").getAsString().equals("200")) {
                                 total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
                             }
-                            String category_actual = "Apparel & Aceessories";
+                            String category_actual = "Apparel & Accessories";
 
                             numdata.setText(total + " " + category_actual);
                         }

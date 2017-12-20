@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey"
-    tools:context="com.gokids.yoda_tech.gokidsapp.learn.activity.DialogActivity">
+    tools:context="com.gokids.yoda_tech.gokids.learn.activity.DialogActivity">
 
 
     <RelativeLayout

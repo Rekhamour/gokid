@@ -12,7 +12,7 @@
     <group android:checkableBehavior="single">
         <item android:id="@+id/nav_bookmark"
             android:icon="@drawable/my_bookmark"
-            android:title="My BookMarks"
+            android:title="My Bookmarks"
             />
     </group>
 

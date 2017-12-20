@@ -246,6 +246,7 @@
                 <RatingBar
                     android:layout_width="wrap_content"
                     android:max="5"
+                    android:stepSize="1"
                     android:id="@+id/addRating_shoping"
                     android:layout_height="wrap_content" />
 

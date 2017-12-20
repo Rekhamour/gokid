@@ -29,6 +29,14 @@
 
         </FrameLayout>
     </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/bookmark_name"
@@ -49,6 +57,7 @@
         android:layout_toLeftOf="@+id/distance_container"
         android:layout_margin="8dp"
         android:textColor="#ffffff" />
+        </LinearLayout>
 
     <LinearLayout
         android:id="@+id/distance_container_bookmark"
@@ -78,6 +87,7 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:textColor="#ffffff" />
+    </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

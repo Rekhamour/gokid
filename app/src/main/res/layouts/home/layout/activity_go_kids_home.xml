@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/home"
     android:fitsSystemWindows="true"
-    tools:context="com.gokids.yoda_tech.gokidsapp.home.activity.GoKidsHome">
+    tools:context="com.gokids.yoda_tech.gokids.home.activity.GoKidsHome">
 
 
     <include layout="@layout/app_bar_home"

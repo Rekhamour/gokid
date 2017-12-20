@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/yodatechnologies-kis_android-a604490c049e.iml" filepath="$PROJECT_DIR$/yodatechnologies-kis_android-a604490c049e.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yodatechnologie.iml" filepath="$PROJECT_DIR$/yodatechnologie.iml" />
     </modules>
   </component>
 </project>

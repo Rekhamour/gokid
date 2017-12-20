@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gokids.yoda_tech.gokidsapp">
+    package="com.gokids.yoda_tech.gokids">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         >
         <activity
-            android:name=".home.activity.SplashActivity"
+            android:name="com.gokids.yoda_tech.gokids.home.activity.SplashActivity"
             android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
@@ -30,11 +30,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.activity.GoKidsHome"
+            android:name="com.gokids.yoda_tech.gokids.home.activity.GoKidsHome"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".signup.activity.SignUpActivity"
+            android:name="com.gokids.yoda_tech.gokids.signup.activity.SignUpActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/GoKidsThemeNoAction">
@@ -48,49 +48,49 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".home.service.GPSService" />
+        <service android:name="com.gokids.yoda_tech.gokids.home.service.GPSService" />
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
         <activity
-            android:name=".learn.activity.LearnActivity"
+            android:name="com.gokids.yoda_tech.gokids.learn.activity.LearnActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".entertainment.activity.EntertainmentActivity"
+            android:name="com.gokids.yoda_tech.gokids.entertainment.activity.EntertainmentActivity"
             android:screenOrientation="portrait"
             android:label="@string/entertainment"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".learn.activity.DialogActivity"
+            android:name="com.gokids.yoda_tech.gokids.learn.activity.DialogActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" />
         <activity
-            android:name=".learn.activity.DisplayClassActivity"
-            android:parentActivityName=".learn.activity.LearnActivity"
+            android:name="com.gokids.yoda_tech.gokids.learn.activity.DisplayClassActivity"
+            android:parentActivityName="com.gokids.yoda_tech.gokids.learn.activity.LearnActivity"
             android:screenOrientation="portrait"
             android:theme="@style/GoKidsThemeNoAction">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".learn.activity.LearnActivity" />
+                android:value="com.gokids.yoda_tech.gokids.learn.activity.LearnActivity" />
         </activity>
         <activity
-            android:name=".learn.activity.ProviderDetailsActivity"
-            android:parentActivityName=".learn.activity.DisplayClassActivity"
+            android:name="com.gokids.yoda_tech.gokids.learn.activity.ProviderDetailsActivity"
+            android:parentActivityName="com.gokids.yoda_tech.gokids.learn.activity.DisplayClassActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".learn.activity.DisplayClassActivity" />
+                android:value="com.gokids.yoda_tech.gokids.learn.activity.DisplayClassActivity" />
         </activity>
         <activity
-            android:name=".learn.activity.CallNumberDisplay"
+            android:name="com.gokids.yoda_tech.gokids.learn.activity.CallNumberDisplay"
             android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" />
         <activity
-            android:name=".learn.activity.AddReviewActivity"
+            android:name="com.gokids.yoda_tech.gokids.learn.activity.AddReviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" />
 
@@ -123,22 +123,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".settings.activity.SettingsActivity"
+            android:name="com.gokids.yoda_tech.gokids.settings.activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/GoKidsThemeNoAction" />
         <activity
-            android:name=".signup.activity.ForgotPassword"
+            android:name="com.gokids.yoda_tech.gokids.signup.activity.ForgotPassword"
             android:label="@string/title_forgot_password"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".settings.activity.AddKidsActivity"
+            android:name="com.gokids.yoda_tech.gokids.settings.activity.AddKidsActivity"
             android:label="@string/add_kids_details"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".eat.activity.FoodListActivity"
+            android:name="com.gokids.yoda_tech.gokids.eat.activity.FoodListActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" >
             <intent-filter>
@@ -148,19 +149,19 @@
                 android:resource="@layout/searchable"/>
         </activity>
         <activity
-            android:name=".eat.activity.FoodDetailActivity"
+            android:name="com.gokids.yoda_tech.gokids.eat.activity.FoodDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".medical.activity.MedicalMainActivty"
+            android:name="com.gokids.yoda_tech.gokids.medical.activity.MedicalMainActivty"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".medical.activity.MedicalDetail"
+            android:name="com.gokids.yoda_tech.gokids.medical.activity.MedicalDetail"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".medical.activity.SearchResultActivity"
+            android:name="com.gokids.yoda_tech.gokids.medical.activity.SearchResultActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
 
@@ -172,32 +173,32 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".referfriend.activity.ReferFriend"
+            android:name="com.gokids.yoda_tech.gokids.referfriend.activity.ReferFriend"
             android:label="@string/refer_friend"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".utils.FullImageActivity"
+            android:name="com.gokids.yoda_tech.gokids.utils.FullImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".bookmark.activity.AllBookmarksActivity"
+            android:name="com.gokids.yoda_tech.gokids.bookmark.activity.AllBookmarksActivity"
             android:label="@string/my_bookmark"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".shop.activity.Shopping"
+            android:name="com.gokids.yoda_tech.gokids.shop.activity.Shopping"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".shop.activity.ShopDetailActivity"
+            android:name="com.gokids.yoda_tech.gokids.shop.activity.ShopDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/GoKidsThemeNoAction" />
         <activity
-            android:name=".entertainment.activity.EntertainmentDetailActivity"
+            android:name="com.gokids.yoda_tech.gokids.entertainment.activity.EntertainmentDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/GoKidsThemeNoAction" />
-        <activity android:name=".entertainment.activity.Entertainment"
+        <activity android:name="com.gokids.yoda_tech.gokids.entertainment.activity.Entertainment"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"></activity>
     </application>

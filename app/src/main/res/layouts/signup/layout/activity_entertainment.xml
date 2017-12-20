@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.gokids.yoda_tech.gokidsapp.shop.activity.Shopping">
+    tools:context="com.gokids.yoda_tech.gokids.shop.activity.Shopping">
 
     <!--
         <android.support.design.widget.BottomNavigationView

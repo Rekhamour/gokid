@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/dp20margin"
         android:orientation="horizontal">
 
-        <com.gokids.yoda_tech.gokidsapp.home.util.RoundedImageView
+        <com.gokids.yoda_tech.gokids.home.util.RoundedImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:scaleType="center"

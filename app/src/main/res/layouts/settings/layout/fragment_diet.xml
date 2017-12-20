@@ -10,7 +10,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    tools:context="com.gokids.yoda_tech.gokidsapp.settings.fragment.DietFragment"
+    tools:context="com.gokids.yoda_tech.gokids.settings.fragment.DietFragment"
     android:orientation="vertical"
     android:layout_marginTop="@dimen/dp20margin"
     >
@@ -25,7 +25,7 @@
         android:text="What is your Kid(s) Diet?"
         />
 
-    <com.gokids.yoda_tech.gokidsapp.utils.MyGridView
+    <com.gokids.yoda_tech.gokids.utils.MyGridView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/allergy_gridview"
@@ -33,7 +33,7 @@
 
 
         >
-    </com.gokids.yoda_tech.gokidsapp.utils.MyGridView>
+    </com.gokids.yoda_tech.gokids.utils.MyGridView>
 </LinearLayout>
 </ScrollView>
     <LinearLayout

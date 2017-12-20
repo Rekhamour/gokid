@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.gokids.yoda_tech.gokidsapp.home.activity.SplashActivity">
+    tools:context="com.gokids.yoda_tech.gokids.home.activity.SplashActivity">
 
     <ImageView
         android:layout_width="match_parent"

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 android:orientation="vertical"
-    tools:context="com.gokids.yoda_tech.gokidsapp.bookmark.activity.AllBookmarksActivity">
+    tools:context="com.gokids.yoda_tech.gokids.bookmark.activity.AllBookmarksActivity">
     <Spinner
         android:layout_width="match_parent"
         android:id="@+id/bookmark_filter"

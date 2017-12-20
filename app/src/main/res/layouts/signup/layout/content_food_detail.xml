@@ -77,7 +77,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <com.gokids.yoda_tech.gokidsapp.utils.SeekArc
+            <com.gokids.yoda_tech.gokids.utils.SeekArc
                 android:id="@+id/seekArc"
                 android:layout_width="120dp"
                 android:layout_height="120dp"

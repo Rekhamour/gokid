@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.gokids.yoda_tech.gokidsapp.signup.activity.SignUpFragment">
+    tools:context="com.gokids.yoda_tech.gokids.signup.activity.SignUpFragment">
 
     <!-- TODO: Update blank fragment layout -->
 

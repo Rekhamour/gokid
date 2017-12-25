@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 
@@ -26,6 +27,7 @@ import com.gokids.yoda_tech.gokids.bookmark.activity.AllBookmarksActivity;
 import com.gokids.yoda_tech.gokids.eat.adapter.FoodAdapter;
 import com.gokids.yoda_tech.gokids.eat.adapter.FoodFragmentPagerAdapter;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
+import com.gokids.yoda_tech.gokids.home.util.RoundedImageView;
 import com.gokids.yoda_tech.gokids.medical.model.Medical;
 import com.gokids.yoda_tech.gokids.referfriend.activity.ReferFriend;
 import com.gokids.yoda_tech.gokids.settings.activity.SettingsActivity;
@@ -33,6 +35,7 @@ import com.gokids.yoda_tech.gokids.shop.activity.Shopping;
 import com.gokids.yoda_tech.gokids.signup.activity.SignUpActivity;
 import com.gokids.yoda_tech.gokids.utils.Constants;
 import com.gokids.yoda_tech.gokids.utils.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -48,6 +51,8 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
     public NavigationView navigation;
     public ActionBarDrawerToggle drawerToggle;
     private ViewPager viewPager;
+    private RoundedImageView image;
+    private TextView name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,12 +135,21 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
         final SharedPreferences.Editor editor= prefs.edit();
         navigation = (NavigationView) findViewById(R.id.navigation_food);
+        final View header = navigation.getHeaderView(0);
+
+        image = (RoundedImageView) header.findViewById(R.id.nav_userImage);
+        name = (TextView) header.findViewById(R.id.nav_username);
+
 
         Menu menu = navigation.getMenu();
         MenuItem sign_out = menu.getItem(4);
         if(prefs.contains("userId") && prefs.getInt("userId",0)!=0) {
             Log.e("Signin fragment","userId "+  prefs.getInt("userId",0));
+            name.setText(prefs.getString("userName","Guest"));
 
+            if(prefs.contains("ImageURL") && !prefs.getString("ImageURL","").isEmpty()) {
+                Picasso.with(FoodListActivity.this).load(prefs.getString("ImageURL", "")).into(image);
+            }
 
         } else {
             sign_out.setTitle("Sign In");

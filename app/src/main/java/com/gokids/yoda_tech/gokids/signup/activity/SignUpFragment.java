@@ -38,6 +38,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gokids.yoda_tech.gokids.R;
+import com.gokids.yoda_tech.gokids.settings.activity.AddKidsActivity;
+import com.gokids.yoda_tech.gokids.settings.activity.SettingsActivity;
 import com.gokids.yoda_tech.gokids.utils.ImageFilePath;
 import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
@@ -115,14 +117,30 @@ public class SignUpFragment extends Fragment {
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                if(signup_city.getText().toString().isEmpty()&& signup_email.getText().toString().isEmpty()&& signup_password.getText().toString().isEmpty()&& signup_phoneno.getText().toString().isEmpty()&& signup_username.getText().toString().isEmpty() )
                 {
                     Log.e(TAG,"i m in if");
                     Toast.makeText(getActivity(), "Please fill all the details", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Log.e(TAG,"i in else");
-                    apiCall(signup_city.getText().toString(), signup_email.getText().toString(), signup_password.getText().toString(), signup_phoneno.getText().toString(), signup_username.getText().toString());
+                   Log.e(TAG,"i in else");
+
+                   if(signup_password.getText().toString().length()>=8 )
+                   {
+                       if(Utils.isEmailValid(signup_email.getText().toString()))
+                       {
+                           apiCall(signup_city.getText().toString(), signup_email.getText().toString(), signup_password.getText().toString(), signup_phoneno.getText().toString(), signup_username.getText().toString());
+
+                       }
+                       else
+                       {
+                           Toast.makeText(getActivity(), "Please enter valid email address", Toast.LENGTH_SHORT).show();
+                       }
+                   }
+                   else {
+                       Toast.makeText(getActivity(), "oops!!passowrd should have atleast 8 characters", Toast.LENGTH_SHORT).show();
+                   }
                 }
 
 
@@ -178,17 +196,23 @@ public class SignUpFragment extends Fragment {
                     public void onCompleted(Exception e, JsonObject result) {
                         if(e==null)
                         {
-                            Log.e(TAG,"I m in api");
+                            Log.e(TAG,"I m in api"+result.toString());
                             String status = result.get("status").toString();
                             String message = result.get("message").toString().replaceAll("\"","");
-                            if(status.equalsIgnoreCase("200")) {
+                            //if(status.equalsIgnoreCase("200")) {
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                            }
-                            else
-                            {
+                                Intent intent = new Intent(getActivity(), AddKidsActivity.class);
+                                intent.putExtra("flag","0");
+                                startActivity(intent);
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 
-                            }
+
+                           // }
+                          //  else
+                           // {
+                               // Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
+                           // }
                         }
 
                     }
@@ -197,7 +221,7 @@ public class SignUpFragment extends Fragment {
 
     }
 
-    public  class ChooseGalleryOrCamera extends DialogFragment {
+    public   class ChooseGalleryOrCamera extends DialogFragment {
 
         TextView gallery, camera, remove;
 

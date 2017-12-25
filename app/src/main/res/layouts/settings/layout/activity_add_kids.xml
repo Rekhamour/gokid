@@ -1,24 +1,23 @@
 
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
         tools:context="com.gokids.yoda_tech.gokids.settings.activity.AddKidsActivity">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight=".1"
+        android:layout_height="0dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="10"
-        android:layout_above="@+id/addKid_pager"
-        android:layout_height="0dp">
+            android:layout_above="@+id/addKid_pager"
+            android:layout_height="match_parent">
             <SeekBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,29 +35,39 @@
                 android:textColor="@color/colorPrimary"
                 android:layout_below="@+id/seekbar_addkid"
                 android:layout_height="wrap_content" />
+        </LinearLayout>
     </LinearLayout>
-            <android.support.v4.view.ViewPager
-                android:layout_width="match_parent"
-                android:layout_height="600dp"
-                android:layout_above="@+id/bottomlayout"
-                android:id="@+id/addKid_pager"
-                android:layout_marginTop="20dp"
-                />
-
-            <LinearLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
-                android:id="@+id/bottomlayout"
-                android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_weight=".7"
+        android:layout_height="0dp">
+        <android.support.v4.view.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottomlayout"
+            android:id="@+id/addKid_pager"
+            android:layout_marginTop="20dp"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight=".2"
+        android:layout_height="0dp">
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:id="@+id/bottomlayout"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
             <LinearLayout
+                android:paddingTop="5dp"
                 android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:id="@+id/indicators_layout"
-                android:layout_alignParentBottom="true"
                 android:layout_marginLeft="@dimen/dp20margin"
                 android:layout_marginRight="@dimen/dp20margin"
-
+                android:gravity="center_vertical"
                 android:layout_height="wrap_content">
 
                 <Button
@@ -73,11 +82,16 @@
                     android:textColor="@color/white"
                     android:text="Continue"
                     />
+              <LinearLayout
+                  android:layout_width="match_parent"
+                  android:orientation="vertical"
+                  android:id="@+id/lastskipnindicator"
+                  android:layout_height="wrap_content">
                 <TextView
                     android:layout_width="match_parent"
                     android:text="Skip this->"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"
+
                     android:gravity="center"
                     android:layout_marginTop="@dimen/dp10margin"
                     android:id="@+id/skip_addkid"
@@ -97,16 +111,13 @@
                     >
 
                 </android.support.design.widget.TabLayout>
+              </LinearLayout>
 
             </LinearLayout>
 
+        </LinearLayout>
     </LinearLayout>
 
 
-
-
-        </LinearLayout>
-        </ScrollView>
-
-    </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
 

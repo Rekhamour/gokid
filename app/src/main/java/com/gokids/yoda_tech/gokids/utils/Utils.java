@@ -78,6 +78,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by manoj2prabhakar on 18/04/17.
@@ -916,6 +918,7 @@ public class Utils {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 Log.e("statechange", state+"");
+                //MySharedPrefrence.getPrefrence(context).edit().putString("","").
             }
 
             @Override
@@ -1381,6 +1384,19 @@ public class Utils {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = df.format(lastDayOfMonth);
         return formattedDate.toString();
+    }
+    public static boolean isEmailValid(String email) {
+        boolean isValid = false;
+
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        CharSequence inputStr = email;
+
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        if (matcher.matches()) {
+            isValid = true;
+        }
+        return isValid;
     }
 }
 

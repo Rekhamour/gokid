@@ -59,7 +59,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.MyVi
                 @Override
                 public void onClick(View v) {
                     holder.bookmark_flag.setBackgroundResource(R.drawable.btn_badge_3x);
-                    removebookmark(obj.getRestaurantID(),position);
+                    removebookmark(obj.getRestaurantID(),position,"CLS1");
 
                 }
             });
@@ -71,14 +71,14 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.MyVi
 
             holder.name.setText(list.get(position).getEntertainmentTitle());
             if(!list.get(position).getDistance().equalsIgnoreCase("nan"))
-            holder.distance.setText(list.get(position).getDistance());
+                holder.distance.setText(list.get(position).getDistance()+"Km");
             holder.address.setText(list.get(position).getAddress());
             Picasso.with(context).load(list.get(position).getImage()).into(holder.bookmark_image);
             holder.bookmark_flag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     holder.bookmark_flag.setBackgroundResource(R.drawable.btn_badge_3x);
-                    removebookmark(obj.getEntertainmentID(),position);
+                    removebookmark(obj.getEntertainmentID(),position,"CLS3");
 
 
                 }
@@ -89,14 +89,14 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.MyVi
         {
             holder.name.setText(list.get(position).getShopName());
             if(!list.get(position).getDistance().equalsIgnoreCase("nan"))
-                holder.distance.setText(list.get(position).getDistance());
+                holder.distance.setText(list.get(position).getDistance()+"Km");
             holder.address.setText(list.get(position).getAddress());
             Picasso.with(context).load(list.get(position).getImage()).into(holder.bookmark_image);
             holder.bookmark_flag.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     holder.bookmark_flag.setBackgroundResource(R.drawable.btn_badge_3x);
-                    removebookmark(obj.getShopID(),position);
+                    removebookmark(obj.getShopID(),position,"CLS2");
 
 
                 }
@@ -165,9 +165,10 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.MyVi
             bookmark_flag = (ImageView) itemView.findViewById(R.id.bookmark_flag);
         }
     }
-    public void removebookmark(String Id, final int position)
+    public void removebookmark(String Id, final int position, String classname)
     {
-        String url= Urls.BASE_URL+"api/setBookMark/email/"+ MySharedPrefrence.getPrefrence(context).getString("emailId","")+"/class/CLS1/categoryItem/"+ Id+"/bookmark/-";
+        String url= Urls.BASE_URL+"api/setBookMark/email/"+ MySharedPrefrence.getPrefrence(context).getString("emailId","")+"/class/"+classname+"/categoryItem/"+ Id+"/bookmark/-";
+        Log.e("adapter","delete bookmark"+url);
         Ion.with(context)
                 .load(url)
                 .asJsonObject()
@@ -177,6 +178,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.MyVi
                         if(e==null)
                         {
                             String status= result.get("status").toString();
+                            Log.e("adapter","status"+ result.toString() );
                             if(status.equalsIgnoreCase("200"))
                             {
 

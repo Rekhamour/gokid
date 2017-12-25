@@ -22,7 +22,8 @@ public class ReferFriend extends AppCompatActivity {
 
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out the new Gokids app.Find kids friendly restaurants,shops and lot more just for your kids!It even suggest the most happening events in Singapore for your kids! Try it here..");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT,"Check out the new Gokids app!!");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, "Check out the new Gokids app.Find kids friendly restaurants,shops and lot more just for your kids!It even suggest the most happening events in Singapore for your kids! Try it here.. https://gokids.mobi/");
         startActivity(Intent.createChooser(sharingIntent, "Share via..."));
     }
 

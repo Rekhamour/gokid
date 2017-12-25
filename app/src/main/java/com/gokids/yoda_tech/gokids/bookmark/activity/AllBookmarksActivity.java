@@ -1,6 +1,7 @@
 package com.gokids.yoda_tech.gokids.bookmark.activity;
 
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,6 +46,7 @@ public class AllBookmarksActivity extends AppCompatActivity {
     private ArrayList<MainBean> filterFoodlist= new ArrayList<>();
     private ArrayList<MainBean> filterentertainment= new ArrayList<>();
     private ArrayList<MainBean> filtersmedicals= new ArrayList<>();
+    private Location loc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class AllBookmarksActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         prefrence = getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
+       loc= Utils.getLatLong(AllBookmarksActivity.this);
          list = new ArrayList<>();
 
         setUpUi();
@@ -89,7 +92,7 @@ public class AllBookmarksActivity extends AppCompatActivity {
         list.clear();
         if (!prefrence.getString("emailId", "").trim().isEmpty()) {
             //  double[] latlon= Utils.getLatLong(AllBookmarksActivity.this,prefrence.getString("CurrentLocation",""));
-            String url = "api/viewAllBookmarks/email/" + prefrence.getString("emailId", "") + "/class/-";
+            String url = "api/viewAllBookmarks/email/" + prefrence.getString("emailId", "") + "/class/-"+"/latitude/"+loc.getLatitude()+"/longitude/"+loc.getLongitude();
             //String url= "api/viewAllBookmarks/email/manjularavula69@gmail.com/class/-";
 
             String getAllBookmark = Urls.BASE_URL + url;
@@ -256,6 +259,7 @@ public class AllBookmarksActivity extends AppCompatActivity {
                                                 MainBean m = new MainBean();
                                                 m.setClassname(Class);
                                                 m.setShopDetail(obj.get("ShopDetail").toString());
+                                                m.setShopID(obj.get("ShopID").toString());
                                                 m.setShopName(obj.get("ShopName").toString());
                                                 m.setShopSubName(obj.get("ShopSubName").toString());
                                                 m.setSpecialty(obj.get("Specialty").toString());

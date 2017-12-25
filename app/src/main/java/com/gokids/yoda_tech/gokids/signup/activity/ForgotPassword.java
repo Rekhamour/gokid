@@ -91,7 +91,10 @@ public class ForgotPassword extends AppCompatActivity {
                             String status= result.get("status").toString();
                             String message = result.get("message").toString().replaceAll("\"","");
                             Log.e(TAG,"message"+message);
+
                             Toast.makeText(ForgotPassword.this, message, Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(ForgotPassword.this,SignUpActivity.class);
+                            startActivity(intent);
 
                         }
                         else

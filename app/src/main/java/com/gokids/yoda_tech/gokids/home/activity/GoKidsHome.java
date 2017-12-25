@@ -208,10 +208,15 @@ public class GoKidsHome extends AppCompatActivity {
                         if (flag.equalsIgnoreCase("1"))
                         {
                             Utils.setSharedPreferenceEmpty(editor);
+                            LoginManager.getInstance().logOut();
+
                             disconnectFromFacebook();
+
                         }
                         else {
                             Utils.setSharedPreferenceEmpty(editor);
+                           // LoginManager.getInstance().logOut();
+
                             Intent intent = new Intent(GoKidsHome.this, SignUpActivity.class);
                             startActivity(intent);
                         }

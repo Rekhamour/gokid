@@ -70,6 +70,7 @@ public class AddKidsActivity extends AppCompatActivity {
     private Button continuebtn;
     private TextView skipbtn;
     private LinearLayout indicatorLL;
+    private LinearLayout lasttabnskipLL;
 
 
     @Override
@@ -84,6 +85,7 @@ public class AddKidsActivity extends AppCompatActivity {
         getIntentsvalues();
         mTabLayout = (TabLayout) findViewById(R.id.add_kid_tablayout);
         indicatorLL = (LinearLayout) findViewById(R.id.indicators_layout);
+        lasttabnskipLL = (LinearLayout) findViewById(R.id.lastskipnindicator);
         setupSeekBar();
         setupViewPager();
     }
@@ -257,13 +259,19 @@ public class AddKidsActivity extends AppCompatActivity {
                         AddKidsActivity.mViewPager.setCurrentItem(AddKidsActivity.mViewPager.getCurrentItem() + 1);
                         if (mViewPager.getCurrentItem() == 2) {
                             Log.e(TAG, "i m here in 2 click");
-                            continuebtn.setText("Done");
-                            finish();
+                          //  continuebtn.setText("Done");
+
+                          //  finish();
                             //AddKidsActivity.mViewPager.setCurrentItem(3);
                             //indicatorLL.setVisibility(View.GONE);
                         }
                         else if(mViewPager.getCurrentItem()==3) {
-                             finish();
+                            continuebtn.setText("Done");
+                            lasttabnskipLL.setVisibility(View.INVISIBLE);
+
+                            // if(updateKidsdetails())
+                              // finish();
+                            //updateKidsdetails();
                         }
                     }
 
@@ -278,7 +286,11 @@ public class AddKidsActivity extends AppCompatActivity {
                                 //indicatorLL.setVisibility(View.GONE);
                             }
                             else if(mViewPager.getCurrentItem()==4) {
+                                adddetails();
+
                                 indicatorLL.setVisibility(View.GONE);
+
+
 
                             }
 
@@ -339,7 +351,12 @@ public class AddKidsActivity extends AppCompatActivity {
                         adddetails();
 
                     }
+                  else if(mViewPager.getCurrentItem()==4)
+                    {
+                        lasttabnskipLL.setVisibility(View.INVISIBLE);
 
+
+                    }
                     if (AddKidsActivity.mViewPager.getCurrentItem() != 4) {
 
                         if (!AddKidsActivity.mAge.trim().isEmpty() && !AddKidsActivity.mGender.trim().isEmpty()) {
@@ -417,7 +434,7 @@ public void handleContinueclick(String flag){
 
     }
 
-    private void updateKidsdetails() {
+    private boolean updateKidsdetails() {
         JSONArray jsonArray = new JSONArray();
         ArrayList<String> list= AddKidsActivity.getSelectedNeeds();
         Log.e(TAG,"size"+ list.toString());
@@ -451,13 +468,9 @@ public void handleContinueclick(String flag){
                             {
                                 Toast.makeText(AddKidsActivity.this, message, Toast.LENGTH_SHORT).show();
                                // redirect();
-
                             }
 
-                            // response = response.getJSONObject("args");
-                            //String site = response.getString("site"),
-                            //   network = response.getString("network");
-                            // System.out.println("Site: "+site+"\nNetwork: "+network);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -471,67 +484,7 @@ public void handleContinueclick(String flag){
                 });
 
         Volley.newRequestQueue(AddKidsActivity.this).add(jsonRequest);
-    /*   StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("update result","update result"+response);
-
-                        // Result handling
-                       // System.out.println(response.substring(0,100));
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                // Error handling
-                System.out.println("Something went wrong!");
-                error.printStackTrace();
-
-            }
-        });
-        Volley.newRequestQueue(getActivity()).add(stringRequest);*/
-
-
-
-
-
-
-     /*
-        Ion.with(getActivity())
-                .load(url)
-                .asString()
-                .setCallback(new FutureCallback<String>() {
-                    @Override
-                    public void onCompleted(Exception e, String result) {
-                        Log.e(TAG,"update result"+result+ "exception");
-                        e.printStackTrace();
-
-                    }
-                });*/
-
-       /* Ion.with(getActivity())
-                .load(url)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if(e==null)
-                        {
-                            String status= result.get("status").toString();
-                            String message= result.get("message").toString();
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-*/
-
+        return true;
     }
     public  void adddetails()
     {
@@ -849,7 +802,7 @@ public static ArrayList<String> getSelectedNeeds()
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==android.R.id.home)
         {
-            finish();
+            //finish();
             return true;
         }
         return true;

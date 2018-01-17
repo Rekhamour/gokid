@@ -143,12 +143,13 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
                         @Override
                         public void onSignInComplete(boolean isSignedIn) {
                             if (isSignedIn) {
-                                Toast.makeText(getContext(), "Signed In", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "Signed In", Toast.LENGTH_SHORT).show();
 
                                 Intent home = new Intent(getContext(), GoKidsHome.class);
                                 home.putExtra("flag","0");
                                 home.putExtra("userProfile","singedup");
                                 startActivity(home);
+                                getActivity().finish();
 
                             } else {
                                 Toast.makeText(getContext(), prefs.getString("message", "Invalid Password"), Toast.LENGTH_SHORT).show();
@@ -276,12 +277,15 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
                     public void onCompleted(
                             JSONObject json_object,
                             GraphResponse response) {
+                        Utils.storeFacebookCredentials(getActivity(),json_object.toString());
+
                         Log.e(TAG,"response"+json_object.toString());
                         Intent intent = new Intent(getActivity(), GoKidsHome.class);
                         intent.putExtra("flag","1");
                         intent.putExtra("userProfile", json_object.toString());
                         startActivity(intent);
-                        Utils.storeFacebookCredentials(getActivity(),json_object.toString());
+                        getActivity().finish();
+
 
                     }
 
@@ -353,4 +357,5 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
             mGoogleApiClient.disconnect();
         }
     }
+
 }

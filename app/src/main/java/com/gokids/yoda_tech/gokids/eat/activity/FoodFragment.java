@@ -1,11 +1,13 @@
 package com.gokids.yoda_tech.gokids.eat.activity;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,14 +30,21 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.eat.adapter.FoodAdapter;
+import com.gokids.yoda_tech.gokids.eat.adapter.FoodListAdapter;
 import com.gokids.yoda_tech.gokids.eat.adapter.HintAdapter;
 import com.gokids.yoda_tech.gokids.eat.model.Contact;
 import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.utils.Constants;
+import com.gokids.yoda_tech.gokids.utils.RecyclerItemClickListener;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -44,6 +53,12 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -52,10 +67,10 @@ import java.util.Comparator;
  * Created by benepik on 23/6/17.
  */
 
-public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallback,SwipeRefreshLayout.OnRefreshListener {
+public class FoodFragment extends Fragment  {
     RecyclerView food_rv_list;
     TextView numFoods;
-    FoodAdapter mfoodAdapter;
+    FoodListAdapter mfoodAdapter;
     ArrayList<MainBean> Foodlist;
     String  category= "Eat";
     public int  mCount =  0;
@@ -78,9 +93,17 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
     private HintAdapter adapter;
     private LinearLayoutManager lm;
     private RecyclerView hintlistview;
+    private static DecimalFormat df = new DecimalFormat(".##");
+    private ProgressDialog dialog;
+    private Handler handler;
+    private TextWatcher mTextwatcher;
+    private TextView no_result;
+
 
     public static FoodFragment newInstance(){
         FoodFragment itemOnFragment = new FoodFragment();
+        df.setRoundingMode(RoundingMode.UP);
+
         return itemOnFragment;
     }
 
@@ -92,6 +115,7 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
         food_rv_list = (RecyclerView) view.findViewById(R.id.food_rv_list);
         swipe_food = (SwipeRefreshLayout) view.findViewById(R.id.swipe_food);
         numFoods = (TextView)view. findViewById(R.id.food_num);
+        no_result = (TextView)view. findViewById(R.id.no_result);
         frameMap = (FrameLayout)view. findViewById(R.id.frame_in_food_fragment);
         btnList = (ImageView)view. findViewById(R.id.btn_list);
         btnLocation = (ImageView)view. findViewById(R.id.btn_location);
@@ -128,33 +152,66 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
         Utils.getCurrentdate();
        total= getTotalRestaurants(category);
         Foodlist = new ArrayList<>();
-        swipe_food.setOnRefreshListener(this);
+       // swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
         food_rv_list.setLayoutManager(layoutManager);
-        mfoodAdapter = new FoodAdapter(getActivity(),Foodlist);
-        food_rv_list.setAdapter(mfoodAdapter);
+        mfoodAdapter = new FoodListAdapter(getActivity(),Foodlist);
+        dialog= new ProgressDialog(getActivity());
+        dialog.setMessage("Please wait..");
         latlon= Utils.getLatLong(getActivity());
+        handler= new Handler();
 
-    swipe_food.post(new Runnable() {
+        mfoodAdapter.setLoadMoreListener(new FoodListAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+
+                food_rv_list.post(new Runnable() {
+                    @Override
+                    public void run() {
+                       final int index = Foodlist.size();
+                        Log.e(TAG,"i m in loadmore scroll");
+                        handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                swipe_food.setRefreshing(true);
-                                Foodlist.clear();
-                                food_rv_list.removeAllViewsInLayout();
-                                getRestaurants(category,prefrence.getString("emailId",""),latlon.getLongitude(),latlon.getLongitude(),"Distance",mCount,countlimit);
+                                loadMore(index);
+
                             }
-                        }
-        );
+                        },200);
+                    }
+                });
+            }
+        });
+        food_rv_list.setAdapter(mfoodAdapter);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                load(0);
+
+            }
+        },200);
 
         return view;
 
     }
 
-    @Override
-    public void onItemClick(int p) {
+    private void load(int index) {
 
+
+       dialog.show();
+        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLongitude(),latlon.getLongitude(),"Distance",0,countlimit);
 
     }
+
+    private void loadMore(int index) {
+        MainBean bean=new MainBean();
+        bean.setType("load");
+        Foodlist.add(bean);
+        mfoodAdapter.notifyItemInserted(Foodlist.size()+1);
+        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLongitude(),latlon.getLongitude(),"Distance",index,countlimit);
+
+    }
+
+
     public int getTotalRestaurants(final String category) {
         Ion.with(getActivity())
                 .load("http://52.77.82.210/api/categoryTotalCount/category/CLS1/subCategory/-")
@@ -179,20 +236,10 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
 
 
     public ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
-        mCount =  start;
-        String url = BASE_URL + "api/viewAllRestaurants/";
-        url += "/latitude/" + lat;
-        url += "/longitude/" + longi;
-        url += "/email/" + name;
 
-        url +="/limitStart/"+mCount+"/count/" + count;
-
-        if(name != null){
-            url += "/searchBy/" + category ;
-        }
-       // System.out.println(url);
-        String PATH= BASE_URL + "api/viewAllRestaurants/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/email/"+name+"/limitStart/"+ mCount+"/count/"+count+"/sortBy/Distance/searchBy/-";
+        String PATH= BASE_URL + "api/viewAllRestaurants/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/email/"+name+"/limitStart/"+start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/-";
         Log.e(TAG,"path"+PATH);
+
 
         Ion.with(getActivity())
                 .load(PATH)
@@ -205,16 +252,17 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
 
                             System.out.println(result);
                             String status = String.valueOf(result.get("status")).replace("\"", "");
+                            dialog.dismiss();
                             if (status.equalsIgnoreCase("200")) {
-                                swipe_food.setRefreshing(false);
-                                loading = true;
                                 Log.e(TAG, " i m if status" + status);
+
 
                                 Log.e("Foodfragment", "status" + status);
                                 String message = String.valueOf(result.get("message"));
                                 Log.e("Foodfragment", "message" + message);
                                 JsonArray res = result.getAsJsonArray("result");
                                 if (result.has("result")) {
+                                    Log.e(TAG,"result size"+res.size());
                                     if (res.size() > 0) {
                                         for (int i = 0; i < res.size(); i++) {
                                             MainBean m = new MainBean();
@@ -229,9 +277,10 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
                                             m.setPostal(obj.getAsJsonObject().get("Postal").getAsString());
                                             m.setLatlong(obj.getAsJsonObject().get("LatLong").getAsString());
                                             m.setPrice(obj.getAsJsonObject().get("Price").getAsString());
-                                            m.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsInt());
+                                            m.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsDouble());
                                             m.setDistance(obj.getAsJsonObject().get("Distance").getAsString());
                                             m.setWorkingHour(obj.getAsJsonObject().get("WorkingHour").getAsString());
+                                            m.setType("data");
                                             // ArrayList<CuisinesBean> spe = new ArrayList<>();
                                             // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
                                             // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
@@ -286,69 +335,17 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
                                             Foodlist.add(m);
                                             mCount++;
                                         }
+                                        mfoodAdapter.notifyDataChanged();
 
-                                        mfoodAdapter.notifyDataSetChanged();
-                                        swipe_food.setRefreshing(false);
                                     }
                                 }
                             }
-
-                            if (total > count) {
-                                Log.d(TAG, "total_posts is greater ");
-
-                                food_rv_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                                    @Override
-                                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                        super.onScrollStateChanged(recyclerView, newState);
-                                    }
-
-                                    @Override
-                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                        // mCount=count;
-                                        // count=count+50;
-                                        super.onScrolled(recyclerView, dx, dy);
-
-
-                                        int pastVisiblesItems = count, visibleItemCount = mCount, totalItemCount = total;
-                                        if (dy > 0) //check for scroll down
-                                        {
-                                            visibleItemCount = layoutManager.getChildCount();
-                                            totalItemCount = layoutManager.getItemCount();
-                                            pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-                                            if (loading) {
-                                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                                    Log.d(TAG, "total count " + totalItemCount + "visibleItemCount + pastVisiblesItems " + visibleItemCount + pastVisiblesItems);
-                                                    loading = false;
-                                                    swipe_food.setRefreshing(true);
-                                                    Log.v(TAG, "Last Item Wow !");
-                                                    // apiCall(mCount);
-                                                    int lmCount= mCount+50;
-                                                    int lastcount=count+50;
-                                                    getRestaurants(category, name, latlon.getLatitude(), latlon.getLongitude(), sortBy, lmCount, count+100);
-
-                                                    Log.d(TAG, "value mCount" + mCount);
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-
-                            //if()
-                                   //int lmCount= mCount+50;
-                                 // int lastcount=count+50;
-
-                                  //  getRestaurants(category,name,lat,longi,sortBy,lmCount,lastcount);
-                              //  }
-                           // });
-
 
 
 
                         }
                         else{
-                            String msg= e.getMessage().toString();
-                            Log.e(TAG," exception"+msg);
+
 
                             Toast.makeText(getActivity(), "oops something went wrong", Toast.LENGTH_SHORT).show();
                         }
@@ -359,33 +356,7 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
     }
 
 
-    @Override
-    public void onRefresh() {
-        Foodlist.clear();
-        food_rv_list.removeAllViewsInLayout();
-        if (mfoodAdapter != null)
-            mfoodAdapter.notifyDataSetChanged();
-        Log.e(TAG," i m in refresh" + total);
-        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,total);
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mCount = 0;
- /*       swipe_food.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                swipe_food.setRefreshing(true);
-                                Foodlist.clear();
-                                food_rv_list.removeAllViewsInLayout();
-                                getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,countlimit);
-                            }
-                        }
-        );*/
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -495,27 +466,51 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
              hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
             lm= new LinearLayoutManager(getActivity());
             hintlistview.setLayoutManager(lm);
+            hintlist.clear();
             adapter=  new HintAdapter(getActivity(),hintlist);
             hintlistview.setAdapter(adapter);
-            queryTv.addTextChangedListener(new TextWatcher() {
+            mTextwatcher= new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+
 
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     hintlist.clear();
-
                     getHints( s.toString());
 
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    //getHints( s.toString());
+
+
 
                 }
-            });
+            };
+            hintlistview.addOnItemTouchListener(
+                    new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
+                        @Override public void onItemClick(View view, int position) {
+                            try {
+                                queryTv.removeTextChangedListener(mTextwatcher);
+                                queryTv.setText(hintlist.get(position));
+
+                            }
+                            catch (Exception e)
+                            {
+                                Log.e(TAG,"exception"+ e.getMessage());
+
+                            }
+                            // TODO Handle item click
+                        }
+                    })
+            );
+
+            queryTv.addTextChangedListener(mTextwatcher);
             Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
             searchbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -540,7 +535,10 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
                             filteredList.add(Foodlist.get(i));
                         }
                     }
-
+                    if(filteredList.size()==0)
+                    {
+                        no_result.setVisibility(View.VISIBLE);
+                    }
                     food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
                     FoodAdapter mAdapter = new FoodAdapter(getActivity(),filteredList);
                     food_rv_list.setAdapter(mAdapter);
@@ -554,107 +552,59 @@ public class FoodFragment extends Fragment implements FoodAdapter.ItemClickCallb
             });
 
 
-            /*SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView = (SearchView) item.getActionView();
-            //searchViewItem.expandActionView();
-            searchView.setQueryHint("Search by Name");
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-            searchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by defaul
 
-            SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
-                public boolean onQueryTextChange(String newText) {
-                    // This is your adapter that will be filtered
-                    //projectsAdapter.getFilter().filter(newText);
-                    String query = newText.toLowerCase();
-
-                    final ArrayList<MainBean> filteredList = new ArrayList<>();
-
-                    for (int i = 0; i < Foodlist.size(); i++) {
-                        final String   restaurantName= Foodlist.get(i).getRestaurantName().toLowerCase();
-
-                        final String location   = Foodlist.get(i).getAddress().toLowerCase();
-                        if (restaurantName.contains(query)) {
-                            Log.e(TAG," resaurant name" + query);
-                            filteredList.add(Foodlist.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            Log.e(TAG," location name" + query);
-
-                            filteredList.add(Foodlist.get(i));
-                        }
-                    }
-
-                    food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    FoodAdapter mAdapter = new FoodAdapter(getActivity(),filteredList);
-                    food_rv_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-
-                    return true;
-                }
-
-                public boolean onQueryTextSubmit(String newText) {
-                    // **Here you can get the value "query" which is entered in the search box.**
-                   *//* String query = newText.toLowerCase();
-
-                    final ArrayList<MainBean> filteredList = new ArrayList<>();
-
-                    for (int i = 0; i < Foodlist.size(); i++) {
-                        final String   restaurantName= Foodlist.get(i).getRestaurantName().toLowerCase();
-
-                        final String location   = Foodlist.get(i).getAddress().toLowerCase();
-                        if (restaurantName.contains(query)) {
-                            Log.e(TAG," resaurant name" + query);
-                            filteredList.add(Foodlist.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            Log.e(TAG," location name" + query);
-
-                            filteredList.add(Foodlist.get(i));
-                        }
-                    }
-
-                    food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    FoodAdapter mAdapter = new FoodAdapter(getActivity(),filteredList);
-                    food_rv_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();  // data set changed
-
-
-                    return true;*//*
-                    return true;
-                }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);*/
         }
         return super.onOptionsItemSelected(item);
 
     }
 
     private void getHints(String searchhint) {
-        Ion.with(getActivity())
-                .load("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+searchhint+"&location=1.3521,103.8198&radius=1000&key=AIzaSyAVFxqmmNDjbLUEZ7mDqN-65VqHtc0xvTk")
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
+        String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+searchhint+"&location=1.3521,103.8198&radius=1000&key=AIzaSyAVFxqmmNDjbLUEZ7mDqN-65VqHtc0xvTk";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
+                new Response.Listener<String>() {
                     @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if (result != null) {
-                            if (result.has("predictions")) {
+                    public void onResponse(String response) {
+                        Log.e("add result","add result"+response);
+                        JSONObject result = null;
+                        try {
+                            result = new JSONObject(response);
+                            Log.e(TAG,"result hint"+result.toString());
 
-                                JsonArray predictions = result.getAsJsonArray("predictions");
-                                if (predictions.size() > 0) {
-                                    for (int i = 0; i < predictions.size(); i++) {
-                                        JsonObject obj = predictions.get(i).getAsJsonObject();
-                                        String description = obj.get("description").getAsString();
-                                        hintlist.add(description);
+                            if (result != null) {
+                                if (result.has("predictions")) {
 
+                                    JSONArray predictions = result.getJSONArray("predictions");
+                                    if (predictions.length() > 0) {
+                                        for (int i = 0; i < predictions.length(); i++) {
+                                            JSONObject obj = predictions.getJSONObject(i);
+                                            String description = obj.getString("description");
+                                            hintlist.add(description);
+
+                                        }
                                     }
+                                    adapter.notifyDataSetChanged();
                                 }
-                                adapter.notifyDataSetChanged();
                             }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+
+
+
                     }
-                });
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                // Error handling
+                System.out.println("Something went wrong!");
+                error.printStackTrace();
+
+            }
+        });
+        Volley.newRequestQueue(getActivity()).add(stringRequest);
+
     }
 
 

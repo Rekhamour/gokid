@@ -135,6 +135,7 @@ public class ShoplistAdapter extends RecyclerView.Adapter<ShoplistAdapter.MyView
             notifyDataSetChanged();
         }
 
+
     }
 
 }

@@ -30,6 +30,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/allergy_gridview"
         android:numColumns="3"
+        android:scrollbars="vertical"
+        android:layout_marginBottom="@dimen/dp30margin"
+
+
 
 
         >

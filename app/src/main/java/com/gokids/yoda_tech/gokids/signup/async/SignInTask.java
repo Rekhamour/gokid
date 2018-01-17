@@ -3,9 +3,14 @@ package com.gokids.yoda_tech.gokids.signup.async;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.utils.Utils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,11 +82,13 @@ public class SignInTask extends AsyncTask<Void,Void,Void> {
             }
 
             String jsonString = buffer.toString();
+            Log.e("JSON RESULT"," signin result"+jsonString);
             loggedIn = Utils.checkLoginWithUserName(mContext,jsonString);
+           parseJSON(jsonString);
 
-            if(loggedIn) {
+           /* if(loggedIn) {
                 Utils.storeCredentials(mContext,jsonString);
-            }
+            }*/
 
 
         } catch (MalformedURLException e) {
@@ -93,6 +100,46 @@ public class SignInTask extends AsyncTask<Void,Void,Void> {
             urlConnection.disconnect();
         }
         return null;
+    }
+
+    private void parseJSON(String jsonString) {
+        Integer userId = 0;
+        String emailID = null;
+        String userName = null;
+        String city = null;
+        String phoneNo = null;
+
+        try {
+
+            JSONArray jsonArray = new JSONArray(jsonString);
+            JSONObject user;
+
+            for (int i=0; i<jsonArray.length(); i++) {
+                user = jsonArray.getJSONObject(i);
+                if(user.has("UserID")) {
+                    userId = user.getInt("UserID");
+                }
+                if(user.has("Email")) {
+                    emailID = user.getString("Email");
+                }
+                if(user.has("UserName")) {
+                    userName = user.getString("UserName");
+                }
+                if(user.has("City")) {
+                    city = user.getString("City");
+                }
+                if(user.has("PhoneNo")) {
+                    phoneNo = user.getString("PhoneNo");
+                }
+                if(loggedIn) {
+                    Utils.storeCredentials(mContext,userName,userId,emailID,city,phoneNo);
+                }
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -143,8 +143,8 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
 
         Menu menu = navigation.getMenu();
         MenuItem sign_out = menu.getItem(4);
-        if(prefs.contains("userId") && prefs.getInt("userId",0)!=0) {
-            Log.e("Signin fragment","userId "+  prefs.getInt("userId",0));
+        if(prefs.contains("emailId") && !prefs.getString("emailId","").isEmpty() ) {
+            Log.e("Signin fragment","userId "+  prefs.getString("emailId",""));
             name.setText(prefs.getString("userName","Guest"));
 
             if(prefs.contains("ImageURL") && !prefs.getString("ImageURL","").isEmpty()) {

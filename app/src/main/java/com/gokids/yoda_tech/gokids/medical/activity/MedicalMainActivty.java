@@ -43,20 +43,21 @@ public class MedicalMainActivty extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText(tabTitles[2]));
         tabLayout.addTab(tabLayout.newTab().setText(tabTitles[3]));
         tabLayout.addTab(tabLayout.newTab().setText(tabTitles[4]));
+        medical_select = "-";
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position=tab.getPosition();
-                if(position == 2) {
+                if(position == 1) {
                     medical_select = "CAT15";
                 }
-                if(position == 3) {
+                if(position == 2) {
                     medical_select = "CAT14";
                 }
-                if(position == 4) {
+                if(position == 3) {
                     medical_select = "CAT16";
                 }
-                if(position == 5) {
+                if(position == 4) {
                     medical_select = "CAT17";
                 }
                 if(position == 0) {

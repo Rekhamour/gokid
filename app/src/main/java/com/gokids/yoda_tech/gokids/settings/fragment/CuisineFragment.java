@@ -151,16 +151,15 @@ public class CuisineFragment extends Fragment {
         cuisines.add(new Cuisine(R.drawable.cuisine_cuban,false, "Cuban","SN10"));
         cuisines.add(new Cuisine(R.drawable.cuisine_english,false,"English","SN8"));
         cuisines.add(new Cuisine(R.drawable.cuisine_french,false,"French","SN11"));
-        cuisines.add(new Cuisine(R.drawable.diet_veg,false,"Greek","SN12"));
-        cuisines.add(new Cuisine(R.drawable.cuisine_greek,false,"Indian","SN13"));
+        cuisines.add(new Cuisine(R.drawable.cuisine_greek,false,"Greek","SN12"));
+        cuisines.add(new Cuisine(R.drawable.cuisine_indian,false,"Indian","SN13"));
         cuisines.add(new Cuisine(R.drawable.cuisine_irish,false,"Irish","SN16"));
-        cuisines.add(new Cuisine(R.drawable.cuisine_american,false,"Italian","SN14"));
-        cuisines.add(new Cuisine(R.drawable.cuisine_american,false,"Japanese","SN17"));
-        cuisines.add(new Cuisine(R.drawable.cuisine_american,false,"Mediterranean ","SN18"));
+        cuisines.add(new Cuisine(R.drawable.cuisine_italian,false,"Italian","SN14"));
+        cuisines.add(new Cuisine(R.drawable.cuisine_japanese,false,"Japanese","SN17"));
+        cuisines.add(new Cuisine(R.drawable.mediterranean,false,"Mediterranean ","SN18"));
         cuisines.add(new Cuisine(R.drawable.cuisine_mexican,false,"Mexican","SN9"));
         cuisines.add(new Cuisine(R.drawable.cuisine_thai,false,"Thai","SN2"));
-        cuisines.add(new Cuisine(R.drawable.cuisine_thai,false,"Turkish","SN34"));
-        //cuisines.add(new Cuisine(R.drawable.cuisine_thai,false,"Thai","SN34"));
+        cuisines.add(new Cuisine(R.drawable.turkish,false,"Turkish","SN34"));
 
     }
 

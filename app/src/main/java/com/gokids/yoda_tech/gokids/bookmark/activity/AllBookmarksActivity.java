@@ -110,6 +110,7 @@ public class AllBookmarksActivity extends AppCompatActivity {
                             /*if(status.equalsIgnoreCase("200"))
                             {*/
                                 Log.e(TAG, "i m in status");
+
                                 JsonArray resultarrey = result.get("result").getAsJsonArray();
                                 try {
                                     JSONArray arrey = new JSONArray(resultarrey.toString());
@@ -138,46 +139,57 @@ public class AllBookmarksActivity extends AppCompatActivity {
                                                 ArrayList<CuisinesBean> spe = new ArrayList<>();
                                                 // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
                                                 // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
+                                                if (obj.has("Cuisines")) {
+                                                    if(obj.get("Cuisines") instanceof  JSONArray) {
 
+                                                            ArrayList<CuisinesBean> con = new ArrayList<>();
+                                                            JSONArray cont = obj.getJSONArray("Cuisines");
+                                                            for (int j = 0; j < cont.length(); j++) {
+                                                                CuisinesBean c = new CuisinesBean();
 
-                                                if (obj.getJSONArray("Cuisines").length() > 0) {
-                                                    ArrayList<CuisinesBean> con = new ArrayList<>();
-                                                    JSONArray cont = obj.getJSONArray("Cuisines");
-                                                    for (int j = 0; j < cont.length(); j++) {
-                                                        CuisinesBean c = new CuisinesBean();
+                                                                c.setCuisine(cont.getJSONObject(j).getString("Cuisine"));
+                                                                con.add(c);
+                                                            }
+                                                            Log.e(TAG, "con array size" + con.size());
 
-                                                        c.setCuisine(cont.getJSONObject(j).getString("Cuisine"));
-                                                        con.add(c);
-                                                    }
-                                                    Log.e(TAG, "con array size" + con.size());
+                                                            m.setCuisines(con);
+                                                        }
 
-                                                    m.setCuisines(con);
-                                                }
+                                            }
 
                                                 //}
                                                 m.setCuisines(spe);
-                                                if (obj.getJSONArray("Contacts").length() > 0) {
-                                                    ArrayList<Contact> con = new ArrayList<>();
-                                                    JSONArray cont = obj.getJSONArray("Contacts");
-                                                    for (int j = 0; j < cont.length(); j++) {
-                                                        Contact c = new Contact();
-                                                        // c.setContactId(cont.getJSONObject(j).getString("ContactID"));
-                                                        c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
-                                                        c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
-                                                        con.add(c);
+                                                if (obj.has("Contacts")) {
+                                                    if(obj.get("Contacts") instanceof  JSONArray) {
+                                                        ArrayList<Contact> con = new ArrayList<>();
+                                                        JSONArray cont = obj.getJSONArray("Contacts");
+                                                        for (int j = 0; j < cont.length(); j++) {
+                                                            Contact c = new Contact();
+                                                            // c.setContactId(cont.getJSONObject(j).getString("ContactID"));
+                                                            c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
+                                                            c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
+                                                            con.add(c);
+                                                        }
+                                                        m.setContacts(con);
                                                     }
-                                                    m.setContacts(con);
                                                 }
 
-                                                ArrayList<String> images = new ArrayList<String>();
-                                                if (obj.getJSONArray("Images").length() > 0) {
-                                                    for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
-                                                        images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                                if (obj.has("Images")) {
+                                                    if (obj.get("Images") instanceof JSONArray) {
+                                                        ArrayList<String> images = new ArrayList<String>();
+                                                        if (obj.getJSONArray("Images").length() > 0) {
+                                                            for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
+                                                                images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                                            }
+                                                        }
+
+
+                                                        Log.e(TAG, "images array size" + images.size());
+                                                        m.setImages(images);
+                                                        m.setImage(images.get(0));
                                                     }
                                                 }
-                                                Log.e(TAG, "images array size" + images.size());
-                                                m.setImages(images);
-                                                m.setImage(images.get(0));
+
                                                 list.add(m);
                                                 filterFoodlist.add(m);
 
@@ -213,44 +225,55 @@ public class AllBookmarksActivity extends AppCompatActivity {
                                                 // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
 
 
-                                                if (obj.getJSONArray("Cuisines").length() > 0) {
-                                                    ArrayList<CuisinesBean> con = new ArrayList<>();
-                                                    JSONArray cont = obj.getJSONArray("Cuisines");
-                                                    for (int j = 0; j < cont.length(); j++) {
-                                                        CuisinesBean c = new CuisinesBean();
+                                                if (obj.has("Cuisines")) {
+                                                    if (obj.get("Cuisines") instanceof JSONArray) {
+                                                        ArrayList<CuisinesBean> con = new ArrayList<>();
+                                                        JSONArray cont = obj.getJSONArray("Cuisines");
+                                                        for (int j = 0; j < cont.length(); j++) {
+                                                            CuisinesBean c = new CuisinesBean();
 
-                                                        c.setCuisine(cont.getJSONObject(j).getString("Cuisine"));
-                                                        con.add(c);
+                                                            c.setCuisine(cont.getJSONObject(j).getString("Cuisine"));
+                                                            con.add(c);
+                                                        }
+                                                        Log.e(TAG, "con array size" + con.size());
+
+                                                        m.setCuisines(con);
                                                     }
-                                                    Log.e(TAG, "con array size" + con.size());
-
-                                                    m.setCuisines(con);
                                                 }
 
                                                 //}
                                                 //m.setCuisines(spe);
-                                                if (obj.getJSONArray("Contacts").length() > 0) {
-                                                    ArrayList<Contact> con = new ArrayList<>();
-                                                    JSONArray cont = obj.getJSONArray("Contacts");
-                                                    for (int j = 0; j < cont.length(); j++) {
-                                                        Contact c = new Contact();
-                                                        // c.setContactId(cont.getJSONObject(j).getString("ContactID"));
-                                                        c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
-                                                        c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
-                                                        con.add(c);
+                                                if (obj.has("Contacts")) {
+                                                    if(obj.get("Contacts") instanceof  JSONArray) {
+                                                        ArrayList<Contact> con = new ArrayList<>();
+                                                        JSONArray cont = obj.getJSONArray("Contacts");
+                                                        for (int j = 0; j < cont.length(); j++) {
+                                                            Contact c = new Contact();
+                                                            // c.setContactId(cont.getJSONObject(j).getString("ContactID"));
+                                                            c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
+                                                            c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
+                                                            con.add(c);
+                                                        }
+                                                        m.setContacts(con);
                                                     }
-                                                    m.setContacts(con);
                                                 }
 
-                                                ArrayList<String> images = new ArrayList<String>();
-                                                if (obj.getJSONArray("Images").length() > 0) {
-                                                    for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
-                                                        images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                                if (obj.has("Images")) {
+                                                    if (obj.get("Images") instanceof JSONArray) {
+                                                        ArrayList<String> images = new ArrayList<String>();
+                                                        if (obj.getJSONArray("Images").length() > 0) {
+                                                            for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
+                                                                images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                                            }
+                                                        }
+
+
+                                                        Log.e(TAG, "images array size" + images.size());
+                                                        m.setImages(images);
+                                                        m.setImage(images.get(0));
                                                     }
                                                 }
-                                                Log.e(TAG, "images array size" + images.size());
-                                                m.setImages(images);
-                                                m.setImage(images.get(0));
+
                                                 list.add(m);
                                                 filterFoodlist.add(m);
 
@@ -276,28 +299,35 @@ public class AllBookmarksActivity extends AppCompatActivity {
                                                 // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
                                                 //}
                                                 //  m.setCuisines(spe);
-                                                if (obj.getJSONArray("Contacts").length() > 0) {
-                                                    ArrayList<Contact> con = new ArrayList<>();
-                                                    JSONArray cont = obj.getJSONArray("Contacts");
-                                                    for (int j = 0; j < cont.length(); j++) {
-                                                        Contact c = new Contact();
-                                                        // c.setContactId(cont.getJSONObject(j).getString("ContactID"));
-                                                        c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
-                                                        c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
-                                                        con.add(c);
+                                                if (obj.has("Contacts")) {
+                                                    if(obj.get("Contacts") instanceof  JSONArray) {
+                                                        ArrayList<Contact> con = new ArrayList<>();
+                                                        JSONArray cont = obj.getJSONArray("Contacts");
+                                                        for (int j = 0; j < cont.length(); j++) {
+                                                            Contact c = new Contact();
+                                                            // c.setContactId(cont.getJSONObject(j).getString("ContactID"));
+                                                            c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
+                                                            c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
+                                                            con.add(c);
+                                                        }
+                                                        m.setContacts(con);
                                                     }
-                                                    m.setContacts(con);
                                                 }
+                                                if (obj.has("Images")) {
+                                                    if (obj.get("Images") instanceof JSONArray) {
+                                                        ArrayList<String> images = new ArrayList<String>();
+                                                        if (obj.getJSONArray("Images").length() > 0) {
+                                                            for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
+                                                                images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                                            }
+                                                        }
 
-                                                ArrayList<String> images = new ArrayList<String>();
-                                                if (obj.getJSONArray("Images").length() > 0) {
-                                                    for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
-                                                        images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+
+                                                        Log.e(TAG, "images array size" + images.size());
+                                                        m.setImages(images);
+                                                        m.setImage(images.get(0));
                                                     }
                                                 }
-                                                Log.e(TAG, "images array size" + images.size());
-                                                m.setImages(images);
-                                                m.setImage(images.get(0));
 
                                                 list.add(m);
                                                 filtershoppinglist.add(m);
@@ -321,28 +351,37 @@ public class AllBookmarksActivity extends AppCompatActivity {
 
 
                                                 //}
-                                                if (obj.getJSONArray("Contacts").length() > 0) {
-                                                    ArrayList<Contact> con = new ArrayList<>();
-                                                    JSONArray cont = obj.getJSONArray("Contacts");
-                                                    for (int j = 0; j < cont.length(); j++) {
-                                                        Contact c = new Contact();
-                                                        // c.setContactId(cont.getJSONObject(j).getString("ContactID"));
-                                                        c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
-                                                        c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
-                                                        con.add(c);
+                                                if (obj.has("Contacts")) {
+                                                    if(obj.get("Contacts") instanceof  JSONArray) {
+                                                        ArrayList<Contact> con = new ArrayList<>();
+                                                        JSONArray cont = obj.getJSONArray("Contacts");
+                                                        for (int j = 0; j < cont.length(); j++) {
+                                                            Contact c = new Contact();
+                                                            // c.setContactId(cont.getJSONObject(j).getString("ContactID"));
+                                                            c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
+                                                            c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
+                                                            con.add(c);
+                                                        }
+                                                        m.setContacts(con);
                                                     }
-                                                    m.setContacts(con);
                                                 }
 
-                                                ArrayList<String> images = new ArrayList<String>();
-                                                if (obj.getJSONArray("Images").length() > 0) {
-                                                    for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
-                                                        images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                                if (obj.has("Images")) {
+                                                    if (obj.get("Images") instanceof JSONArray) {
+                                                        ArrayList<String> images = new ArrayList<String>();
+                                                        if (obj.getJSONArray("Images").length() > 0) {
+                                                            for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
+                                                                images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                                            }
+                                                        }
+
+
+                                                        Log.e(TAG, "images array size" + images.size());
+                                                        m.setImages(images);
+                                                        m.setImage(images.get(0));
                                                     }
                                                 }
-                                                Log.e(TAG, "images array size" + images.size());
-                                                m.setImages(images);
-                                                m.setImage(images.get(0));
+
                                                 list.add(m);
 
                                                 filterentertainment = new ArrayList<MainBean>();

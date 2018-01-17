@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gokids.yoda_tech.gokids.R;
+import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.settings.activity.AddKidsActivity;
 import com.gokids.yoda_tech.gokids.settings.activity.SettingsActivity;
 import com.gokids.yoda_tech.gokids.settings.model.SpecialNeedBean;
@@ -46,9 +47,6 @@ public class AnotherFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String url = "api/addDeleteKidDetail/email/:email/age/:age/gender/:gender/specialNeed/:specialNeed/kidID/:kidID";
-        String another="api/addDeleteKidDetail/email/meme/age/7/gender/M/specialNeed/ [ { \"SpecialNeed\": \"SN2\" }, { \"SpecialNeed\": \"SN3\" }, { \"SpecialNeed\": \"SN4\" } ]/kidID/-";
-        // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_another, container, false);
         another_continue = (Button) rootView.findViewById(R.id.another_continue);
         yesLL = (LinearLayout) rootView.findViewById(R.id.yes);
@@ -124,19 +122,13 @@ public class AnotherFragment extends Fragment {
             intent.putExtra("flag","0");
             startActivity(intent);
            getActivity().finish();
-            //AddKidsActivity.mAge="";
-           // AddKidsActivity.mGender="";
-           // AddKidsActivity.AllergyNeeds=new ArrayList<>();
-           // AddKidsActivity.DeitNeeds=new ArrayList<>();
-            //AddKidsActivity.CuisineNeeds=new ArrayList<>();
 
-           // AddKidsActivity.mViewPager.setCurrentItem(0);
         }
         else if(flag.equalsIgnoreCase("N"))
         {
-            /*Intent intent = new Intent(getActivity(), SettingsActivity.class);
-            intent.putExtra("flag","1");
-            startActivity(intent);*/
+            Intent intent = new Intent(getActivity(), GoKidsHome.class);
+            intent.putExtra("flag","0");
+            startActivity(intent);
             getActivity().finish();
 
         }

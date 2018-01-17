@@ -1,10 +1,12 @@
 package com.gokids.yoda_tech.gokids.entertainment.activity;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -25,6 +27,7 @@ import com.gokids.yoda_tech.gokids.eat.model.Contact;
 import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.EntertainlistAdapter;
+import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.EntertainmentListAdapter;
 import com.gokids.yoda_tech.gokids.utils.Constants;
 import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
@@ -46,10 +49,10 @@ import devs.mulham.horizontalcalendar.HorizontalCalendarView;
  * Created by benepik on 23/6/17.
  */
 
-public class EntertainFragment extends Fragment implements FoodAdapter.ItemClickCallback,SwipeRefreshLayout.OnRefreshListener {
+public class EntertainFragment extends Fragment {
     RecyclerView food_rv_list;
     TextView numFoods;
-    EntertainlistAdapter adapter;
+    EntertainmentListAdapter adapter;
     ArrayList<MainBean> list;
     String  category= "Eat";
     public int  mCount =  0;
@@ -77,6 +80,8 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
     private LinearLayout calendarLL;
 
     private boolean isLoaded =false,isVisibleToUser;
+    private Handler handler;
+    private ProgressDialog dialog;
 
 
     public static EntertainFragment newInstance(String tabcategory, String tabTitle){
@@ -100,44 +105,37 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
         calendarLL = (LinearLayout)view. findViewById(R.id.calendarLL);
         ctx= getActivity();
         setHasOptionsMenu(true);
-       total= getTotalRestaurants(Utils.getCurrentdate());
+        total= getTotalRestaurants(Utils.getCurrentdate());
         list = new ArrayList<>();
-        swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
         food_rv_list.setLayoutManager(layoutManager);
-        adapter = new EntertainlistAdapter(getActivity(),list,flagfirst);
+        adapter = new EntertainmentListAdapter(getActivity(),list, "y");
         food_rv_list.setAdapter(adapter);
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 1);
         latlon= Utils.getLatLong(getActivity());
-
-
-        /** start before 1 month from now */
+        Log.e(TAG,"Latlon lat" + latlon.getLatitude() + " long " + latlon.getLongitude());
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.MONTH, -1);
+        calendarLL.setVisibility(View.GONE);
 
-         horizontalCalendar = new HorizontalCalendar.Builder(view, R.id.calendarView).build();
+        horizontalCalendar = new HorizontalCalendar.Builder(view, R.id.calendarView).build();
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Date date, int position) {
                 dte=Utils.getselecteddate(date);
                 Log.e(TAG," date"+ dte);
-                final int startlimit= 0;
-                final int count=50;
+
                 total= getTotalRestaurants(dte);
 
-                swipe_food.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        swipe_food.setRefreshing(true);
-                                        list.clear();
-                                        food_rv_list.removeAllViewsInLayout();
-                                        getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",startlimit,count);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        load(0);
 
-                                    }
-                                }
-                );
-               // getRestaurants(dte,prefrence.getString("emailId",""),latlon[0],latlon[1],"Distance",startlimit,count);
+                    }
+                },200);
+                // getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",startlimit,count);
             }
 
             @Override
@@ -152,36 +150,62 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
             }
         });
 
+        dialog= new ProgressDialog(getActivity());
+        dialog.setMessage("Please wait..");
+        latlon= Utils.getLatLong(getActivity());
+        handler= new Handler();
 
+        adapter.setLoadMoreListener(new EntertainmentListAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
 
-       /// Utils.getCurrentdate();
+                food_rv_list.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        final int index = list.size();
+                        Log.e(TAG,"i m in loadmore scroll");
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadMore(index);
 
-
-            swipe_food.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    swipe_food.setRefreshing(true);
-                                    list.clear();
-                                    food_rv_list.removeAllViewsInLayout();
-                                    getRestaurants(Utils.getCurrentdate(), prefrence.getString("emailId", ""), latlon.getLatitude(),latlon.getLongitude(), "Distance", mCount, countlimit);
-                                }
                             }
-            );
+                        },200);
+                    }
+                });
+            }
+        });
+        food_rv_list.setAdapter(adapter);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                load(0);
 
-
-
+            }
+        },200);
 
         return view;
 
     }
 
-    @Override
-    public void onItemClick(int p) {
+    private void load(int index) {
 
+
+       // dialog.show();
+        getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,0);
+
+    }
+
+    private void loadMore(int index) {
+        MainBean bean=new MainBean();
+        bean.setType("load");
+        list.add(bean);
+        adapter.notifyItemInserted(list.size()+1);
+        getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,0);
 
     }
     public int getTotalRestaurants(final String date) {
-        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/CATSPE" + "/startDate/"+date+"/endDate/"+Utils.getLastofMonth();
+        String getTotals= Urls.BASE_URL+"/api/categoryTotalCount/category/CLS3/subCategory/" +"CATSPE"+ "/startDate/"+date+"/endDate/"+Utils.getLastofMonth();
         Log.e(TAG," total items"+ getTotals);
         Ion.with(getActivity())
                 .load(getTotals)
@@ -195,7 +219,6 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
                                 total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
                             }
                             String category_actual = "Restaurants";
-                            Log.e(TAG," total "+total);
 
                             numFoods.setText(total + " " + mtabTitles);
                         }
@@ -207,29 +230,13 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
 
 
     public ArrayList<MainBean> getRestaurants(final String date, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
-        mCount =  start;
-        String url = BASE_URL + "api/viewAllRestaurants/";
-        url += "/latitude/" + lat;
-        url += "/longitude/" + longi;
-        url += "/email/" + name;
-
-        url +="/limitStart/"+mCount+"/count/" + count;
-
-        if(name != null){
-            url += "/searchBy/" + category ;
-        }
-
-            calendarLL.setVisibility(View.GONE);
-            String startdate=Utils.getCurrentdate();
-            String enddate=Utils.getEndnmonth();
-            PATH= BASE_URL + "api/viewAllEntertainments/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/"+"CATSPE"+"/startDate/"+startdate+"/endDate/"+enddate+"/limitStart/"+ mCount+"/count/"+count+"/sortBy/Distance";
 
 
-        String ak= "api/viewAllShops/latitude/1.301949/longitude/103.839829/category/CAT4/limitStart/0/count/5/sortBy/Distance";
-        String am= "api/viewAllEntertainments/latitude/1.23/longitude/103.32/category/CAT13/startDate/2016-12-14/endDate/2016-12-14/limitStart/0/count/2/sortBy/Distance";
-        // System.out.println(url);
+        String dte= date;
+        PATH= BASE_URL + "api/viewAllEntertainments/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/"+"CATSPE"+"/startDate/"+dte+"/endDate/"+dte+"/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance";
+        Log.e(TAG,"path in else"+PATH);
+
         Log.e(TAG,"tab category   "+mtabcategory);
-        //String PATH= BASE_URL + "api/viewAllEntertainments/latitude/"+latlon[0]+"/longitude/"+latlon[1]+"/category/"+mtabcategory+"/startDate/2017-01-09/endDate/2017-30-09"+"/limitStart/"+ mCount+"/count/"+count+"/sortBy/Distance";
         Log.e(TAG,"path"+PATH);
 
         Ion.with(getActivity())
@@ -244,8 +251,7 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
                             System.out.println(result);
                             String status = String.valueOf(result.get("status")).replace("\"", "");
                             if (status.equalsIgnoreCase("200")) {
-                                swipe_food.setRefreshing(false);
-                                loading = true;
+
                                 Log.e(TAG, " i m if status" + status);
 
                                 Log.e("Foodfragment", "status" + status);
@@ -255,124 +261,77 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
                                 if(result.has("result")) {
 
                                     if (res.size() > 0) {
-                                    for (int i = 0; i < res.size(); i++) {
-                                        MainBean m = new MainBean();
-                                        JsonElement obj = res.get(i);
-                                        m.setEntertainmentID(obj.getAsJsonObject().get("EntertainmentID").getAsString());
-                                        m.setEntertainmentTitle(obj.getAsJsonObject().get("EntertainmentTitle").getAsString());
-                                        m.setEntertainmentdetail(obj.getAsJsonObject().get("EntertainmentDetail").getAsString());
-                                        m.setWebsite(obj.getAsJsonObject().get("Website").getAsString());
-                                        m.setEmail(obj.getAsJsonObject().get("Email").getAsString());
-                                        m.setAddress(obj.getAsJsonObject().get("Address").getAsString());
-                                        m.setPostal(obj.getAsJsonObject().get("Postal").getAsString());
-                                        m.setLatlong(obj.getAsJsonObject().get("LatLong").getAsString());
-                                        m.setStartDate(obj.getAsJsonObject().get("StartDate").toString());
-                                        m.setEndDate(obj.getAsJsonObject().get("EndDate").toString());
-                                        m.setEventDate(obj.getAsJsonObject().get("EventDate").toString());
-                                        m.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsInt());
-                                        m.setDistance(obj.getAsJsonObject().get("Distance").getAsString());
-                                        //   m.setSpecialty(obj.getAsJsonObject().get("Specialty").getAsString());
-                                        ArrayList<CuisinesBean> spe = new ArrayList<>();
-                                        // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
-                                        // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
+                                        for (int i = 0; i < res.size(); i++) {
+                                            MainBean m = new MainBean();
+                                            JsonElement obj = res.get(i);
+                                            m.setEntertainmentID(obj.getAsJsonObject().get("EntertainmentID").getAsString());
+                                            m.setEntertainmentTitle(obj.getAsJsonObject().get("EntertainmentTitle").getAsString());
+                                            m.setEntertainmentdetail(obj.getAsJsonObject().get("EntertainmentDetail").getAsString());
+                                            m.setWebsite(obj.getAsJsonObject().get("Website").getAsString());
+                                            m.setEmail(obj.getAsJsonObject().get("Email").getAsString());
+                                            m.setAddress(obj.getAsJsonObject().get("Address").getAsString());
+                                            m.setPostal(obj.getAsJsonObject().get("Postal").getAsString());
+                                            m.setLatlong(obj.getAsJsonObject().get("LatLong").getAsString());
+                                            m.setStartDate(obj.getAsJsonObject().get("StartDate").toString());
+                                            m.setEndDate(obj.getAsJsonObject().get("EndDate").toString());
+                                            m.setEventDate(obj.getAsJsonObject().get("EventDate").toString());
+                                            m.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsInt());
+                                            m.setDistance(obj.getAsJsonObject().get("Distance").getAsString());
+                                            m.setType("data");
+                                            //   m.setSpecialty(obj.getAsJsonObject().get("Specialty").getAsString());
+                                            ArrayList<CuisinesBean> spe = new ArrayList<>();
+                                            // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
+                                            // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
 
-                                        if (obj.getAsJsonObject().get("Categories").isJsonArray()) {
-                                            ArrayList<CuisinesBean> con = new ArrayList<>();
+                                            if (obj.getAsJsonObject().get("Categories").isJsonArray()) {
+                                                ArrayList<CuisinesBean> con = new ArrayList<>();
 
-                                            JsonArray cont = obj.getAsJsonObject().get("Categories").getAsJsonArray();
-                                            for (int j = 0; j < cont.size(); j++) {
-                                                CuisinesBean c = new CuisinesBean();
+                                                JsonArray cont = obj.getAsJsonObject().get("Categories").getAsJsonArray();
+                                                for (int j = 0; j < cont.size(); j++) {
+                                                    CuisinesBean c = new CuisinesBean();
 
-                                                c.setCuisine(cont.get(j).getAsJsonObject().get("Category").getAsString());
-                                                con.add(c);
+                                                    c.setCuisine(cont.get(j).getAsJsonObject().get("Category").getAsString());
+                                                    con.add(c);
+                                                }
+                                                Log.e(TAG, "con array size" + con.size());
+
+                                                m.setCuisines(con);
                                             }
-                                            Log.e(TAG, "con array size" + con.size());
-
-                                            m.setCuisines(con);
-                                        }
-                                        //m.setCuisines(con);
+                                            //m.setCuisines(con);
 
 
-                                        //}
-                                        m.setCuisines(spe);
-                                        if (obj.getAsJsonObject().get("Contacts").isJsonArray()) {
-                                            ArrayList<Contact> hr = new ArrayList<>();
-                                            JsonArray cont = obj.getAsJsonObject().get("Contacts").getAsJsonArray();
-                                            for (int j = 0; j < cont.size(); j++) {
-                                                Contact c = new Contact();
-                                                c.setContactId(cont.get(j).getAsJsonObject().get("ContactID").getAsLong());
-                                                c.setOwnerId(cont.get(j).getAsJsonObject().get("OwnerID").getAsString());
-                                                c.setPhoneNo(cont.get(j).getAsJsonObject().get("PhoneNo").getAsString());
-                                                hr.add(c);
+                                            //}
+                                            m.setCuisines(spe);
+                                            if (obj.getAsJsonObject().get("Contacts").isJsonArray()) {
+                                                ArrayList<Contact> hr = new ArrayList<>();
+                                                JsonArray cont = obj.getAsJsonObject().get("Contacts").getAsJsonArray();
+                                                for (int j = 0; j < cont.size(); j++) {
+                                                    Contact c = new Contact();
+                                                    c.setContactId(cont.get(j).getAsJsonObject().get("ContactID").getAsLong());
+                                                    c.setOwnerId(cont.get(j).getAsJsonObject().get("OwnerID").getAsString());
+                                                    c.setPhoneNo(cont.get(j).getAsJsonObject().get("PhoneNo").getAsString());
+                                                    hr.add(c);
+                                                }
+                                                m.setContacts(hr);
                                             }
-                                            m.setContacts(hr);
-                                        }
 
-                                        ArrayList<String> images = new ArrayList<String>();
-                                        if (obj.getAsJsonObject().get("Images").isJsonArray()) {
-                                            for (int j = 0; j < obj.getAsJsonObject().get("Images").getAsJsonArray().size(); j++) {
-                                                //System.out.println(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
-                                                images.add(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
-                                            }
-                                        }
-                                        Log.e(TAG, "images array size" + images.size());
-                                        m.setImages(images);
-                                        list.add(m);
-                                        mCount++;
-                                    }
-
-                                    adapter.notifyDataSetChanged();
-                                    swipe_food.setRefreshing(false);
-                                }
-                            }
-                                if (total > count) {
-                                    Log.d(TAG, "total_posts is greater ");
-
-                                    food_rv_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                                        @Override
-                                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                            super.onScrollStateChanged(recyclerView, newState);
-                                        }
-
-                                        @Override
-                                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                            // mCount=count;
-                                            // count=count+50;
-                                            super.onScrolled(recyclerView, dx, dy);
-
-
-                                            int pastVisiblesItems = count, visibleItemCount = mCount, totalItemCount = total;
-                                            if (dy > 0) //check for scroll down
-                                            {
-                                                visibleItemCount = layoutManager.getChildCount();
-                                                totalItemCount = layoutManager.getItemCount();
-                                                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-                                                if (loading) {
-                                                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                                        Log.d(TAG, "total count " + totalItemCount + "visibleItemCount + pastVisiblesItems " + visibleItemCount + pastVisiblesItems);
-                                                        loading = false;
-                                                        swipe_food.setRefreshing(true);
-                                                        Log.v(TAG, "Last Item Wow !");
-                                                        // apiCall(mCount);
-                                                        int lmCount = mCount + 50;
-                                                        int lastcount = count + 50;
-                                                        getRestaurants(date, name, latlon.getLatitude(),latlon.getLongitude(), sortBy, lmCount, count + 100);
-
-                                                        Log.d(TAG, "value mCount" + mCount);
-                                                    }
+                                            ArrayList<String> images = new ArrayList<String>();
+                                            if (obj.getAsJsonObject().get("Images").isJsonArray()) {
+                                                for (int j = 0; j < obj.getAsJsonObject().get("Images").getAsJsonArray().size(); j++) {
+                                                    //System.out.println(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
+                                                    images.add(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
                                                 }
                                             }
+                                            Log.e(TAG, "images array size" + images.size());
+                                            m.setImages(images);
+                                            list.add(m);
+                                            mCount++;
                                         }
-                                    });
+
+                                        adapter.notifyDataChanged();
+                                    }
                                 }
 
-                                //if()
-                                //int lmCount= mCount+50;
-                                // int lastcount=count+50;
-
-                                //  getRestaurants(category,name,lat,longi,sortBy,lmCount,lastcount);
-                                //  }
-                                // });
 
 
                             }
@@ -385,22 +344,7 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
     }
 
 
-    @Override
-    public void onRefresh() {
-        list.clear();
-        food_rv_list.removeAllViewsInLayout();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,total);
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mCount = 0;
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -415,6 +359,7 @@ public class EntertainFragment extends Fragment implements FoodAdapter.ItemClick
             PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.filter_search));
             Utils.getfilterDistanceEntertainment(getActivity(),list,popup,adapter);
         } else if (item.getItemId() == R.id.lens_search) {
+
             Utils.getSearchDialogEntertainment(getActivity(),list,food_rv_list,flagfirst);
 
         }

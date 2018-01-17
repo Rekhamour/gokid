@@ -42,6 +42,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.gokids.yoda_tech.gokids.R;
+import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.settings.adapter.KidsDetailsAdapter;
 import com.gokids.yoda_tech.gokids.settings.model.KidsDetailBean;
 import com.gokids.yoda_tech.gokids.settings.model.NeedBean;
@@ -54,6 +55,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -740,9 +742,65 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
+
+        if(prefs.contains("emailId") && !prefs.getString("emailId","").isEmpty() ) {
+            Log.e("Signin fragment", "emailId " + prefs.getString("emailId", ""));
+            if (prefs.contains("ImageURL") && !prefs.getString("ImageURL", "").isEmpty()) {
+                Log.e(TAG, " image url" + prefs.getString("ImageURL", ""));
+                String path="https://s3-ap-southeast-1.amazonaws.com/kisimages/User/kk@gmail.com.jpg";
+                Picasso.with(SettingsActivity.this).load(path).into(profile_img);
+            }
+        }
 
         setupKidsDetails();
+        	if ( isExternalStorageWritable() ) {
 
+			File appDirectory = new File( Environment.getExternalStorageDirectory() + "/MyGokidsAppFolder" );
+			File logDirectory = new File( appDirectory + "/log" );
+			File logFile = new File( logDirectory, "logcat" + System.currentTimeMillis() + ".txt" );
+
+			// create app folder
+			if ( !appDirectory.exists() ) {
+				appDirectory.mkdir();
+			}
+
+			// create log folder
+			if ( !logDirectory.exists() ) {
+				logDirectory.mkdir();
+			}
+
+			// clear the previous logcat and then write the new one to the file
+			try {
+				Process process = Runtime.getRuntime().exec( "logcat -d");
+				process = Runtime.getRuntime().exec( "logcat -f " + logFile );
+			} catch ( IOException e ) {
+				e.printStackTrace();
+			}
+
+		} else if ( isExternalStorageReadable() ) {
+			// only readable
+		} else {
+			// not accessible
+		}
+
+    }
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
+            return true;
+        }
+        return false;
     }
 }
 

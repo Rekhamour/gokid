@@ -26,6 +26,7 @@ import com.gokids.yoda_tech.gokids.eat.model.Contact;
 import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoplistAdapter;
+import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoppingListAdapter;
 import com.gokids.yoda_tech.gokids.utils.Constants;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 import com.google.gson.JsonArray;
@@ -40,10 +41,10 @@ import java.util.ArrayList;
  * Created by benepik on 23/6/17.
  */
 
-public class EducationFragment extends Fragment implements FoodAdapter.ItemClickCallback,SwipeRefreshLayout.OnRefreshListener {
+public class EducationFragment extends Fragment  {
     RecyclerView rvlistview;
     TextView numdata;
-    ShoplistAdapter adapter;
+    ShoppingListAdapter adapter;
     ArrayList<MainBean> datalist;
     String  category= "Eat";
     public int  mCount =  0;
@@ -52,10 +53,8 @@ public class EducationFragment extends Fragment implements FoodAdapter.ItemClick
 
     LinearLayoutManager layoutManager;
     private static final String BASE_URL = "http://52.77.82.210/";
-    private  final String getAllrestaurants = BASE_URL + "api/viewAllRestaurants/latitude/1.3224070/longitude/103.9443650/email/%20test1gokids@yahoo.com/limitStart/0/count/2/sortBy/Distance/searchBy/" + category;
 
 
-    private static final String getTotalRestarants = BASE_URL+ "api/viewTotalRestaurants/latitude/1.3224070/longitude/103.9443650/email/%20test1gokids@yahoo.com/limitStart/0/count/2/sortBy/Distance/searchBy/";
     private String TAG = getClass().getName();
     private int total;
     private SwipeRefreshLayout swipe_food;
@@ -87,31 +86,42 @@ public class EducationFragment extends Fragment implements FoodAdapter.ItemClick
         setHasOptionsMenu(true);
        total= getTotalRestaurants(category);
         datalist = new ArrayList<>();
-        swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
         rvlistview.setLayoutManager(layoutManager);
-        adapter = new ShoplistAdapter(getActivity(),datalist);
-        rvlistview.setAdapter(adapter);
+        adapter = new ShoppingListAdapter(getActivity(),datalist);
         latlon= Utils.getLatLong(getActivity());
+        adapter.setLoadMoreListener(new ShoppingListAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
 
-        swipe_food.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                swipe_food.setRefreshing(true);
-                                datalist.clear();
-                                rvlistview.removeAllViewsInLayout();
-                                getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,countlimit);
-                            }
-                        }
-        );
-
+                rvlistview.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int index = datalist.size();
+                        Log.e(TAG,"i m in loadmore scroll");
+                        loadMore(index);
+                    }
+                });
+            }
+        });
+        rvlistview.setAdapter(adapter);
+        load(0);
 
         return view;
 
     }
+    private void load(int index) {
 
-    @Override
-    public void onItemClick(int p) {
+        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,total);
+
+    }
+
+    private void loadMore(int index) {
+        MainBean bean=new MainBean();
+        bean.setType("load");
+        datalist.add(bean);
+        adapter.notifyItemInserted(datalist.size()+1);
+        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,total);
 
 
     }
@@ -139,20 +149,8 @@ public class EducationFragment extends Fragment implements FoodAdapter.ItemClick
 
 
     public ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
-        mCount =  start;
-        String url = BASE_URL + "api/viewAllRestaurants/";
-        url += "/latitude/" + lat;
-        url += "/longitude/" + longi;
-        url += "/email/" + name;
 
-        url +="/limitStart/"+mCount+"/count/" + count;
-
-        if(name != null){
-            url += "/searchBy/" + category ;
-        }
-        String ak= "api/viewAllShops/latitude/1.301949/longitude/103.839829/category/CAT5/limitStart/0/count/5/sortBy/Distance";
-        // System.out.println(url);
-        String PATH= BASE_URL + "api/viewAllShops/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/CAT5/limitStart/"+ mCount+"/count/"+count+"/sortBy/Distance/searchBy/-";
+        String PATH= BASE_URL + "api/viewAllShops/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/CAT5/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/-";
         Log.e(TAG,"path"+PATH);
 
         Ion.with(getActivity())
@@ -167,8 +165,6 @@ public class EducationFragment extends Fragment implements FoodAdapter.ItemClick
                             System.out.println(result);
                             String status = String.valueOf(result.get("status")).replace("\"", "");
                             if (status.equalsIgnoreCase("200")) {
-                                swipe_food.setRefreshing(false);
-                                loading = true;
                                 Log.e(TAG, " i m if status" + status);
 
                                 Log.e("Foodfragment", "status" + status);
@@ -193,6 +189,8 @@ public class EducationFragment extends Fragment implements FoodAdapter.ItemClick
                                             m.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsInt());
                                             m.setDistance(obj.getAsJsonObject().get("Distance").getAsString());
                                             m.setWorkingHour(obj.getAsJsonObject().get("WorkingHour").getAsString());
+                                            m.setType("data");
+
                                             ArrayList<CuisinesBean> spe = new ArrayList<>();
                                             // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
                                             // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
@@ -242,60 +240,11 @@ public class EducationFragment extends Fragment implements FoodAdapter.ItemClick
                                             mCount++;
                                         }
 
-                                        adapter.notifyDataSetChanged();
-                                        swipe_food.setRefreshing(false);
+                                        adapter.notifyDataChanged();
+
                                     }
                                 }
                             }
-
-                            if (total > count) {
-                                Log.d(TAG, "total_posts is greater ");
-
-                                rvlistview.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                                    @Override
-                                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                        super.onScrollStateChanged(recyclerView, newState);
-                                    }
-
-                                    @Override
-                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                        // mCount=count;
-                                        // count=count+50;
-                                        super.onScrolled(recyclerView, dx, dy);
-
-
-                                        int pastVisiblesItems = count, visibleItemCount = mCount, totalItemCount = total;
-                                        if (dy > 0) //check for scroll down
-                                        {
-                                            visibleItemCount = layoutManager.getChildCount();
-                                            totalItemCount = layoutManager.getItemCount();
-                                            pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-                                            if (loading) {
-                                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                                    Log.d(TAG, "total count " + totalItemCount + "visibleItemCount + pastVisiblesItems " + visibleItemCount + pastVisiblesItems);
-                                                    loading = false;
-                                                    swipe_food.setRefreshing(true);
-                                                    Log.v(TAG, "Last Item Wow !");
-                                                    // apiCall(mCount);
-                                                    int lmCount= mCount+50;
-                                                    int lastcount=count+50;
-                                                    getRestaurants(category, name, latlon.getLatitude(), latlon.getLongitude(), sortBy, lmCount, count+100);
-
-                                                    Log.d(TAG, "value mCount" + mCount);
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                            }
-
-                            //if()
-                            //int lmCount= mCount+50;
-                            // int lastcount=count+50;
-
-                            //  getRestaurants(category,name,lat,longi,sortBy,lmCount,lastcount);
-                            //  }
-                            // });
 
 
 
@@ -305,24 +254,6 @@ public class EducationFragment extends Fragment implements FoodAdapter.ItemClick
                 });
 
         return datalist;
-    }
-
-
-    @Override
-    public void onRefresh() {
-        datalist.clear();
-        rvlistview.removeAllViewsInLayout();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,total);
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mCount = 0;
-
     }
 
     @Override

@@ -33,6 +33,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
@@ -42,10 +43,16 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.eat.adapter.HintAdapter;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.EntertainlistAdapter;
+import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.EntertainmentListAdapter;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.learn.Util.AllTopics;
 import com.gokids.yoda_tech.gokids.learn.Util.Classes;
@@ -57,12 +64,10 @@ import com.gokids.yoda_tech.gokids.learn.Util.SubTopic;
 import com.gokids.yoda_tech.gokids.learn.Util.Topics;
 import com.gokids.yoda_tech.gokids.learn.activity.DialogActivity;
 import com.gokids.yoda_tech.gokids.medical.adapter.MedicalAdapter;
+import com.gokids.yoda_tech.gokids.medical.adapter.MedicalListAdapter;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoplistAdapter;
+import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoppingListAdapter;
 import com.gokids.yoda_tech.gokids.signup.activity.SignUpActivity;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,8 +98,8 @@ public class Utils {
     private static Context context;
     public static String currentloc;
     private static LocationManager mLocationManager;
-    private static long LOCATION_REFRESH_TIME=5000;
-    private static float LOCATION_REFRESH_DISTANCE=500;
+    private static long LOCATION_REFRESH_TIME=0;
+    private static float LOCATION_REFRESH_DISTANCE=0;
     private static RecyclerView hintlistview;
     private static LinearLayoutManager lm;
     private static ArrayList<String> hintlist= new ArrayList<>();
@@ -551,22 +556,28 @@ public class Utils {
             editor.putString("phoneNo",phoneNo);
             editor.putString("ImageURL",ImageURL);
             editor.apply();
+            ((Activity)context).finish();
+
+           
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        finally {
+            ((Activity)context).finish();
+        }
     }
-    public static void storeCredentials(Context context, String jsonString) {
+    public static void storeCredentials(Context context, String userName, Integer userId, String emailID, String city, String phoneNo) {
         SharedPreferences prefs = context.getSharedPreferences("UserName",Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        Integer userId = 0;
+        /*Integer userId = 0;
         String emailID = null;
         String userName = null;
         String city = null;
-        String phoneNo = null;
+        String phoneNo = null;*/
 
 
-        try {
+       /* try {
 
             JSONArray jsonArray = new JSONArray(jsonString);
             JSONObject user;
@@ -588,7 +599,7 @@ public class Utils {
                 if(user.has("PhoneNo")) {
                     phoneNo = user.getString("PhoneNo");
                 }
-            }
+            }*/
 
             editor.putInt("userId",userId);
             editor.putString("emailId",emailID);
@@ -598,9 +609,9 @@ public class Utils {
             editor.putString("phoneNo",phoneNo);
             editor.apply();
 
-        } catch (JSONException e) {
+       /* } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public static void updateprefrences(Context context, String jsonString) {
@@ -821,7 +832,9 @@ public class Utils {
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, mLocationListener);
-        //Log.v("i am outside util loc", location[0].toString());
+  mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME,
+                LOCATION_REFRESH_DISTANCE, mLocationListener);
+  //Log.v("i am outside util loc", location[0].toString());
         return location[0] == null?l:location[0];
     }
 
@@ -946,6 +959,12 @@ public class Utils {
  {
      flagupload= flaguploaddownload;
      File file = new File(userImage);
+     if(!MySharedPrefrence.getPrefrence(activity).getString("emailId","").isEmpty()) {
+         String imagepath = "https://s3-ap-southeast-1.amazonaws.com/kisimages/User/" + MySharedPrefrence.getPrefrence(activity).getString("emailId", "") + ".jpg";
+         MySharedPrefrence.getPrefrence(activity).edit().putString("ImageURL", imagepath);
+         Log.e(TAG," path save" + imagepath);
+
+     }
 
      credentialsProvider(activity,file);
 
@@ -1037,6 +1056,36 @@ public class Utils {
 
 
     }
+    public static void getEmailareadyexist(final Context context,String msg) {
+        // View itemView = LayoutInflater.from(getContext()).inflate(R.layout.entertainment_list_row, parent, false);
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View alertLayout = inflater.inflate(R.layout.enter_password_layout, null);
+        // this is set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+        // disallow cancel of AlertDialog on click of back button and outside touch
+        alert.setCancelable(false);
+
+        final AlertDialog dialog = alert.create();
+        dialog.show();
+
+        final Button continueclcik = (Button)alertLayout.findViewById(R.id.ok);
+        final TextView lable = (TextView)alertLayout.findViewById(R.id.lable);
+        lable.setText(msg);
+
+        continueclcik.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
+
+
+
+
+    }
+
     public static void getLoginContinue(final Context context) {
        // View itemView = LayoutInflater.from(getContext()).inflate(R.layout.entertainment_list_row, parent, false);
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
@@ -1087,14 +1136,8 @@ public class Utils {
         // builder.setView(R.layout.search_layout);
         final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
         Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
-        hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
-        lm= new LinearLayoutManager(context);
-        hintlistview.setLayoutManager(lm);
         hintlist.clear();
-        hintlistview.removeAllViews();
-        hintadapter=  new HintAdapter(context,hintlist);
-        hintlistview.setAdapter(hintadapter);
-        queryTv.addTextChangedListener(new TextWatcher() {
+        final TextWatcher mTextwatcher= new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -1112,7 +1155,25 @@ public class Utils {
             public void afterTextChanged(Editable s) {
 
             }
-        });
+        };
+
+        hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
+        hintlistview.addOnItemTouchListener(
+                new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        queryTv.removeTextChangedListener(mTextwatcher);
+                       queryTv.setText( hintlist.get(position));
+                        // TODO Handle item click
+                    }
+                })
+        );
+        lm= new LinearLayoutManager(context);
+        hintlistview.setLayoutManager(lm);
+        hintlistview.removeAllViews();
+        hintadapter=  new HintAdapter(context,hintlist);
+        hintlistview.setAdapter(hintadapter);
+
+        queryTv.addTextChangedListener(mTextwatcher);
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1156,30 +1217,48 @@ public class Utils {
         Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
         hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
         lm= new LinearLayoutManager(context);
+         final TextWatcher mTextwatcher= new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            hintlist.clear();
+
+            Utils.getHints( s.toString(),context,hintadapter,hintlist);
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
         hintlistview.setLayoutManager(lm);
         hintlist.clear();
         hintlistview.removeAllViews();
         hintadapter=  new HintAdapter(context,hintlist);
         hintlistview.setAdapter(hintadapter);
-        queryTv.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        hintlistview.addOnItemTouchListener(
+                new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        try {
+                            queryTv.removeTextChangedListener(mTextwatcher);
+                            queryTv.setText(hintlist.get(position));
 
-            }
+                        }
+                        catch (Exception e)
+                        {
+                            Log.e(TAG,"exception"+ e.getMessage());
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                hintlist.clear();
-
-                Utils.getHints( s.toString(),context,hintadapter,hintlist);
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+                        }
+                        // TODO Handle item click
+                    }
+                })
+        );
+        queryTv.addTextChangedListener(mTextwatcher);
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1210,12 +1289,63 @@ public class Utils {
         });
     }
     public static void getHints(String searchhint, Context context, final HintAdapter hintAdapter, final ArrayList<String> hintlist) {
-        Ion.with(context)
+String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+searchhint+"&location=1.3521,103.8198&radius=1000&key=AIzaSyAVFxqmmNDjbLUEZ7mDqN-65VqHtc0xvTk";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("add result","add result"+response);
+                        JSONObject result = null;
+                        try {
+                            result = new JSONObject(response);
+                            Log.e(TAG,"result hint"+result.toString());
+
+                            if (result != null) {
+                                if (result.has("predictions")) {
+
+                                    JSONArray predictions = result.getJSONArray("predictions");
+                                    if (predictions.length() > 0) {
+                                        for (int i = 0; i < predictions.length(); i++) {
+                                            JSONObject obj = predictions.getJSONObject(i);
+                                            String description = obj.getString("description");
+                                            hintlist.add(description);
+
+                                        }
+                                    }
+                                    hintAdapter.notifyDataSetChanged();
+
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                // Error handling
+                System.out.println("Something went wrong!");
+                error.printStackTrace();
+
+            }
+        });
+        Volley.newRequestQueue(context).add(stringRequest);
+
+
+
+        /*Ion.with(context)
                 .load("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+searchhint+"&location=1.3521,103.8198&radius=1000&key=AIzaSyAVFxqmmNDjbLUEZ7mDqN-65VqHtc0xvTk")
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
+                        Log.e(TAG,"result hint"+result.toString());
+
                         if (result != null) {
                             if (result.has("predictions")) {
 
@@ -1232,9 +1362,9 @@ public class Utils {
                             }
                         }
                     }
-                });
+                });*/
     }
-    public static void getfilterDistance(Context context, final ArrayList<MainBean> list, PopupMenu popup, final ShoplistAdapter adapter)
+    public static void getfilterDistance(Context context, final ArrayList<MainBean> list, PopupMenu popup, final ShoppingListAdapter adapter)
     {
 
         popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
@@ -1262,7 +1392,7 @@ public class Utils {
         popup.show();
 
     }
-    public static void getfilterDistanceEntertainment(Context context, final ArrayList<MainBean> list, PopupMenu popup, final EntertainlistAdapter adapter)
+    public static void getfilterDistanceEntertainment(Context context, final ArrayList<MainBean> list, PopupMenu popup, final EntertainmentListAdapter adapter)
     {
 
         popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
@@ -1308,6 +1438,50 @@ public class Utils {
         // builder.setView(R.layout.search_layout);
         final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
         Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
+        hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
+        lm= new LinearLayoutManager(context);
+        hintlistview.setLayoutManager(lm);
+        hintlist.clear();
+        hintlistview.removeAllViews();
+        hintadapter=  new HintAdapter(context,hintlist);
+        hintlistview.setAdapter(hintadapter);
+       final TextWatcher mTextwatcher= new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                hintlist.clear();
+
+                Utils.getHints( s.toString(),context,hintadapter,hintlist);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+        hintlistview.addOnItemTouchListener(
+                new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        try {
+                            queryTv.removeTextChangedListener(mTextwatcher);
+                            queryTv.setText(hintlist.get(position));
+
+                        }
+                        catch (Exception e)
+                        {
+                            Log.e(TAG,"exception"+ e.getMessage());
+
+                        }
+                        // TODO Handle item click
+                    }
+                })
+        );
+        queryTv.addTextChangedListener(mTextwatcher);
         searchbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1344,7 +1518,7 @@ public class Utils {
         });
 
     }
-    public static void getfilterDistanceMedical(Context context, final ArrayList<MainBean> list, PopupMenu popup, final MedicalAdapter adapter)
+    public static void getfilterDistanceMedical(Context context, final ArrayList<MainBean> list, PopupMenu popup, final MedicalListAdapter adapter)
     {
         popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -1398,5 +1572,42 @@ public class Utils {
         }
         return isValid;
     }
+/*
+    public static String getDataWithMessage(String URL, Context mContext) {
+        DefaultHttpClient httpClient = null;
+
+
+        try {
+            // Setup a custom SSL Factory object which simply ignore the certificates validation and accept all type of self signed certificates
+            SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
+            sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+            // Enable HTTP parameters
+            HttpParams params = new BasicHttpParams();
+            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
+            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
+
+            // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
+            SchemeRegistry registry = new SchemeRegistry();
+            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            registry.register(new Scheme("https", sslFactory, 443));
+
+            // Create a new connection manager using the newly created registry and then create a new HTTP client using this connection manager
+            ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
+            httpClient = new DefaultHttpClient(ccm, params);
+            HttpPost httpPost = new HttpPost(URL);
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                return EntityUtils.toString(httpResponse.getEntity());
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            Log.e("Error", TAG + " " + e.getMessage());
+            httpClient.getConnectionManager().shutdown();
+            return null;
+        }
+    }
+*/
 }
 

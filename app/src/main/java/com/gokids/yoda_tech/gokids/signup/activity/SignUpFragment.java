@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.settings.activity.AddKidsActivity;
-import com.gokids.yoda_tech.gokids.settings.activity.SettingsActivity;
 import com.gokids.yoda_tech.gokids.utils.ImageFilePath;
 import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
@@ -185,8 +184,8 @@ public class SignUpFragment extends Fragment {
        // AlertDialog ad= new AlertDialog()
     }
 
-    private void apiCall(String city, String email, String password, String phoneNo, String userName) {
-         String signupurl= Urls.BASE_URL+ "api/signupByMail/email/" + email+"/userName/"+userName+"/password/"+password+"/city/"+city+"/phoneNo/"+phoneNo;
+    private void apiCall(final String city, final String email, String password, final String phoneNo, final String userName) {
+         final String signupurl= Urls.BASE_URL+ "api/signupByMail/email/" + email+"/userName/"+userName+"/password/"+password+"/city/"+city+"/phoneNo/"+phoneNo;
         Log.e(TAG," url " + signupurl);
         Ion.with(getActivity())
                 .load(signupurl)
@@ -197,22 +196,27 @@ public class SignUpFragment extends Fragment {
                         if(e==null)
                         {
                             Log.e(TAG,"I m in api"+result.toString());
-                            String status = result.get("status").toString();
+                            String status = result.get("status").toString().replaceAll("\"","");
                             String message = result.get("message").toString().replaceAll("\"","");
-                            //if(status.equalsIgnoreCase("200")) {
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            if(status.equalsIgnoreCase("200")) {
+                                Utils.storeCredentials(getActivity(), userName, 0, email, city, phoneNo);
+
+                                //Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                Utils.getEmailareadyexist(getActivity(),message);
                                 Intent intent = new Intent(getActivity(), AddKidsActivity.class);
                                 intent.putExtra("flag","0");
                                 startActivity(intent);
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
 
 
-                           // }
-                          //  else
-                           // {
-                               // Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                            }
+                           else
+                           {
+                               Utils.getEmailareadyexist(getContext(),"Email already exists");
+                               //Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
 
-                           // }
+                           }
                         }
 
                     }
@@ -642,4 +646,61 @@ public class SignUpFragment extends Fragment {
 
 
 
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if ( Environment.MEDIA_MOUNTED.equals( state ) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if ( isExternalStorageWritable() ) {
+
+            File appDirectory = new File( Environment.getExternalStorageDirectory() + "/MyGokidsAppFolder" );
+            File logDirectory = new File( appDirectory + "/log" );
+            File logFile = new File( logDirectory, "logcat" + System.currentTimeMillis() + ".txt" );
+
+            // create app folder
+            if ( !appDirectory.exists() ) {
+                appDirectory.mkdir();
+            }
+
+            // create log folder
+            if ( !logDirectory.exists() ) {
+                logDirectory.mkdir();
+            }
+
+            // clear the previous logcat and then write the new one to the file
+            try {
+                Process process = Runtime.getRuntime().exec( "logcat -d");
+                process = Runtime.getRuntime().exec( "logcat -f " + logFile );
+            } catch ( IOException e ) {
+                e.printStackTrace();
+            }
+
+        } else if ( isExternalStorageReadable() ) {
+            // only readable
+        } else {
+            // not accessible
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

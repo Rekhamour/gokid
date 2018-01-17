@@ -71,6 +71,7 @@ public class AddKidsActivity extends AppCompatActivity {
     private TextView skipbtn;
     private LinearLayout indicatorLL;
     private LinearLayout lasttabnskipLL;
+    private int totalfragments=0;
 
 
     @Override
@@ -97,6 +98,7 @@ public class AddKidsActivity extends AppCompatActivity {
         Log.e("tag","flag"+flag);
         if(flag.equalsIgnoreCase("1"))
         {
+
             age= intent.getStringExtra("age");
             gender= intent.getStringExtra("gender");
             AllergyNeeds= intent.getStringArrayListExtra("allergyiesArrey");
@@ -105,17 +107,19 @@ public class AddKidsActivity extends AppCompatActivity {
             Log.e("gender","gender"+gender);
             kidid= intent.getStringExtra("kidid");
             KidId=kidid;
-
-           // getAllspecialNeeds(kidid);
             GenderFragment.newInstance(gender,age,"About your kid");
             AgeFragment.newInstance(age);
             AllergyFragment.newInstance(AllergyNeeds);
             DietFragment.newInstance(DeitNeeds);
             CuisineFragment.newInstance(CuisineNeeds);
+            totalfragments=4;
+
+
 
         }
         else
         {
+            totalfragments=5;
             age=" ";
             AgeFragment.newInstance(age);
             gender=" ";
@@ -131,113 +135,7 @@ public class AddKidsActivity extends AppCompatActivity {
 
     }
 
-    private void getAllspecialNeeds(String kidid) {
-        Log.e(TAG,"i m in method");
-        String path= Urls.BASE_URL+"api/viewAllKidSpecialNeed/kidID/"+ kidid;
-        Log.e(TAG,"i m in path" + path);
 
-        Ion.with(AddKidsActivity.this)
-                .load(path)
-                .asString()
-                .setCallback(new FutureCallback<String>() {
-                    @Override
-                    public void onCompleted(Exception e, String result) {
-                        if(e==null)
-                        {
-                            Log.e(TAG,"i m in result ion");
-
-                            try {
-                                Object resultstring = new JSONTokener(result).nextValue();
-                                JSONArray areyspecialneed =  new JSONArray();
-                                if(resultstring instanceof JSONObject)
-                                {
-                                    Log.e(TAG,"i m in string");
-
-                                    resultforspecialneed="";
-
-                                }
-                                else if(resultstring instanceof JSONArray)
-                                {
-                                    Log.e(TAG,"i m in methodarrey");
-
-                                    JSONArray arrey = (JSONArray)resultstring;
-                                    if(arrey.length()>0)
-                                    {
-                                        for(int i = 0;i<arrey.length();i++)
-                                        {
-                                            JSONObject obj= arrey.getJSONObject(i);
-                                            String KidSpecialNeed = obj.getString("KidSpecialNeed");
-                                            String KidSpecialNeedID = obj.getString("KidSpecialNeedID");
-                                            String SpecialNeed = obj.getString("SpecialNeed");
-                                            String SpecialNeedCategory = obj.getString("SpecialNeedCategory");
-                                            Log.e(TAG,"special"+SpecialNeedCategory);
-                                            if(SpecialNeedCategory.equalsIgnoreCase(allergytext))
-                                            {
-                                                AllergyNeeds.add(KidSpecialNeed);
-                                                //Log.e(TAG," allergysize"+AllergyNeeds);
-
-
-                                            }
-                                            else if(SpecialNeedCategory.equalsIgnoreCase("What is your kid(s) favourite cuisine?"))
-                                            {
-                                                CuisineNeeds.add(KidSpecialNeed);
-
-                                            }
-                                            else if(SpecialNeedCategory.equalsIgnoreCase("What is your kid(s) diet?"))
-                                            {
-                                                DeitNeeds.add(KidSpecialNeed);
-
-                                            }
-                                            //makeAlllist(SpecialNeedCategory,SpecialNeed);
-                                          //  SelectedNeeds.add(KidSpecialNeed);
-                                            JSONObject objresult= new JSONObject();
-                                            objresult.put("SpecialNeed",KidSpecialNeed);
-                                            areyspecialneed.put(objresult);
-                                            resultforspecialneed = areyspecialneed.toString();
-                                            //Log.e(TAG," allergysize"+AllergyNeeds);
-
-
-                                        }
-                                       Log.e(TAG," allergysize"+AllergyNeeds);
-                                        Log.e(TAG," DeitNeeds"+DeitNeeds);
-                                        Log.e(TAG," CuisineNeeds"+CuisineNeeds);
-                                        AllergyFragment.newInstance(AllergyNeeds);
-                                        DietFragment.newInstance(DeitNeeds);
-                                        CuisineFragment.newInstance(CuisineNeeds);
-                                    }
-
-                                }
-
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            }
-
-                        }
-
-                    }
-                });
-
-
-    }
-
-    private void makeAlllist(String specialNeedCategory, String specialNeed) {
-        Log.e(TAG,"i m in method2");
-        if(specialNeedCategory.equalsIgnoreCase("Allergy"))
-        {
-            AllergyNeeds.add(specialNeed);
-
-        }
-        else if(specialNeedCategory.equalsIgnoreCase("Cuisine"))
-        {
-            DeitNeeds.add(specialNeed);
-
-        }
-        else if(specialNeedCategory.equalsIgnoreCase("diet"))
-        {
-            CuisineNeeds.add(specialNeed);
-
-        }
-    }
 
     public void setupSeekBar() {
 
@@ -246,40 +144,32 @@ public class AddKidsActivity extends AppCompatActivity {
         skipbtn = (TextView) findViewById(R.id.skip_addkid);
         mSeekbar.setThumb(getResources().getDrawable(android.R.color.transparent));
         profileprogress = (TextView) findViewById(R.id.profile_progress);
-        // if(mViewPager.getCurrentItem()==0)
-        // {
         setSeekBarProgress(0);
-        //}
         skipbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (flag.equalsIgnoreCase("1")) {
-                    // handleContinueclick(flag);
+
                     if (AddKidsActivity.mViewPager.getCurrentItem() != 3) {
                         AddKidsActivity.mViewPager.setCurrentItem(AddKidsActivity.mViewPager.getCurrentItem() + 1);
                         if (mViewPager.getCurrentItem() == 2) {
                             Log.e(TAG, "i m here in 2 click");
-                          //  continuebtn.setText("Done");
-
-                          //  finish();
-                            //AddKidsActivity.mViewPager.setCurrentItem(3);
-                            //indicatorLL.setVisibility(View.GONE);
                         }
                         else if(mViewPager.getCurrentItem()==3) {
                             continuebtn.setText("Done");
                             lasttabnskipLL.setVisibility(View.INVISIBLE);
 
-                            // if(updateKidsdetails())
-                              // finish();
-                            //updateKidsdetails();
                         }
                     }
 
                 }
                     else{
                         if (AddKidsActivity.mViewPager.getCurrentItem() != 4) {
-                            AddKidsActivity.mViewPager.setCurrentItem(AddKidsActivity.mViewPager.getCurrentItem() + 1);
-
+                            if (!AddKidsActivity.mAge.trim().isEmpty() && !AddKidsActivity.mGender.trim().isEmpty()) {
+                                AddKidsActivity.mViewPager.setCurrentItem(AddKidsActivity.mViewPager.getCurrentItem() + 1);
+                            } else {
+                                Toast.makeText(AddKidsActivity.this, "Please select Gender/Age first", Toast.LENGTH_SHORT).show();
+                            }
                             if (mViewPager.getCurrentItem() == 3) {
                                 Log.e(TAG, "i m here in 3 click");
                                 continuebtn.setText("Done");
@@ -301,13 +191,8 @@ public class AddKidsActivity extends AppCompatActivity {
         continuebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (flag.equalsIgnoreCase("1")) {
-                    // handleContinueclick(flag);
-                    if(mViewPager.getCurrentItem()==0)
-                    {
-                        AllergyFragment.newInstance(AllergyNeeds);
 
-                    }
+                if (flag.equalsIgnoreCase("1")) {
                     if (mViewPager.getCurrentItem() == 2) {
                         Log.e(TAG, "i m here in 2 click");
                         continuebtn.setText("Done");
@@ -315,7 +200,6 @@ public class AddKidsActivity extends AppCompatActivity {
                         //setSeekBarProgress(60);
                     } else if (mViewPager.getCurrentItem() == 3) {
                         Log.e(TAG, "i m here 3 click");
-                        //setSeekBarProgress(80);
                         continuebtn.setVisibility(View.GONE);
                         indicatorLL.setVisibility(View.GONE);
                         updateKidsdetails();
@@ -333,19 +217,15 @@ public class AddKidsActivity extends AppCompatActivity {
                         AddKidsActivity.mViewPager.setCurrentItem(AddKidsActivity.mViewPager.getCurrentItem() + 1);
                     } else {
 
-                        //redirect();
                     }
                 } else {
-                    //handleContinueclick(flag);
 
                     if (mViewPager.getCurrentItem() == 2) {
                         Log.e(TAG, "i m here in 2 click");
                         continuebtn.setText("Done");
 
-                        //setSeekBarProgress(60);
                     } else if (mViewPager.getCurrentItem() == 3) {
                         Log.e(TAG, "i m here 3 click");
-                        //setSeekBarProgress(80);
                         continuebtn.setVisibility(View.GONE);
                         indicatorLL.setVisibility(View.GONE);
                         adddetails();
@@ -379,61 +259,6 @@ public class AddKidsActivity extends AppCompatActivity {
 
 
 
-public void handleContinueclick(String flag){
-    if(mViewPager.getCurrentItem()==0)
-    {
-
-
-        //setSeekBarProgress(20);
-    }
-    else if(mViewPager.getCurrentItem()==1)
-    {
-       // setSeekBarProgress(40);
-    }
-    else if(mViewPager.getCurrentItem()==2)
-    {
-        Log.e(TAG,"i m here in 2 click");
-        continuebtn.setText("Done");
-
-        //setSeekBarProgress(60);
-    }
-    else if(mViewPager.getCurrentItem()==3)
-    {
-        Log.e(TAG,"i m here 3 click");
-        //setSeekBarProgress(80);
-        continuebtn.setVisibility(View.GONE);
-        indicatorLL.setVisibility(View.GONE);
-        callApis();
-        if(flag.equalsIgnoreCase("1")) {
-            Intent intent = new Intent(AddKidsActivity.this, SettingsActivity.class);
-            intent.putExtra("flag","1");
-            startActivity(intent);
-            finish();
-            //redirect();
-        }
-
-
-
-
-
-        //setSeekBarProgress(100)
-        }
-
-}
-    public void callApis()
-    {
-        if(AddKidsActivity.KidId.equalsIgnoreCase("-"))
-        {
-            adddetails();
-
-        }
-        else  if(!AddKidsActivity.KidId.equalsIgnoreCase("-"))
-        {
-            updateKidsdetails();
-        }
-
-    }
-
     private boolean updateKidsdetails() {
         JSONArray jsonArray = new JSONArray();
         ArrayList<String> list= AddKidsActivity.getSelectedNeeds();
@@ -450,10 +275,8 @@ public void handleContinueclick(String flag){
             }
 
         }
-        // Log.e(TAG,"jsonarrey value"+ jsonArray.toString());
 
         String url= Urls.BASE_URL+"api/updateKidProfile/kidID/"+AddKidsActivity.KidId+"/age/"+AddKidsActivity.mAge+"/gender/"+AddKidsActivity.mGender+"/specialNeed/"+jsonArray.toString();
-        //String apipath= Urls.BASE_URL+"api/addDeleteKidDetail/email/"+MySharedPrefrence.getPrefrence(getActivity()).getString("emailId","")+"/age/"+AddKidsActivity.mAge+"/gender/"+AddKidsActivity.mGender+"/specialNeed/"+jsonArray.toString()+"/kidID/-";
         Log.e(TAG,"url"+url);
         JsonObjectRequest jsonRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -489,11 +312,8 @@ public void handleContinueclick(String flag){
     public  void adddetails()
     {
         JSONArray jsonArray = new JSONArray();
-        //bean.setNeeds(bean.getAlleryneeds());
         ArrayList<String> list= AddKidsActivity.getSelectedNeeds();
         Log.e(TAG,"size"+ list.toString());
-
-
         for(int i = 0; i< list.size(); i++)
         {
             JSONObject jsonObject= new JSONObject();
@@ -507,26 +327,59 @@ public void handleContinueclick(String flag){
             }
 
         }
+        if(!AddKidsActivity.mAge.isEmpty() &&!AddKidsActivity.mGender.isEmpty()) {
 
-        String apipath= Urls.BASE_URL+"api/addDeleteKidDetail/email/"+ MySharedPrefrence.getPrefrence(AddKidsActivity.this).getString("emailId","")+"/age/"+AddKidsActivity.mAge+"/gender/"+AddKidsActivity.mGender+"/specialNeed/"+jsonArray.toString()+"/kidID/-";
+            String apipath = Urls.BASE_URL + "api/addDeleteKidDetail/email/" + MySharedPrefrence.getPrefrence(AddKidsActivity.this).getString("emailId", "") + "/age/" + AddKidsActivity.mAge + "/gender/" + AddKidsActivity.mGender + "/specialNeed/" + jsonArray.toString() + "/kidID/-";
+            //  apipath.replaceAll("%7B","");
+            //   apipath.replaceAll("%7D","");
+            //  apipath.replaceAll("%20","");
+            Log.e(TAG, "add path" + apipath);
 
-        Log.e(TAG,"url"+apipath);
-      /*  Ion.with(AddKidsActivity.this)
-                .load(apipath)
-                .asString()
-                .setCallback(new FutureCallback<String>() {
-                    @Override
-                    public void onCompleted(Exception e, String response) {
-                        if(e==null)
-                        {
-                            Log.e("add result","add result"+response);
+     /*   Ion.with(AddKidsActivity.this)
+                 .load(apipath)
+                 .asString()
+                 .setCallback(new FutureCallback<String>() {
+                     @Override
+                     public void onCompleted(Exception e, String response) {
+                         Log.e("add result","add result"+response);
+                         if (e==null) {
+                             JSONObject result = null;
+                             try {
+                                 result = new JSONObject(response);
+                                 String status = result.get("status").toString();
+                                 String message = result.get("message").toString();
+                                 if (status.equalsIgnoreCase("200")) {
+                                     // Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                     //redirect();
+                                 }
+                                 Toast.makeText(AddKidsActivity.this, message, Toast.LENGTH_SHORT).show();
+                                 // redirect();
+
+
+                             } catch (JSONException e1) {
+                                 e1.printStackTrace();
+                             }
+                         }
+                         else{
+                             e.printStackTrace();
+
+                         }
+
+                     }
+                 });*/
+
+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.e("add result", "add result" + response);
                             JSONObject result = null;
                             try {
                                 result = new JSONObject(response);
                                 String status = result.get("status").toString();
                                 String message = result.get("message").toString();
-                                if(status.equalsIgnoreCase("200"))
-                                {
+                                if (status.equalsIgnoreCase("200")) {
                                     // Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
                                     //redirect();
                                 }
@@ -534,142 +387,34 @@ public void handleContinueclick(String flag){
                                 // redirect();
 
 
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        }
-                        else
-                        {
-                            e.printStackTrace();
-
-                            Toast.makeText(AddKidsActivity.this, getResources().getString(R.string.oops), Toast.LENGTH_SHORT).show();
 
 
                         }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
 
-                    }
-                });*/
+                    // Error handling
+                    System.out.println("Something went wrong!");
+                    error.printStackTrace();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.e("add result","add result"+response);
-                        JSONObject result = null;
-                        try {
-                            result = new JSONObject(response);
-                            String status = result.get("status").toString();
-                            String message = result.get("message").toString();
-                            if(status.equalsIgnoreCase("200"))
-                            {
-                                // Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                                //redirect();
-                            }
-                            Toast.makeText(AddKidsActivity.this, message, Toast.LENGTH_SHORT).show();
-                           // redirect();
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-
-                        // Result handling
-                        // System.out.println(response.substring(0,100));
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-                // Error handling
-                System.out.println("Something went wrong!");
-                error.printStackTrace();
-
-            }
-        });
-        Volley.newRequestQueue(AddKidsActivity.this).add(stringRequest);
-
-       /* Ion.with(getActivity())
-                .load(apipath)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if(e==null)
-                        {
-                            String status= result.get("status").toString();
-                            String message= result.get("message").toString();
-                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                })*/;
-
-
-        /*Ion.with(getActivity())
-                .load(Urls.BASE_URL+"api/addDeleteKidDetail/email/"+MySharedPrefrence.getPrefrence(getActivity()).getString("emailId","")+"/age/"+AddKidsActivity.mAge+"/gender/"+AddKidsActivity.mGender+"/specialNeed/"+jsonArray.toString()+"/kidID/-")
-                .asString()
-                .setCallback(new FutureCallback<String>() {
-                    @Override
-                    public void onCompleted(Exception e, String result) {
-                        if(e==null)
-                        {
-                            Log.e(TAG, "result" + result.toString());
-
-                          *//*  String status = result.get("status").toString();
-                            String message = result.get("message").toString();
-                            Log.e(TAG, "status  " + status);
-                            Log.e(TAG, "message " + message);
-*//*
-
-
-
-                        }
-                        else
-                        {
-                            Log.e(TAG,"exception");
-                            e.printStackTrace();
-                        }
-
-
-
-                          *//*  if(status.equalsIgnoreCase("200"))
-                            {
-                               // Log.e(TAG," i m done");
-                            }*//*
-
-
-
-
-
-                    }
-                });*/
-    }
-    private void redirect() {
-        if(AddKidsActivity.YesNo.equalsIgnoreCase("Y"))
-        {
-            Intent intent = new Intent(AddKidsActivity.this, SettingsActivity.class);
-            intent.putExtra("flag","0");
-            startActivity(intent);
-            finish();
-
-            //AddKidsActivity.mViewPager.setCurrentItem(0);
+                }
+            });
+            Volley.newRequestQueue(AddKidsActivity.this).add(stringRequest);
         }
-        else if(AddKidsActivity.YesNo.equalsIgnoreCase("N"))
+        else
         {
-            Intent intent = new Intent(AddKidsActivity.this, GoKidsHome.class);
-            intent.putExtra("flag","0");
-            startActivity(intent);
-            finish();
-
+            Toast.makeText(AddKidsActivity.this, "Please select the Gender and age first", Toast.LENGTH_SHORT).show();
         }
+
+
     }
 
     public static void setSeekBarProgress(int progress) {
         Log.e(TAG,"progress"+progress);
-       // mSeekbar.setMax(100);
         mSeekbar.setProgress(progress);
 
         profileprogress.setText((progress)+"% Profile Completed");
@@ -753,6 +498,7 @@ public static ArrayList<String> getSelectedNeeds()
             @Override
             public void onPageScrollStateChanged(int state) {}
         });
+
         mTabLayout.setupWithViewPager(mViewPager);
 
 
@@ -784,8 +530,10 @@ public static ArrayList<String> getSelectedNeeds()
 
             @Override
             public int getCount() {
-                return 5;
+                return totalfragments;
             }
+
+
 
 
             @Override
@@ -802,7 +550,10 @@ public static ArrayList<String> getSelectedNeeds()
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==android.R.id.home)
         {
-            //finish();
+            Intent intent= new Intent(AddKidsActivity.this,GoKidsHome.class);
+            intent.putExtra("flag","0");
+            startActivity(intent);
+            finish();
             return true;
         }
         return true;
@@ -814,4 +565,8 @@ public static ArrayList<String> getSelectedNeeds()
     }
 
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

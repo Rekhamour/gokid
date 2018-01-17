@@ -1,9 +1,11 @@
 package com.gokids.yoda_tech.gokids.medical.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,11 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gokids.yoda_tech.gokids.R;
+import com.gokids.yoda_tech.gokids.eat.adapter.FoodListAdapter;
 import com.gokids.yoda_tech.gokids.eat.model.Contact;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.eat.model.Specialization;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.medical.adapter.MedicalAdapter;
+import com.gokids.yoda_tech.gokids.medical.adapter.MedicalListAdapter;
 import com.gokids.yoda_tech.gokids.utils.Constants;
 import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
@@ -39,11 +43,11 @@ import com.koushikdutta.ion.Ion;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SearchResultActivity extends AppCompatActivity implements MedicalAdapter.ItemClickCallback ,SwipeRefreshLayout.OnRefreshListener{
+public class SearchResultActivity extends AppCompatActivity implements MedicalAdapter.ItemClickCallback{
 
     private static final String BASE_URL = "http://52.77.82.210/";
     RecyclerView medical_list;
-    MedicalAdapter medicalAdapter;
+    MedicalListAdapter medicalAdapter;
     ArrayList<MainBean> list;
     TextView numMedicals;
     Intent intent;
@@ -57,18 +61,24 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
 
     private boolean loading=false;
     private SwipeRefreshLayout swipe;
+    private ProgressDialog dialog;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        list = new ArrayList<>();
+
         setContentView(R.layout.activity_search_result);
         medical_list = (RecyclerView) findViewById(R.id.medical_list);
         prefrence= getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         numMedicals = (TextView) findViewById(R.id.num_medicals);
         swipe = (SwipeRefreshLayout) findViewById(R.id.swipe_medical);
-        swipe.setOnRefreshListener(this);
-        //setSupportActionBar(toolbar);
+        medicalAdapter = new MedicalListAdapter(SearchResultActivity.this,list);
+        medicalAdapter.setItemCallback(SearchResultActivity.this);
+        medical_list.setAdapter(medicalAdapter);
         getSupportActionBar().setTitle("Medical Assistance");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -88,24 +98,65 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                         .setAction("Action", null).show();
             }
         });
-        list = new ArrayList<>();
 
 
          layoutManager = new LinearLayoutManager(getApplicationContext());
         medical_list.setLayoutManager(layoutManager);
         latlon= Utils.getLatLong(SearchResultActivity.this);
-        swipe.post(new Runnable() {
+        dialog= new ProgressDialog(SearchResultActivity.this);
+        dialog.setMessage("Please wait..");
+        handler= new Handler();
+
+        medicalAdapter.setLoadMoreListener(new MedicalListAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+
+                medical_list.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        final int index = list.size();
+                        Log.e(TAG,"i m in loadmore scroll");
+                        handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                swipe.setRefreshing(true);
-                                list.clear();
-                                medical_list.removeAllViewsInLayout();
-                                getMedicals(category,null,latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,0,50);
+                                loadMore(index);
 
                             }
-                        }
-        );
+                        },200);
+                    }
+                });
+            }
+        });
+        medical_list.setAdapter(medicalAdapter);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                load(0);
+
+            }
+        },200);
+
+
     }
+
+    private void load(int index) {
+
+
+        dialog.show();
+        getMedicals(category,null,latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,0,50);
+
+
+    }
+
+    private void loadMore(int index) {
+        MainBean bean=new MainBean();
+        bean.setType("load");
+        list.add(bean);
+        medicalAdapter.notifyItemInserted(list.size()+1);
+        getMedicals(category,null,latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,index,50);
+
+    }
+
 
     public void getTotalMedicals(final String category){
         String url = Urls.BASE_URL+"/api/categoryTotalCount/category/CLS4/subCategory/" + category;
@@ -121,7 +172,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                                 total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
                             }
                            String category_actual = "Clinic";
-                           if (category.equals("CAT15")) {
+                          if (category.equals("CAT15")) {
                                 category_actual = "Clinic";
                             } else if (category.equals("CAT14")) {
                                 category_actual = "Hospital";
@@ -155,7 +206,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         else{
             url += "/specialization/-";
         }
-        url +="/limitStart/"+mCount+"/count/" + count;
+        url +="/limitStart/"+mCount+"/count/" + mCount+50;
         if(sortBy != null){
             url += "/sortBy/" + sortBy;
         }
@@ -172,10 +223,6 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
                         if (e == null) {
-                            swipe.setRefreshing(false);
-                            loading = true;
-
-
                             System.out.println(result);
                             if(result.has("result")) {
                                 JsonArray med = result.getAsJsonObject().get("result").getAsJsonArray();
@@ -193,6 +240,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                                     m.setSchedule(obj.getAsJsonObject().get("Schedule").getAsString());
                                     m.setKidsfinityScore(Integer.parseInt(obj.getAsJsonObject().get("KidsfinityScore").toString()));
                                     m.setDistance(obj.getAsJsonObject().get("Distance").getAsString());
+                                    m.setType("data");
                                     ArrayList<Specialization> spe = new ArrayList<>();
                                     if (obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
                                         JsonArray spec = obj.getAsJsonObject().get("Specialization").getAsJsonArray();
@@ -230,54 +278,11 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
 
 
                                 }
-                                medicalAdapter = new MedicalAdapter(list);
-                                medicalAdapter.setItemCallback(SearchResultActivity.this);
-                                medical_list.setAdapter(medicalAdapter);
-                                swipe.setRefreshing(false);
+
+                                medicalAdapter.notifyDataChanged();
 
                             }
-                            if (total > count) {
-                                Log.d(TAG, "total_posts is greater ");
 
-                                medical_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                                    @Override
-                                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                        super.onScrollStateChanged(recyclerView, newState);
-                                    }
-
-                                    @Override
-                                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                        // mCount=count;
-                                        // count=count+50;
-                                        super.onScrolled(recyclerView, dx, dy);
-
-
-                                        int pastVisiblesItems = count, visibleItemCount = start, totalItemCount = total;
-                                        if (dy > 0) //check for scroll down
-                                        {
-                                            visibleItemCount = layoutManager.getChildCount();
-                                            totalItemCount = layoutManager.getItemCount();
-                                            pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-                                            if (loading) {
-                                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                                    Log.d(TAG, "total count " + totalItemCount + "visibleItemCount + pastVisiblesItems " + visibleItemCount + pastVisiblesItems);
-                                                    loading = false;
-                                                    swipe.setRefreshing(true);
-                                                    Log.v(TAG, "Last Item Wow !");
-                                                    // apiCall(mCount);
-                                                    int lmCount = mCount + 50;
-                                                    int lastcount = count + 50;
-                                                    //getRestaurants(date, name, latlon.getLatitude(), latlon.getLongitude(), sortBy, lmCount, count + 100);
-                                                    getMedicals(category,null,latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,lmCount
-                                                            ,count+100);
-
-                                                    Log.d(TAG, "value mCount" + mCount);
-                                                }
-                                            }
-                                        }
-                                    }
-                                });
-                            }
                         }
                         else
                         {
@@ -326,14 +331,5 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onRefresh() {
-        list.clear();
-        medical_list.removeAllViewsInLayout();
-        if (medicalAdapter != null)
-            medicalAdapter.notifyDataSetChanged();
-       // getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,total);
-        getMedicals(category,null,latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,mCount
-                ,total);
-    }
+
 }

@@ -104,6 +104,12 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
     private TextView detail;
     private RatingBar addratingShopping;
     private float ratings;
+    private ImageView thumbs_up;
+    private TextView count_up;
+    private ImageView thumb_down;
+    private TextView count_down;
+    private String downcount;
+    private String upcount;
 
 
     @Override
@@ -122,6 +128,10 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
         kidfinityscore_detail = (TextView) findViewById(R.id.kidfinityscore_detail);
         website = (TextView) findViewById(R.id.shop_detail_website_tv);
         timing = (TextView) findViewById(R.id.shop_detail_timings_tv);
+        thumbs_up = (ImageView) findViewById(R.id.thumbs_up_shop);
+        count_up = (TextView) findViewById(R.id.count_up_shop);
+        count_down = (TextView) findViewById(R.id.count_down_shop);
+        thumb_down = (ImageView) findViewById(R.id.thumbs_down_shop);
         detail = (TextView) findViewById(R.id.shop_detail_specialization_tv);
         knownfor = (TextView) findViewById(R.id.shop_detail_knownfor_tv);
         distance = (TextView) findViewById(R.id.shop_detail_distance_tv);
@@ -158,7 +168,7 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
 
         setSupportActionBar(toolbar);
         getRatings();
-
+getAllratingsthumbsdown();
         addratingShopping.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -183,34 +193,81 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
         knownfor.setText(m.getSpecialty());
         detail.setText(m.getShopDetail());
 
-        //kidfinityscore_detail.setText(String.valueOf((m.getKidsfinityScore())));
-        String speci = "";
-
-       /* if(m.getCuisines().size()>0) {
-            for (int i = 0; m.getCuisines() != null && i < m.getCuisines().size(); i++, speci += ",") {
-                speci += m.getCuisines().get(i);
-            }
-            cuisines.setText(speci);
-        }*/
-       // Log.e(TAG,"cusine"+m.getCuisines().toString());
         if(!m.getDistance().equalsIgnoreCase("nan"))
         distance.setText(m.getDistance() + "Km ");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-      /*  Ion.with(img)
-                .placeholder(R.drawable.med_error_image)
-                .error(R.drawable.med_error_image)
-                .load(m.getImages().get(0));*/
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         reviews_list.setLayoutManager(layoutManager);
         reviews = new ArrayList<>();
 
         populateReviews();
         getIfBookmarked();
+        thumb_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Ion.with(ShopDetailActivity.this)
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("emailId","")+"/class/CLS2/categoryItem/"+m.getShopID()+"/rate/0")
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                if(e==null)
+                                {
+                                    Log.e(TAG," thumbs_ down result"+result.toString());
+                                    String status= result.get("status").toString();
+                                    String message= result.get("message").toString();
+                                    Log.e(TAG,"message thumb down"+message);
+                                    getAllratingsthumbsdown();
+                                    //Toast.makeText(ShopDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Log.e(TAG," exception thumb down "+ e.getMessage());
+
+                                }
+
+                            }
+                        });
+
+            }
+        });
+        getAllratingsthumbsdown();
+        thumbs_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Ion.with(ShopDetailActivity.this)
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("emailId","")+"/class/CLS2/categoryItem/"+m.getShopID()+"/rate/1")
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+
+                                if (e == null) {
+                                    Log.e(TAG, " thumbs_ up result" + result.toString());
+                                    String status = result.get("status").toString();
+                                    String message = result.get("message").toString();
+
+                                    getAllratingsthumbsdown();
+
+                                    Toast.makeText(ShopDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Log.e(TAG," exception"+ e.getMessage());
+                                }
+
+
+
+                            }
+                        });
+
+            }
+        });
+        
+
         getDoctorsForMedical(m.getShopID(),null,-91,-181,null,null,0,100);
 
         bookmark.setOnClickListener(new View.OnClickListener() {
@@ -260,7 +317,7 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
                                 });
 
                   /*  String url= Urls.BASE_URL+"api/setBookMark/email/"+prefrences.getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/bookmark/0";
-                    Ion.with(FoodDetailActivity.this)
+                    Ion.with(ShopDetailActivity.this)
                             .load(url)
                             .asJsonObject()
                             .setCallback(new FutureCallback<JsonObject>() {
@@ -291,7 +348,7 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // AlertDialog.Builder builder = new AlertDialog.Builder(FoodDetailActivity.this);
+               // AlertDialog.Builder builder = new AlertDialog.Builder(ShopDetailActivity.this);
               //  builder.setTitle("Write Review");
 
 
@@ -315,7 +372,7 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
 
 
               /* // builder.setView(reviewLL);
-                final Dialog alertDialog = new Dialog(FoodDetailActivity.this);
+                final Dialog alertDialog = new Dialog(ShopDetailActivity.this);
                 alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 alertDialog.setContentView(R.layout.review_layout);
                 alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -333,7 +390,7 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
                     }
                 });*/
                 // Set up the input
-                //final EditText input = new EditText(FoodDetailActivity.this);
+                //final EditText input = new EditText(ShopDetailActivity.this);
                 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
                 //input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
@@ -796,7 +853,41 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
             loc = new LatLng(1.23,103.23);
         }
         googleMap.addMarker(new MarkerOptions().position(loc)
-                .title(m.getName()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+                .title(m.getName()).snippet(m.getWebsite()));
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc,15));
     }
+    private void getAllratingsthumbsdown() {
+        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("emailId","") +"/class/CLS2/categoryItem/"+m.getShopID();
+        Ion.with(ShopDetailActivity.this)
+                .load(Urls.BASE_URL+getthumbsdown)
+                .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
+            @Override
+            public void onCompleted(Exception e, JsonObject result) {
+                if(e==null)
+                {
+                    JsonArray resultarray = result.get("result").getAsJsonArray();
+                    Log.e(TAG," all ratings tumnumber" + result.toString());
+                    try {
+                        JSONArray resultArray= new JSONArray( resultarray.toString());
+                        if(resultArray.length()>0)
+                        {
+                            for(int i=0;i<resultArray.length();i++)
+                            {
+                                JSONObject obj= resultArray.getJSONObject(i);
+                                upcount=  obj.getString("Up_Count");
+                                downcount=   obj.getString("Down_Count");
+                                count_up.setText(upcount);
+                                count_down.setText(downcount);
+
+                            }
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
 }

@@ -114,6 +114,12 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
     private float selectedratings;
     private Date enddate;
     private Date startdate;
+    private ImageView thumbs_up;
+    private TextView count_up;
+    private ImageView thumb_down;
+    private TextView count_down;
+    private String upcount;
+    private String downcount;
 
 
     @Override
@@ -134,6 +140,10 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
         timing = (TextView) findViewById(R.id.entertainment_detail_timings_tv);
         endtime = (TextView) findViewById(R.id.endtime_entertainment);
         addRatingView = (RatingBar) findViewById(R.id.addRating);
+        thumbs_up = (ImageView) findViewById(R.id.thumbs_up_entertain);
+        count_up = (TextView) findViewById(R.id.count_up_entertain);
+        count_down = (TextView) findViewById(R.id.count_down_entertain);
+        thumb_down = (ImageView) findViewById(R.id.thumbs_down_entertain);
         knownfor = (TextView) findViewById(R.id.entertainment_detail_knownfor_tv);
         distance = (TextView) findViewById(R.id.entertainment_detail_distance_tv);
         reviews_list = (RecyclerView) findViewById(R.id.entertainment_detail_reviews_list);
@@ -299,6 +309,67 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                     Toast.makeText(EntertainmentDetailActivity.this, "Please login first or continue", Toast.LENGTH_SHORT).show();
 
                 }
+            }
+        });
+        thumb_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Ion.with(EntertainmentDetailActivity.this)
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","")+"/class/CLS3/categoryItem/"+m.getEntertainmentID()+"/rate/0")
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                if(e==null)
+                                {
+                                    Log.e(TAG," thumbs_ down result"+result.toString());
+                                    String status= result.get("status").toString();
+                                    String message= result.get("message").toString();
+                                    Log.e(TAG,"message thumb down"+message);
+                                    getAllratingsthumbsdown();
+                                    //Toast.makeText(EntertainmentDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Log.e(TAG," exception thumb down "+ e.getMessage());
+
+                                }
+
+                            }
+                        });
+
+            }
+        });
+        getAllratingsthumbsdown();
+        thumbs_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Ion.with(EntertainmentDetailActivity.this)
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","")+"/class/CLS3/categoryItem/"+m.getEntertainmentID()+"/rate/1")
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+
+                                if (e == null) {
+                                    Log.e(TAG, " thumbs_ up result" + result.toString());
+                                    String status = result.get("status").toString();
+                                    String message = result.get("message").toString();
+
+                                    getAllratingsthumbsdown();
+
+                                    Toast.makeText(EntertainmentDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Log.e(TAG," exception"+ e.getMessage());
+                                }
+
+
+
+                            }
+                        });
+
             }
         });
 
@@ -807,7 +878,41 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
             loc = new LatLng(1.23,103.23);
         }
         googleMap.addMarker(new MarkerOptions().position(loc)
-                .title(m.getName()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+                .title(m.getName()).snippet(m.getWebsite()));
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc,15));
     }
+    private void getAllratingsthumbsdown() {
+        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","") +"/class/CLS3/categoryItem/"+m.getEntertainmentID();
+        Ion.with(EntertainmentDetailActivity.this)
+                .load(Urls.BASE_URL+getthumbsdown)
+                .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
+            @Override
+            public void onCompleted(Exception e, JsonObject result) {
+                if(e==null)
+                {
+                    JsonArray resultarray = result.get("result").getAsJsonArray();
+                    Log.e(TAG," all ratings tumnumber" + result.toString());
+                    try {
+                        JSONArray resultArray= new JSONArray( resultarray.toString());
+                        if(resultArray.length()>0)
+                        {
+                            for(int i=0;i<resultArray.length();i++)
+                            {
+                                JSONObject obj= resultArray.getJSONObject(i);
+                                upcount=  obj.getString("Up_Count");
+                                downcount=   obj.getString("Down_Count");
+                                count_up.setText(upcount);
+                                count_down.setText(downcount);
+
+                            }
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
 }

@@ -52,7 +52,7 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.MyVi
         if(obj.getClassname().equalsIgnoreCase("Food"));
         {
             holder.name.setText(list.get(position).getRestaurantName());
-            holder.distance.setText(list.get(position).getPrice());
+            holder.distance.setText(list.get(position).getDistance()+" Km");
             holder.address.setText(list.get(position).getAddress());
             Picasso.with(context).load(list.get(position).getImage()).into(holder.bookmark_image);
             holder.bookmark_flag.setOnClickListener(new View.OnClickListener() {
@@ -167,30 +167,34 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.MyVi
     }
     public void removebookmark(String Id, final int position, String classname)
     {
-        String url= Urls.BASE_URL+"api/setBookMark/email/"+ MySharedPrefrence.getPrefrence(context).getString("emailId","")+"/class/"+classname+"/categoryItem/"+ Id+"/bookmark/-";
-        Log.e("adapter","delete bookmark"+url);
-        Ion.with(context)
-                .load(url)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if(e==null)
-                        {
-                            String status= result.get("status").toString();
-                            Log.e("adapter","status"+ result.toString() );
-                            if(status.equalsIgnoreCase("200"))
-                            {
+        try {
+            String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(context).getString("emailId", "") + "/class/" + classname + "/categoryItem/" + Id + "/bookmark/-";
+            Log.e("adapter", "delete bookmark" + url);
+            Ion.with(context)
+                    .load(url)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            if (e == null) {
+                                String status = result.get("status").toString();
+                                Log.e("adapter", "status" + result.toString());
+                                if (status.equalsIgnoreCase("200")) {
 
 
+                                }
+                                list.remove(position);
+                                notifyDataSetChanged();
                             }
-                            list.remove(position);
-                            notifyDataSetChanged();
+
+
                         }
-
-
-                    }
-                });
+                    });
+        }
+        catch (Exception e)
+        {
+            Log.e("adapter",e.getMessage().toString());
+        }
 
     }
 }

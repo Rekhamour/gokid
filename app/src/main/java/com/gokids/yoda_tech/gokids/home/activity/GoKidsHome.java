@@ -59,6 +59,7 @@ public class GoKidsHome extends AppCompatActivity {
     private TextView name;
     private RoundedImageView image;
     private String flag ="0";
+    private String TAG= getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class GoKidsHome extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarMain);
         //setSupportActionBar(toolbar);
         mNavigationView = (NavigationView) findViewById(R.id.navigation);
+        Log.e(TAG," test"+"   testingg");
 
         setGridViewAdapterForMenu();
         getSizeOfEachRow();
@@ -256,12 +258,13 @@ public class GoKidsHome extends AppCompatActivity {
             }
         });
 
-        
 
-        if(prefs.contains("userId") && prefs.getInt("userId",0)!=0) {
-            Log.e("Signin fragment","userId "+  prefs.getInt("userId",0));
+
+        if(prefs.contains("emailId") && !prefs.getString("emailId","").isEmpty() ) {
+            Log.e("Signin fragment","emailId "+  prefs.getString("emailId",""));
             name.setText(prefs.getString("userName","Guest"));
             if(prefs.contains("ImageURL") && !prefs.getString("ImageURL","").isEmpty()) {
+                Log.e(TAG," image url"+ prefs.getString("ImageURL",""));
                 Picasso.with(GoKidsHome.this).load(prefs.getString("ImageURL", "")).into(image);
             }
 

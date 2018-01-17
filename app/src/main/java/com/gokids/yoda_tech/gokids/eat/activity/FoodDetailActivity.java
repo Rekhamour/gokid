@@ -70,6 +70,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -107,6 +109,12 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
     private ImageView thumbs_down;
     private ImageView thumbs_up;
     private SeekArc seekArc;
+    private TextView eNoReview;
+    private static DecimalFormat df = new DecimalFormat(".#");
+    private TextView count_down;
+    private TextView count_up;
+    private String downcount;
+    private String upcount;
 
 
     @Override
@@ -118,6 +126,8 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
         prefrences= getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
         emailid=prefrences.getString("emailId","");
         latlon= Utils.getLatLong(FoodDetailActivity.this);
+       df.setRoundingMode(RoundingMode.UP);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.food_detail_toolbar);
         address = (TextView) findViewById(R.id.food_detail_address_tv);
@@ -130,6 +140,8 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
         distance = (TextView) findViewById(R.id.food_detail_distance_tv);
         img = (ImageView) findViewById(R.id.food_detail_image);
         thumbs_up = (ImageView) findViewById(R.id.thumbs_up);
+        count_up = (TextView) findViewById(R.id.count_up);
+        count_down = (TextView) findViewById(R.id.count_down);
         seekArc = (SeekArc) findViewById(R.id.seekArc);
         seekArc.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -139,6 +151,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
         });
         thumbs_down = (ImageView) findViewById(R.id.thumbs_down);
         reviews_list = (RecyclerView) findViewById(R.id.food_detail_reviews_list);
+        eNoReview = (TextView) findViewById(R.id.review_no);
         write_review = (Button) findViewById(R.id.food_detail_write_review);
         bookmark = (ImageButton) findViewById(R.id.food_detail_bookmark);
         chat = (ImageButton) findViewById(R.id.food_detail_chat);
@@ -186,7 +199,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
         Log.e(TAG,"cusines"+m.getCuisines().toString());
 
         kidfinityscore_detail.setText(String.valueOf((m.getKidsfinityScore())));
-        seekArc.setProgress(m.getKidsfinityScore());
+        seekArc.setProgress((int)(Double.parseDouble(df.format(m.getKidsfinityScore()))));
 
         String speci = "";
 
@@ -224,7 +237,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
         thumbs_down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* Ion.with(FoodDetailActivity.this)
+                Ion.with(FoodDetailActivity.this)
                         .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/rate/0")
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
@@ -233,35 +246,52 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                                 if(e==null)
                                 {
                                     Log.e(TAG," thumbs_ down result"+result.toString());
-                                    String success= result.get("success").toString();
+                                   String status= result.get("status").toString();
                                     String message= result.get("message").toString();
-                                    Toast.makeText(FoodDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG,"message thumb down"+message);
+                                    getAllratingsthumbsdown();
+                                    //Toast.makeText(FoodDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Log.e(TAG," exception thumb down "+ e.getMessage());
+
                                 }
 
                             }
-                        });*/
+                        });
 
             }
         });
+        getAllratingsthumbsdown();
         thumbs_up.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* Ion.with(FoodDetailActivity.this)
-                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/rate/0")
+               Ion.with(FoodDetailActivity.this)
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/rate/1")
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
                             public void onCompleted(Exception e, JsonObject result) {
-                                if(e==null)
-                                {
-                                    Log.e(TAG," thumbs_ up result"+result.toString());
-                                    String success= result.get("success").toString();
-                                    String message= result.get("message").toString();
-                                    Toast.makeText(FoodDetailActivity.this, message, Toast.LENGTH_SHORT).show();
-                                }
+
+                                    if (e == null) {
+                                        Log.e(TAG, " thumbs_ up result" + result.toString());
+                                        String status = result.get("status").toString();
+                                        String message = result.get("message").toString();
+
+                                        getAllratingsthumbsdown();
+
+                                        Toast.makeText(FoodDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        Log.e(TAG," exception"+ e.getMessage());
+                                    }
+
+
 
                             }
-                        });*/
+                        });
 
             }
         });
@@ -368,48 +398,6 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                 dialog.show();
 
 
-              /* // builder.setView(reviewLL);
-                final Dialog alertDialog = new Dialog(FoodDetailActivity.this);
-                alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                alertDialog.setContentView(R.layout.review_layout);
-                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                alertDialog.show();
-                CardView reviewLL = (CardView)getLayoutInflater().inflate(R.layout.review_layout,null);
-                final EditText input = (EditText)reviewLL.findViewById(R.id.review_text);
-                Button submit = (Button) reviewLL.findViewById(R.id.btn_submit_review);
-                submit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.e(TAG,"I M in click");
-                        alertDialog.dismiss();
-                        postReview(input.getText().toString());
-
-                    }
-                });*/
-                // Set up the input
-                //final EditText input = new EditText(FoodDetailActivity.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                //input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-
-                // Set up the buttons
-              /*  builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //reviewText = input.getText().toString();
-                        if (!reviewText.trim().equals("")) {
-                            postReview(reviewText);
-                        }
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });*/
-
-              //  builder.show();
             }
         });
 
@@ -478,6 +466,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                if(e==null)
                {
                    JsonArray resultarray = result.get("result").getAsJsonArray();
+                   Log.e(TAG," all ratings tumnumber" + result.toString());
                    try {
                        JSONArray resultArray= new JSONArray( resultarray.toString());
                        if(resultArray.length()>0)
@@ -485,10 +474,11 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                            for(int i=0;i<resultArray.length();i++)
                            {
                                JSONObject obj= resultArray.getJSONObject(i);
-                               obj.getString("BookmarkID");
-                               obj.getString("Category");
-                               obj.getString("CategoryItem");
-                               obj.getString("Email");
+                             upcount=  obj.getString("Up_Count");
+                             downcount=   obj.getString("Down_Count");
+                            count_up.setText(upcount);
+                            count_down.setText(downcount);
+
                            }
                        }
                    } catch (JSONException e1) {
@@ -609,25 +599,25 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
-                        // do stuff with the result or error
-                        JsonArray res = result.getAsJsonObject().get("result").getAsJsonArray();
-                        try {
-                            JSONArray  resarrey= new JSONArray(res.toString());
+                        if (e==null) {
+                            // do stuff with the result or error
+                            JsonArray res = result.getAsJsonObject().get("result").getAsJsonArray();
+                            try {
+                                JSONArray resarrey = new JSONArray(res.toString());
 
-                            System.out.println(res);
-                            for(int i= 0;i<resarrey.length();i++)
-                            {
-                                JSONObject obj= resarrey.getJSONObject(i);
-                                String id=obj.getString("RestaurantID");
-                                if(id.equalsIgnoreCase(m.getRestaurantID()))
-                                {
-                                    bookmarkFlag = true;
-                                    bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
+                                System.out.println(res);
+                                for (int i = 0; i < resarrey.length(); i++) {
+                                    JSONObject obj = resarrey.getJSONObject(i);
+                                    String id = obj.getString("RestaurantID");
+                                    if (id.equalsIgnoreCase(m.getRestaurantID())) {
+                                        bookmarkFlag = true;
+                                        bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
+                                    }
+
                                 }
-
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
                             }
-                        } catch (JSONException e1) {
-                            e1.printStackTrace();
                         }
 
 
@@ -741,6 +731,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                                             reviewAdapter = new ReviewAdapter(reviews);
                                             reviews_list.setAdapter(reviewAdapter);
                                             reviewAdapter.notifyDataSetChanged();
+                                            eNoReview.setText("Reviews "+arrey.length());
                                         }
 
                                     }
@@ -761,6 +752,8 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                                             reviewAdapter = new ReviewAdapter(reviews);
                                             reviews_list.setAdapter(reviewAdapter);
                                             reviewAdapter.notifyDataSetChanged();
+                                            eNoReview.setText("Reviews "+arrey.length());
+
                                         }
 
                                     }
@@ -839,7 +832,9 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
             loc = new LatLng(1.23,103.23);
         }
         googleMap.addMarker(new MarkerOptions().position(loc)
-                .title(m.getName()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+                .title(m.getRestaurantName()).snippet(m.getWebsite()));
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc,15));
+       // googleMap.animateCamera(CameraUpdateFactory.zoomTo(googleMap.getCameraPosition().zoom - 2.5f));
     }
 }

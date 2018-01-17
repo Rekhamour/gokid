@@ -18,6 +18,8 @@ import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.koushikdutta.ion.Ion;
 
 import java.io.Serializable;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -30,11 +32,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.MyViewHolder> 
     private ItemClickCallback itemClickCallback;
     Context ctx;
     private ItemFilter mFilter = new ItemFilter();
+    private static DecimalFormat df = new DecimalFormat(".##");
 
 
     public FoodAdapter(Context ctx,ArrayList<MainBean> list){
         this.list = list;
         this.ctx= ctx;
+        df.setRoundingMode(RoundingMode.UP);
     }
     public interface ItemClickCallback {
         void onItemClick(int p);
@@ -72,7 +76,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.MyViewHolder> 
                 ctx.startActivity(intent);
             }
         });
-        holder.food_list_kidfinity_Score.setText(String.valueOf((m.getKidsfinityScore())));
+        holder.food_list_kidfinity_Score.setText(String.valueOf((df.format(m.getKidsfinityScore()))));
 
     }
     public Filter getFilter() {

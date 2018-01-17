@@ -39,7 +39,7 @@ public class MainBean implements Serializable{
     private String address;
     private String postal;
     private String latlong;
-    private int kidsfinityScore;
+    private double kidsfinityScore;
     private String distance;
     private String yearOfExp;
     private String offer;
@@ -51,6 +51,15 @@ public class MainBean implements Serializable{
     private String rates;
     private String mySchedule;
     private String LatLong;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getLatLong() {
         return LatLong;
@@ -222,11 +231,11 @@ public class MainBean implements Serializable{
         this.latlong = latlong;
     }
 
-    public int getKidsfinityScore() {
+    public double getKidsfinityScore() {
         return kidsfinityScore;
     }
 
-    public void setKidsfinityScore(int kidsfinityScore) {
+    public void setKidsfinityScore(double kidsfinityScore) {
         this.kidsfinityScore = kidsfinityScore;
     }
 

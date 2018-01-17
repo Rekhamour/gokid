@@ -50,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
 
                     SharedPreferences prefs = getApplicationContext().getSharedPreferences(Constants.SHARED_SIGNIN_NAME, MODE_PRIVATE);
 
-                    if(prefs.contains("userId") && prefs.getInt("userId",0)!=0) {
+                    if(prefs.contains("emailId") && !prefs.getString("emailId","").isEmpty() ) {
                         Intent i = new Intent(getApplicationContext(),GoKidsHome.class);
                         i.putExtra("flag","0");
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

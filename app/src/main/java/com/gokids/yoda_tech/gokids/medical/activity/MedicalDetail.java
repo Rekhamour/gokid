@@ -90,6 +90,12 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
     private CircleIndicator indicator;
     private SharedPreferences prefrence;
     private String TAG = getClass().getName();
+    private ImageView thumbs_up;
+    private TextView count_up;
+    private TextView count_down;
+    private ImageView thumb_down;
+    private String upcount;
+    private String downcount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +109,10 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
         timing = (TextView) findViewById(R.id.timings_tv);
         specialization = (TextView) findViewById(R.id.specialization_tv);
         distance = (TextView) findViewById(R.id.distance_tv);
+        thumbs_up = (ImageView) findViewById(R.id.thumbs_up_medical);
+        count_up = (TextView) findViewById(R.id.count_up_medical);
+        count_down = (TextView) findViewById(R.id.count_down_medical);
+        thumb_down = (ImageView) findViewById(R.id.thumbs_down_medical);
         //img = (ImageView) findViewById(R.id.medical_detail_image);
         reviews_list = (RecyclerView) findViewById(R.id.reviews_list);
         bookmark = (ImageButton) findViewById(R.id.bookmark);
@@ -300,6 +310,67 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                         scrollView.smoothScrollTo(0, specialization.getBottom());
                     }
                 });
+            }
+        });
+        thumb_down.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Ion.with(MedicalDetail.this)
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","")+"/class/CLS4/categoryItem/"+m.getMedicalID()+"/rate/0")
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                if(e==null)
+                                {
+                                    Log.e(TAG," thumbs_ down result"+result.toString());
+                                    String status= result.get("status").toString();
+                                    String message= result.get("message").toString();
+                                    Log.e(TAG,"message thumb down"+message);
+                                    getAllratingsthumbsdown();
+                                    //Toast.makeText(MedicalDetail.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Log.e(TAG," exception thumb down "+ e.getMessage());
+
+                                }
+
+                            }
+                        });
+
+            }
+        });
+        getAllratingsthumbsdown();
+        thumbs_up.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Ion.with(MedicalDetail.this)
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","")+"/class/CLS4/categoryItem/"+m.getMedicalID()+"/rate/1")
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+
+                                if (e == null) {
+                                    Log.e(TAG, " thumbs_ up result" + result.toString());
+                                    String status = result.get("status").toString();
+                                    String message = result.get("message").toString();
+
+                                    getAllratingsthumbsdown();
+
+                                    Toast.makeText(MedicalDetail.this, message, Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Log.e(TAG," exception"+ e.getMessage());
+                                }
+
+
+
+                            }
+                        });
+
             }
         });
 
@@ -694,7 +765,40 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
             loc = new LatLng(1.23,103.23);
         }
         googleMap.addMarker(new MarkerOptions().position(loc)
-                .title(m.getName()));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+                .title(m.getName()).snippet(m.getWebsite()));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc,0.5F));
     }
+    private void getAllratingsthumbsdown() {
+        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","") +"/class/CLS4/categoryItem/"+m.getMedicalID();
+        Ion.with(MedicalDetail.this)
+                .load(Urls.BASE_URL+getthumbsdown)
+                .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
+            @Override
+            public void onCompleted(Exception e, JsonObject result) {
+                if(e==null)
+                {
+                    JsonArray resultarray = result.get("result").getAsJsonArray();
+                    Log.e(TAG," all ratings tumnumber" + result.toString());
+                    try {
+                        JSONArray resultArray= new JSONArray( resultarray.toString());
+                        if(resultArray.length()>0)
+                        {
+                            for(int i=0;i<resultArray.length();i++)
+                            {
+                                JSONObject obj= resultArray.getJSONObject(i);
+                                upcount=  obj.getString("Up_Count");
+                                downcount=   obj.getString("Down_Count");
+                                count_up.setText(upcount);
+                                count_down.setText(downcount);
+
+                            }
+                        }
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+
 }

@@ -1,10 +1,12 @@
 package com.gokids.yoda_tech.gokids.entertainment.activity.adapter;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -45,10 +47,10 @@ import devs.mulham.horizontalcalendar.HorizontalCalendarView;
  * Created by benepik on 23/6/17.
  */
 
-public class SummerEntertainment extends Fragment implements FoodAdapter.ItemClickCallback,SwipeRefreshLayout.OnRefreshListener {
+public class SummerEntertainment extends Fragment{
     RecyclerView food_rv_list;
     TextView numFoods;
-    EntertainlistAdapter adapter;
+    EntertainmentListAdapter adapter;
     ArrayList<MainBean> list;
     String  category= "Eat";
     public int  mCount =  0;
@@ -73,6 +75,8 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
     private LinearLayout calendarLL;
     private boolean isLoaded =false,isVisibleToUser;
     private String flagfirst="";
+    private Handler handler;
+    private ProgressDialog dialog;
 
 
     public static SummerEntertainment newInstance(String tabcategory, String tabTitle){
@@ -96,40 +100,38 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
         calendarLL = (LinearLayout)view. findViewById(R.id.calendarLL);
         ctx= getActivity();
         setHasOptionsMenu(true);
-       total= getTotalRestaurants(Utils.getCurrentdate());
+        total= getTotalRestaurants(Utils.getCurrentdate());
         list = new ArrayList<>();
-        swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
         food_rv_list.setLayoutManager(layoutManager);
-        adapter = new EntertainlistAdapter(getActivity(),list, flagfirst);
+        adapter = new EntertainmentListAdapter(getActivity(),list, flagfirst);
         food_rv_list.setAdapter(adapter);
         Calendar endDate = Calendar.getInstance();
         endDate.add(Calendar.MONTH, 1);
         latlon= Utils.getLatLong(getActivity());
+        Log.e(TAG,"Latlon lat" + latlon.getLatitude() + " long " + latlon.getLongitude());
         Calendar startDate = Calendar.getInstance();
         startDate.add(Calendar.MONTH, -1);
 
-         horizontalCalendar = new HorizontalCalendar.Builder(view, R.id.calendarView).build();
+        horizontalCalendar = new HorizontalCalendar.Builder(view, R.id.calendarView).build();
         horizontalCalendar.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Date date, int position) {
                 dte=Utils.getselecteddate(date);
                 Log.e(TAG," date"+ dte);
-                final int startlimit= 0;
-                final int count=50;
+
                 total= getTotalRestaurants(dte);
 
-                swipe_food.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        swipe_food.setRefreshing(true);
-                                        list.clear();
-                                        food_rv_list.removeAllViewsInLayout();
-                                        getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",startlimit,count);
-
-                                    }
-                                }
-                );
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        list.clear();
+                        adapter.notifyDataChanged();
+                        food_rv_list.removeAllViews();
+                        getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",0,0);
+                    }
+                },200);
+                // getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",startlimit,count);
             }
 
             @Override
@@ -144,31 +146,58 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
             }
         });
 
+        dialog= new ProgressDialog(getActivity());
+        dialog.setMessage("Please wait..");
+        latlon= Utils.getLatLong(getActivity());
+        handler= new Handler();
 
+        adapter.setLoadMoreListener(new EntertainmentListAdapter.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
 
+                food_rv_list.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        final int index = list.size();
+                        Log.e(TAG,"i m in loadmore scroll");
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadMore(index);
 
-
-            swipe_food.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    swipe_food.setRefreshing(true);
-                                    list.clear();
-                                    food_rv_list.removeAllViewsInLayout();
-                                    //getRestaurants(Utils.getCurrentdate(), prefrence.getString("emailId", ""), latlon.getLatitude(), latlon.getLongitude(), "Distance", mCount, countlimit);
-                                }
                             }
-            );
+                        },200);
+                    }
+                });
+            }
+        });
+        food_rv_list.setAdapter(adapter);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                load(0);
 
-
-
+            }
+        },200);
 
         return view;
 
     }
 
-    @Override
-    public void onItemClick(int p) {
+    private void load(int index) {
 
+
+       // dialog.show();
+        getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,0);
+
+    }
+
+    private void loadMore(int index) {
+        MainBean bean=new MainBean();
+        bean.setType("load");
+        list.add(bean);
+        adapter.notifyItemInserted(list.size()+1);
+        getRestaurants(dte,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,0);
 
     }
     public int getTotalRestaurants(final String date) {
@@ -197,16 +226,13 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
 
 
     public ArrayList<MainBean> getRestaurants(final String date, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
-        mCount =  start;
 
 
-            String dte= date;
-            PATH= Urls.BASE_URL + "api/viewAllEntertainments/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/"+mtabcategory+"/startDate/"+dte+"/endDate/"+dte+"/limitStart/"+ mCount+"/count/"+count+"/sortBy/Distance";
-            Log.e(TAG,"path in else"+PATH);
+        String dte= date;
+        PATH= BASE_URL + "api/viewAllEntertainments/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/"+mtabcategory+"/startDate/"+dte+"/endDate/"+dte+"/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance";
+        Log.e(TAG,"path in else"+PATH);
 
-        // System.out.println(url);
         Log.e(TAG,"tab category   "+mtabcategory);
-        //String PATH= BASE_URL + "api/viewAllEntertainments/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/"+mtabcategory+"/startDate/2017-01-09/endDate/2017-30-09"+"/limitStart/"+ mCount+"/count/"+count+"/sortBy/Distance";
         Log.e(TAG,"path"+PATH);
 
         Ion.with(getActivity())
@@ -221,16 +247,14 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
                             System.out.println(result);
                             String status = String.valueOf(result.get("status")).replace("\"", "");
                             if (status.equalsIgnoreCase("200")) {
-                                swipe_food.setRefreshing(false);
-                                loading = true;
+
                                 Log.e(TAG, " i m if status" + status);
 
                                 Log.e("Foodfragment", "status" + status);
                                 String message = String.valueOf(result.get("message"));
                                 Log.e("Foodfragment", "message" + message);
+                                JsonArray res = result.getAsJsonArray("result");
                                 if(result.has("result")) {
-                                    JsonArray res = result.getAsJsonArray("result");
-
 
                                     if (res.size() > 0) {
                                         for (int i = 0; i < res.size(); i++) {
@@ -249,6 +273,7 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
                                             m.setEventDate(obj.getAsJsonObject().get("EventDate").toString());
                                             m.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsInt());
                                             m.setDistance(obj.getAsJsonObject().get("Distance").getAsString());
+                                            m.setType("data");
                                             //   m.setSpecialty(obj.getAsJsonObject().get("Specialty").getAsString());
                                             ArrayList<CuisinesBean> spe = new ArrayList<>();
                                             // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
@@ -299,59 +324,10 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
                                             mCount++;
                                         }
 
-                                        adapter.notifyDataSetChanged();
-                                        swipe_food.setRefreshing(false);
+                                        adapter.notifyDataChanged();
                                     }
                                 }
 
-                                if (total > count) {
-                                    Log.d(TAG, "total_posts is greater ");
-
-                                    food_rv_list.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                                        @Override
-                                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                                            super.onScrollStateChanged(recyclerView, newState);
-                                        }
-
-                                        @Override
-                                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                                            // mCount=count;
-                                            // count=count+50;
-                                            super.onScrolled(recyclerView, dx, dy);
-
-
-                                            int pastVisiblesItems = count, visibleItemCount = mCount, totalItemCount = total;
-                                            if (dy > 0) //check for scroll down
-                                            {
-                                                visibleItemCount = layoutManager.getChildCount();
-                                                totalItemCount = layoutManager.getItemCount();
-                                                pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-                                                if (loading) {
-                                                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                                        Log.d(TAG, "total count " + totalItemCount + "visibleItemCount + pastVisiblesItems " + visibleItemCount + pastVisiblesItems);
-                                                        loading = false;
-                                                        swipe_food.setRefreshing(true);
-                                                        Log.v(TAG, "Last Item Wow !");
-                                                        // apiCall(mCount);
-                                                        int lmCount = mCount + 50;
-                                                        int lastcount = count + 50;
-                                                        getRestaurants(date, name, latlon.getLatitude(), latlon.getLongitude(), sortBy, lmCount, count + 100);
-
-                                                        Log.d(TAG, "value mCount" + mCount);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    });
-                                }
-
-                                //if()
-                                //int lmCount= mCount+50;
-                                // int lastcount=count+50;
-
-                                //  getRestaurants(category,name,lat,longi,sortBy,lmCount,lastcount);
-                                //  }
-                                // });
 
 
                             }
@@ -364,22 +340,7 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
     }
 
 
-    @Override
-    public void onRefresh() {
-        list.clear();
-        food_rv_list.removeAllViewsInLayout();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",mCount,total);
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mCount = 0;
-
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -393,8 +354,8 @@ public class SummerEntertainment extends Fragment implements FoodAdapter.ItemCli
         } else if (item.getItemId() == R.id.filter_search) {
             PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.filter_search));
             Utils.getfilterDistanceEntertainment(getActivity(),list,popup,adapter);
-
         } else if (item.getItemId() == R.id.lens_search) {
+
             Utils.getSearchDialogEntertainment(getActivity(),list,food_rv_list,flagfirst);
 
         }

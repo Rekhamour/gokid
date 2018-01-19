@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.eat.activity.FoodListActivity;
@@ -27,10 +28,12 @@ public class HomeMenuAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<Integer> intIDs;
+    private String[] menuNames;
 
-    public HomeMenuAdapter(Context context, ArrayList<Integer> ids){
+    public HomeMenuAdapter(Context context, ArrayList<Integer> ids, String[] menuNames){
         mContext = context;
         intIDs = ids;
+        this.menuNames=menuNames;
     }
 
     @Override
@@ -56,7 +59,9 @@ public class HomeMenuAdapter extends BaseAdapter {
         View rootView = inflater.inflate(R.layout.list_home_menu, null );
 
         ImageView imageView = (ImageView) rootView.findViewById(R.id.menuItemImage);
+        TextView menuTextview = (TextView) rootView.findViewById(R.id.menu_name);
         imageView.setImageResource(intIDs.get(i));
+        menuTextview.setText(menuNames[i]);
 
 
         rootView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, GoKidsHome.height1));

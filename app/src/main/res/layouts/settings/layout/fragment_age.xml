@@ -20,7 +20,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:text="How old is your Boy ?"
-        android:layout_above="@+id/circularSeekBar"
         android:gravity="center_horizontal|center_vertical"
         android:layout_marginTop="@dimen/dp40margin"
         />

@@ -108,17 +108,18 @@ public class GoKidsHome extends AppCompatActivity {
     public void setGridViewAdapterForMenu() {
 
         ArrayList<Integer> intIDS = new ArrayList<>();
-        intIDS.add(R.drawable.img_food);
-        intIDS.add(R.drawable.img_shopping);
-        intIDS.add(R.drawable.img_entertain);
-        intIDS.add(R.drawable.img_medical);
-        intIDS.add(R.drawable.img_sos);
-        intIDS.add(R.drawable.img_ecommerce);
-        intIDS.add(R.drawable.img_personality_dev);
-        intIDS.add(R.drawable.img_advertise);
-        intIDS.add(R.drawable.img_chat_advise);
+        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.sample);
+        String[] menuNames = {"Eat","Shopping","Entertain","Medical","SOS","Buy","Learn","Advertise","Advice"};
 
-        homeMenuAdapter = new HomeMenuAdapter(GoKidsHome.this, intIDS);
+        homeMenuAdapter = new HomeMenuAdapter(GoKidsHome.this, intIDS,menuNames);
 
         mGridView = (GridView) findViewById(R.id.gridView);
         mGridView.setAdapter(homeMenuAdapter);

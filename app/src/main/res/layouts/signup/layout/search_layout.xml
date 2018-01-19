@@ -15,6 +15,7 @@
         android:textSize="18dp"
         android:gravity="center"
         android:text="Search Enter"
+        android:layout_weight="0.1"
         android:textStyle="bold"
         android:textColor="@color/black"
 
@@ -33,12 +34,13 @@
 <android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
     android:id="@+id/search_hint_list"
+    android:scrollbars="vertical"
     android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
     <Button
         android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-
+        android:layout_weight="0.1"
         android:textColor="@color/white"
         android:text="Search"
         android:id="@+id/searchText"

@@ -96,7 +96,7 @@ public class KidsDetailsAdapter extends RecyclerView.Adapter<KidsDetailsAdapter.
     private void getAllSpecialNeeds(final int position) {
 
         if(!MySharedPrefrence.getPrefrence(context).getString("emailId","").trim().isEmpty()) {
-            String path = Urls.BASE_URL + "http://52.77.82.210/api/viewAllKidSpecialNeed/kidID/" + list.get(position).getKidID();
+            String path = Urls.BASE_URL + "api/viewAllKidSpecialNeed/kidID/" + list.get(position).getKidID();
             Ion.with(context)
                     .load(path)
                     .asString()
@@ -254,9 +254,11 @@ public class KidsDetailsAdapter extends RecyclerView.Adapter<KidsDetailsAdapter.
 
 
                                             }
-                                            else if(SpecialNeedCategory.equalsIgnoreCase("What is your kid(s) favourite cuisine?"))
+                                            else if(SpecialNeedCategory.equalsIgnoreCase("What is your kid(s) favourite cuisine"))
                                             {
                                                 CuisineNeeds.add(KidSpecialNeed);
+                                                Log.e(TAG," cuisinnedsize"+CuisineNeeds.size());
+
 
                                             }
                                             else if(SpecialNeedCategory.equalsIgnoreCase("What is your kid(s) diet?"))

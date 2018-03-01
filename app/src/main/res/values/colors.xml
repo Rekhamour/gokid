@@ -11,7 +11,8 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="grey">#DCDCDC</color>
-    <color name="pale_white">#ffeab4</color>
+    <color name="pale_white">#dec094</color>
+    <color name="paledark_white">#f2e4cf</color>
     <color name="light_grey_background">#e8e7e4</color>
 
 

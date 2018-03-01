@@ -196,27 +196,26 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
         website.setText(m.getWebsite());
         timing.setText(m.getWorkingHour());
         knownfor.setText(m.getSpecialty());
-        Log.e(TAG,"cusines"+m.getCuisines().toString());
+       // Log.e(TAG,"cusines"+m.getCuisines().toString());
 
-        kidfinityscore_detail.setText(String.valueOf((m.getKidsfinityScore())));
+        kidfinityscore_detail.setText(String.valueOf((df.format(m.getKidsfinityScore()))));
         seekArc.setProgress((int)(Double.parseDouble(df.format(m.getKidsfinityScore()))));
 
         String speci = "";
+        try {
 
-        if(m.getCuisines().size()>0) {
-            for (int i = 0; m.getCuisines() != null && i < m.getCuisines().size(); i++, speci += ",") {
-                speci += m.getCuisines().get(i).getCuisine();
+            if (m.getCuisines().size() > 0) {
+                for (int i = 0; m.getCuisines() != null && i < m.getCuisines().size(); i++, speci += ",") {
+                    speci += m.getCuisines().get(i).getCuisine();
+                }
             }
-          //  speci.replace()
-          char lstchar=  speci.charAt(m.getCuisines().size()-1);
-            String m= "";
-
-
             cuisines.setText(speci.substring(0,speci.length()-1));
         }
-        Log.e(TAG,"cusine"+m.getCuisines().toString());
-
-        distance.setText(m.getPrice() + "");
+        catch(NullPointerException e)
+        {
+            e.getMessage();
+        }
+        Log.e(TAG,"cusine"+m.getCuisines().toString());        distance.setText(m.getPrice() + "");
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -238,7 +237,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 Ion.with(FoodDetailActivity.this)
-                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/rate/0")
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/rate/0"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city",""))
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
@@ -250,7 +249,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                                     String message= result.get("message").toString();
                                     Log.e(TAG,"message thumb down"+message);
                                     getAllratingsthumbsdown();
-                                    //Toast.makeText(FoodDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FoodDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                 {
@@ -268,7 +267,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                Ion.with(FoodDetailActivity.this)
-                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/rate/1")
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/rate/1"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city",""))
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
@@ -295,7 +294,6 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
 
             }
         });
-        getDoctorsForMedical(m.getRestaurantID(),null,-91,-181,null,null,0,100);
 
         bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -305,7 +303,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                     if (!bookmarkFlag) {
                         bookmarkFlag = true;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS1/categoryItem/" + m.getRestaurantID() + "/bookmark/1";
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS1/categoryItem/" + m.getRestaurantID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");;
                         Log.e(TAG, "url" + url);
                         Ion.with(FoodDetailActivity.this)
                                 .load(url)
@@ -326,7 +324,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                     } else {
                         bookmarkFlag = false;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS1/categoryItem/" + m.getRestaurantID() + "/bookmark/-";
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS1/categoryItem/" + m.getRestaurantID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");;
                         Ion.with(FoodDetailActivity.this)
                                 .load(url)
                                 .asJsonObject()
@@ -457,7 +455,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void getAllratingsthumbsdown() {
-        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","") +"/class/CLS1/categoryItem/"+m.getRestaurantID();
+        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("emailId","") +"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");
         Ion.with(FoodDetailActivity.this)
                 .load(Urls.BASE_URL+getthumbsdown)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
@@ -488,113 +486,9 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
     }
-
-    public ArrayList<Doctor> getDoctorsForMedical(String medical, String name, double lat, double longi, String sortBy, String specialization, int start, int count){
-        String url = BASE_URL + "api/viewAllDoctorsForMedical";
-        url += "/latitude/" + lat;
-        url += "/longitude/" + longi;
-        if(specialization != null){
-            url += "/specialization/" + specialization;
-        }
-        else{
-            url += "/specialization/-";
-        }
-        url += "/medical/" + medical + "/limitStart/"+ start +"/count/" + count;
-        if(sortBy != null){
-            url += "/sortBy/" + sortBy;
-        }
-        if(name != null){
-            url += "/searchBy/" + name;
-        }
-        final ArrayList<Doctor> doctors = new ArrayList<>();
-        System.out.println(url);
-
-        Ion.with(getApplicationContext())
-                .load(url)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if (e == null) {
-                            JsonArray doc = result.getAsJsonArray("result");
-                            for (int i = 0; i < doc.size(); i++) {
-                                Doctor d = new Doctor();
-                                JsonElement obj = doc.get(i);
-                                d.setDoctorId(obj.getAsJsonObject().get("DoctorID").toString());
-                                d.setDoctorname(obj.getAsJsonObject().get("DoctorName").getAsString());
-                                d.setDoctorDetail(obj.getAsJsonObject().get("DoctorDetail").toString());
-                                d.setEmail(obj.getAsJsonObject().get("Email").toString());
-                                d.setProcedure(obj.getAsJsonObject().get("Procedure").toString());
-                                d.setPrice(obj.getAsJsonObject().get("Price").toString());
-                                d.setSchedule(obj.getAsJsonObject().get("Schedule").toString());
-                                d.setFrequency(obj.getAsJsonObject().get("Frequency").toString());
-                                d.setImage(obj.getAsJsonObject().get("Image").getAsString());
-                                d.setName(obj.getAsJsonObject().get("Name").toString());
-                                d.setAddress(obj.getAsJsonObject().get("Address").toString());
-                                d.setPostal(obj.getAsJsonObject().get("Postal").toString());
-                                d.setLatlong(obj.getAsJsonObject().get("LatLong").toString());
-                                d.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsInt());
-                                d.setDistance(obj.getAsJsonObject().get("Distance").toString());
-                                d.setYearOfExp(obj.getAsJsonObject().get("YearExperience").toString());
-                                d.setMySchedule(obj.getAsJsonObject().get("MySchedule").toString());
-                                d.setRates(obj.getAsJsonObject().get("Rate").toString());
-                                d.setTags(obj.getAsJsonObject().get("Tags").toString());
-                                ArrayList<Specialization> spe = new ArrayList<Specialization>();
-                                if (obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
-                                    JsonArray spec = obj.getAsJsonObject().get("Specialization").getAsJsonArray();
-                                    for (int j = 0; j < spec.size(); j++) {
-                                        Specialization s = new Specialization();
-                                        s.setSpecialization(spec.get(j).getAsJsonObject().get("Specialization").getAsString());
-                                        s.setSpecializationId(spec.get(j).getAsJsonObject().get("SpecializationID").getAsString());
-                                        spe.add(s);
-                                    }
-                                }
-                                d.setSpecializations(spe);
-                                ArrayList<Contact> con = new ArrayList<>();
-                                JsonArray cont = obj.getAsJsonObject().get("Contacts").getAsJsonArray();
-                                for (int j = 0; j < cont.size(); j++) {
-                                    Contact c = new Contact();
-                                    c.setContactId(cont.get(j).getAsJsonObject().get("ContactID").getAsLong());
-                                    c.setOwnerId(cont.get(j).getAsJsonObject().get("OwnerID").getAsString());
-                                    c.setPhoneNo(cont.get(j).getAsJsonObject().get("PhoneNo").getAsString());
-                                    con.add(c);
-                                }
-                                d.setContacts(con);
-                                ArrayList<String> images = new ArrayList<String>();
-
-                                if (obj.getAsJsonObject().get("Images").isJsonArray()) {
-                                    for (int j = 0; j < obj.getAsJsonObject().get("Images").getAsJsonArray().size(); j++) {
-                                        images.add(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
-                                    }
-                                }
-                                d.setImages(images);
-                                doctors.add(d);
-                            }
-                            for (int i = 0; i < doctors.size(); i++) {
-                                View doc_layout = LayoutInflater.from(FoodDetailActivity.this).inflate(R.layout.doctor_single, mLinearLayout, false);
-                                ImageView img = (ImageView) doc_layout.findViewById(R.id.doctor_img);
-                                TextView tv = (TextView) doc_layout.findViewById(R.id.doctor_name_tv);
-                                Doctor doct = doctors.get(i);
-                                if (doct.getImages().size() > 0) {
-                                    Ion.with(img)
-                                            .placeholder(R.drawable.doc_dummy)
-                                            .error(R.drawable.doc_dummy)
-                                            .load(doct.getImages().get(0));
-                                }
-                                tv.setText(doct.getDoctorname());
-                                mLinearLayout.addView(doc_layout);
-                            }
-
-                        }
-                    }
-                });
-
-        return doctors;
-    }
-
     private void getIfBookmarked() {
         Ion.with(this)
-                .load(Urls.BASE_URL+"api/viewAllBookmarks/email/" +prefrences.getString("emailId","")+"/class/CLS1")
+                .load(Urls.BASE_URL+"api/viewAllBookmarks/email/" +prefrences.getString("emailId","")+"/class/CLS1"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city",""))
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
@@ -656,7 +550,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     private void postReview(String reviewText) {
         if (!prefrences.getString("emailId", "").toString().trim().isEmpty()) {
-            String url = Urls.BASE_URL + "api/addDeleteReview/reviewee/" + m.getRestaurantID() + "/review/" + reviewText + "/email/" + prefrences.getString("emailId", "") + "/reviewID/-";
+            String url = Urls.BASE_URL + "api/addDeleteReview/reviewee/" + m.getRestaurantID() + "/review/" + reviewText + "/email/" + prefrences.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");;
             Log.e(TAG, "url" + url);
 
 
@@ -702,7 +596,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     public void populateReviews() {
         reviews = new ArrayList<>();
-        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getRestaurantID();
+        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getRestaurantID()+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
                 new Response.Listener<String>() {

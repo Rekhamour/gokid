@@ -77,13 +77,14 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
         FacebookSdk.sdkInitialize(getContext()); // ####### Facebook Sign In Coding
       //  AppEventsLogger.activateApp(getContext());
         View rootView = inflater.inflate(R.layout.fragment_sign_in, container, false);
-        gettingkeyhash();
 
         mailId = (EditText) rootView.findViewById(R.id.email_signin);
         password  = (EditText) rootView.findViewById(R.id.pass_signin);
         signIn = (Button) rootView.findViewById(R.id.signInButton);
         forgot_password = (TextView) rootView.findViewById(R.id.forgot_password);
         callbackManager = CallbackManager.Factory.create();
+        gettingkeyhash();
+
 
 
         signInSetup(rootView);
@@ -98,12 +99,14 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
     private void gettingkeyhash() {
         try {
             PackageInfo info = getActivity().getPackageManager().getPackageInfo(
-                    "com.facebook.samples.loginhowto",
+                    "com.gokids.yoda_tech.gokids",
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
                 Log.e("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                //mailId.setText(Base64.encodeToString(md.digest(), Base64.DEFAULT));
+
             }
         } catch (PackageManager.NameNotFoundException e) {
 

@@ -72,7 +72,6 @@ import me.relex.circleindicator.CircleIndicator;
 public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int MY_CALL_PERMISSION = 123;
-    private static final String BASE_URL = "http://52.77.82.210/";
     TextView address, email, website, distance, timing, specialization;
     //ImageView img;
     RecyclerView reviews_list;
@@ -140,6 +139,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
         email.setText(m.getEmail());
         website.setText(m.getWebsite());
         timing.setText(m.getSchedule());
+        getAllratingsthumbsdown();
 
         String speci = "";
         for (int i = 0;m.getSpecializations()!= null && i < m.getSpecializations().size(); i++, speci += ",") {
@@ -163,21 +163,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
 
         populateReviews();
         getIfBookmarked();
-        getDoctorsForMedical(m.getMedicalID(),null,-91,-181,null,null,0,100);
-/*
-        bookmark.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!bookmarkFlag){
-                    bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
-                    bookmarkFlag = true;
-                }
-                else{
-                    bookmark.setBackgroundResource(R.drawable.btn_badge_3x);
-                    bookmarkFlag = false;
-                }
-            }
-        });*/
+
         bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,9 +171,8 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                     if (!bookmarkFlag) {
                         bookmarkFlag = true;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId", "") + "/class/CLS4/categoryItem/" + m.getMedicalID() + "/bookmark/1";
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId", "") + "/class/CLS4/categoryItem/" + m.getMedicalID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city","");
                         Log.e(TAG, "url" + url);
-                        String urls = "http://52.77.82.210/api/setBookMark/email/shwetasirsa93556@gmail.com/class/CLS1/categoryItem/R367/bookmark/1";
                         Ion.with(MedicalDetail.this)
                                 .load(url)
                                 .asJsonObject()
@@ -210,7 +195,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                     } else {
                         bookmarkFlag = false;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId", "") + "/class/CLS4/categoryItem/" + m.getMedicalID() + "/bookmark/-";
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId", "") + "/class/CLS4/categoryItem/" + m.getMedicalID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city","");;
                         Ion.with(MedicalDetail.this)
                                 .load(url)
                                 .asJsonObject()
@@ -275,29 +260,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                 });
 
                 dialog.show();
-             /*   AlertDialog.Builder builder = new AlertDialog.Builder(MedicalDetail.this);
-                //  builder.setTitle("Write Review");
 
-                CardView reviewLL = (CardView)getLayoutInflater().inflate(R.layout.review_layout,null);
-                final EditText input = (EditText)reviewLL.findViewById(R.id.review_text);
-                final Button submit = (Button) reviewLL.findViewById(R.id.btn_submit_review);
-                submit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        postReview(input.getText().toString());
-
-                    }
-                });
-                // Set up the input
-                //final EditText input = new EditText(FoodDetailActivity.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                //input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                builder.setView(reviewLL);
-                Dialog alertDialog = new Dialog(MedicalDetail.this);
-                alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                alertDialog.setContentView(R.layout.review_layout);
-                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                alertDialog.show();*/
             }
         });
 
@@ -316,7 +279,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v) {
                 Ion.with(MedicalDetail.this)
-                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","")+"/class/CLS4/categoryItem/"+m.getMedicalID()+"/rate/0")
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","")+"/class/CLS4/categoryItem/"+m.getMedicalID()+"/rate/0"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city",""))
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
@@ -328,7 +291,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                                     String message= result.get("message").toString();
                                     Log.e(TAG,"message thumb down"+message);
                                     getAllratingsthumbsdown();
-                                    //Toast.makeText(MedicalDetail.this, message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MedicalDetail.this, message, Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                 {
@@ -346,7 +309,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onClick(View v) {
                 Ion.with(MedicalDetail.this)
-                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","")+"/class/CLS4/categoryItem/"+m.getMedicalID()+"/rate/1")
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","")+"/class/CLS4/categoryItem/"+m.getMedicalID()+"/rate/1"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city",""))
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
@@ -417,115 +380,10 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-    public ArrayList<Doctor> getDoctorsForMedical(String medical, String name, double lat, double longi, String sortBy, String specialization, int start, int count){
-        String url = BASE_URL + "api/viewAllDoctorsForMedical";
-        url += "/latitude/" + lat;
-        url += "/longitude/" + longi;
-        if(specialization != null){
-            url += "/specialization/" + specialization;
-        }
-        else{
-            url += "/specialization/-";
-        }
-        url += "/medical/" + medical + "/limitStart/"+ start +"/count/" + count;
-        if(sortBy != null){
-            url += "/sortBy/" + sortBy;
-        }
-        if(name != null){
-            url += "/searchBy/" + name;
-        }
-        final ArrayList<Doctor> doctors = new ArrayList<>();
-        System.out.println(url);
-
-        Ion.with(getApplicationContext())
-                .load(url)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if(e==null) {
-                            JsonArray doc = result.getAsJsonArray("result");
-                            for (int i = 0; i < doc.size(); i++) {
-                                Doctor d = new Doctor();
-                                JsonElement obj = doc.get(i);
-                                d.setDoctorId(obj.getAsJsonObject().get("DoctorID").toString());
-                                d.setDoctorname(obj.getAsJsonObject().get("DoctorName").getAsString());
-                                d.setDoctorDetail(obj.getAsJsonObject().get("DoctorDetail").toString());
-                                d.setEmail(obj.getAsJsonObject().get("Email").toString());
-                                d.setProcedure(obj.getAsJsonObject().get("Procedure").toString());
-                                d.setPrice(obj.getAsJsonObject().get("Price").toString());
-                                d.setSchedule(obj.getAsJsonObject().get("Schedule").toString());
-                                d.setFrequency(obj.getAsJsonObject().get("Frequency").toString());
-                                d.setImage(obj.getAsJsonObject().get("Image").getAsString());
-                                d.setName(obj.getAsJsonObject().get("Name").toString());
-                                d.setAddress(obj.getAsJsonObject().get("Address").toString());
-                                d.setPostal(obj.getAsJsonObject().get("Postal").toString());
-                                d.setLatlong(obj.getAsJsonObject().get("LatLong").toString());
-                                d.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsInt());
-                                d.setDistance(obj.getAsJsonObject().get("Distance").toString());
-                                d.setYearOfExp(obj.getAsJsonObject().get("YearExperience").toString());
-                                d.setMySchedule(obj.getAsJsonObject().get("MySchedule").toString());
-                                d.setRates(obj.getAsJsonObject().get("Rate").toString());
-                                d.setTags(obj.getAsJsonObject().get("Tags").toString());
-                                ArrayList<Specialization> spe = new ArrayList<Specialization>();
-                                if (obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
-                                    JsonArray spec = obj.getAsJsonObject().get("Specialization").getAsJsonArray();
-                                    for (int j = 0; j < spec.size(); j++) {
-                                        Specialization s = new Specialization();
-                                        s.setSpecialization(spec.get(j).getAsJsonObject().get("Specialization").getAsString());
-                                        s.setSpecializationId(spec.get(j).getAsJsonObject().get("SpecializationID").getAsString());
-                                        spe.add(s);
-                                    }
-                                }
-                                d.setSpecializations(spe);
-                                ArrayList<Contact> con = new ArrayList<>();
-                                JsonArray cont = obj.getAsJsonObject().get("Contacts").getAsJsonArray();
-                                for (int j = 0; j < cont.size(); j++) {
-                                    Contact c = new Contact();
-                                    c.setContactId(cont.get(j).getAsJsonObject().get("ContactID").getAsLong());
-                                    c.setOwnerId(cont.get(j).getAsJsonObject().get("OwnerID").getAsString());
-                                    c.setPhoneNo(cont.get(j).getAsJsonObject().get("PhoneNo").getAsString());
-                                    con.add(c);
-                                }
-                                d.setContacts(con);
-                                ArrayList<String> images = new ArrayList<String>();
-
-                                if (obj.getAsJsonObject().get("Images").isJsonArray()) {
-                                    for (int j = 0; j < obj.getAsJsonObject().get("Images").getAsJsonArray().size(); j++) {
-                                        images.add(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
-                                    }
-                                }
-                                d.setImages(images);
-                                doctors.add(d);
-                            }
-                            for (int i = 0; i < doctors.size(); i++) {
-                                View doc_layout = LayoutInflater.from(MedicalDetail.this).inflate(R.layout.doctor_single, mLinearLayout, false);
-                                ImageView img = (ImageView) doc_layout.findViewById(R.id.doctor_img);
-                                TextView tv = (TextView) doc_layout.findViewById(R.id.doctor_name_tv);
-                                Doctor doct = doctors.get(i);
-                                if (doct.getImages().size() > 0) {
-                                    Ion.with(img)
-                                            .placeholder(R.drawable.doc_dummy)
-                                            .error(R.drawable.doc_dummy)
-                                            .load(doct.getImages().get(0));
-                                }
-                                tv.setText(doct.getDoctorname());
-                                mLinearLayout.addView(doc_layout);
-                            }
-
-                        }
-                        else
-                        {
-                            Toast.makeText(MedicalDetail.this, getResources().getString(R.string.oops), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-        return doctors;
-    }
 
     private void getIfBookmarked() {
         Ion.with(this)
-                .load("http://52.77.82.210/api/viewAllBookmarks/email/"+prefrence.getString("emailId","")+"/class/CLS4")
+                .load(Urls.BASE_URL+"api/viewAllBookmarks/email/"+prefrence.getString("emailId","")+"/class/CLS4"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city",""))
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
@@ -614,7 +472,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                     }
                 });*/
         if (!prefrence.getString("emailId", "").toString().trim().isEmpty()) {
-            String url = "http://52.77.82.210/api/addDeleteReview/reviewee/" + m.getMedicalID() + "/review/" + reviewText + "/email/" + prefrence.getString("emailId", "") + "/reviewID/-";
+            String url = Urls.BASE_URL+"api/addDeleteReview/reviewee/" + m.getMedicalID() + "/review/" + reviewText + "/email/" + prefrence.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city","");;
 
             JsonObjectRequest jsonRequest = new JsonObjectRequest
                     (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -644,7 +502,6 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                             error.printStackTrace();
                         }
                     });
-
             Volley.newRequestQueue(MedicalDetail.this).add(jsonRequest);
         }
         else {
@@ -655,7 +512,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
     public void populateReviews() {
         reviews = new ArrayList<>();
         Ion.with(getApplicationContext())
-                .load("http://52.77.82.210/api/viewReviewPerReviewee/reviewee/" + m.getMedicalID())
+                .load(Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getMedicalID()+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city",""))
                 .asString()
 
                 .setCallback(new FutureCallback<String>() {

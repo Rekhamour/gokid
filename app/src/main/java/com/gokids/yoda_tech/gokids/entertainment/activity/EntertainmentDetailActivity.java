@@ -81,9 +81,6 @@ import me.relex.circleindicator.CircleIndicator;
 public class EntertainmentDetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int MY_CALL_PERMISSION = 123;
-    private static final String BASE_URL = "http://52.77.82.210/";
-    private static final String viewrating = "api/viewRatingPerRatee/ratee/S1";
-    private static final String Add_rating = "http://52.77.82.210/api/addDeleteRating/ratee/R1/rating/2.5/email/manjularavula69@gmail.com/rateID/-";
 
     TextView address, email, website, distance, timing, cuisines;
     ImageView img;
@@ -213,6 +210,8 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         address.setText(m.getAddress()+","+m.getPostal());
         email.setText(m.getEmail());
+        getAllratingsthumbsdown();
+
         website.setText(m.getWebsite());
         timing.setText("SartDate: "+ m.getStartDate().substring(0,11).replaceAll("\"",""));
         endtime.setText("EndDate: "+ m.getEndDate().substring(0,11).replaceAll("\"",""));
@@ -236,7 +235,6 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
 
         populateReviews();
         getIfBookmarked();
-        getDoctorsForMedical(m.getShopID(),null,-91,-181,null,null,0,100);
 
         bookmark.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,7 +244,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                         bookmarkFlag = true;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
 
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS3/categoryItem/" + m.getEntertainmentID() + "/bookmark/1";
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS3/categoryItem/" + m.getEntertainmentID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");;
                         Log.e(TAG, "url" + url);
                         Ion.with(EntertainmentDetailActivity.this)
                                 .load(url)
@@ -267,7 +265,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                     } else {
                         bookmarkFlag = false;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS3/categoryItem/" + m.getEntertainmentID() + "/bookmark/-";
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS3/categoryItem/" + m.getEntertainmentID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");;
                         Ion.with(EntertainmentDetailActivity.this)
                                 .load(url)
                                 .asJsonObject()
@@ -284,26 +282,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                                     }
                                 });
 
-                  /*  String url= Urls.BASE_URL+"api/setBookMark/email/"+prefrences.getString("emailId","")+"/class/CLS1/categoryItem/"+m.getRestaurantID()+"/bookmark/0";
-                    Ion.with(FoodDetailActivity.this)
-                            .load(url)
-                            .asJsonObject()
-                            .setCallback(new FutureCallback<JsonObject>() {
-                                @Override
-                                public void onCompleted(Exception e, JsonObject result) {
-                                    if(e==null)
-                                    {
-                                        String status= result.get("status").toString();
-                                        if(status.equalsIgnoreCase("200"))
-                                        {
 
-
-                                        }
-                                    }
-
-                                }
-                            });
-*/
                     }
                 } else {
                     Toast.makeText(EntertainmentDetailActivity.this, "Please login first or continue", Toast.LENGTH_SHORT).show();
@@ -315,7 +294,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
             @Override
             public void onClick(View v) {
                 Ion.with(EntertainmentDetailActivity.this)
-                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","")+"/class/CLS3/categoryItem/"+m.getEntertainmentID()+"/rate/0")
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","")+"/class/CLS3/categoryItem/"+m.getEntertainmentID()+"/rate/0"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city",""))
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
@@ -327,7 +306,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                                     String message= result.get("message").toString();
                                     Log.e(TAG,"message thumb down"+message);
                                     getAllratingsthumbsdown();
-                                    //Toast.makeText(EntertainmentDetailActivity.this, message, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(EntertainmentDetailActivity.this, message, Toast.LENGTH_SHORT).show();
                                 }
                                 else
                                 {
@@ -345,7 +324,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
             @Override
             public void onClick(View v) {
                 Ion.with(EntertainmentDetailActivity.this)
-                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","")+"/class/CLS3/categoryItem/"+m.getEntertainmentID()+"/rate/1")
+                        .load(Urls.BASE_URL+"api/setRate/email/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","")+"/class/CLS3/categoryItem/"+m.getEntertainmentID()+"/rate/1"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city",""))
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
@@ -399,48 +378,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                 dialog.show();
 
 
-              /* // builder.setView(reviewLL);
-                final Dialog alertDialog = new Dialog(FoodDetailActivity.this);
-                alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                alertDialog.setContentView(R.layout.review_layout);
-                alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                alertDialog.show();
-                CardView reviewLL = (CardView)getLayoutInflater().inflate(R.layout.review_layout,null);
-                final EditText input = (EditText)reviewLL.findViewById(R.id.review_text);
-                Button submit = (Button) reviewLL.findViewById(R.id.btn_submit_review);
-                submit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.e(TAG,"I M in click");
-                        alertDialog.dismiss();
-                        postReview(input.getText().toString());
 
-                    }
-                });*/
-                // Set up the input
-                //final EditText input = new EditText(FoodDetailActivity.this);
-                // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-                //input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-
-                // Set up the buttons
-              /*  builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //reviewText = input.getText().toString();
-                        if (!reviewText.trim().equals("")) {
-                            postReview(reviewText);
-                        }
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });*/
-
-              //  builder.show();
             }
         });
 
@@ -501,7 +439,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
 
     private void getRatings() {
         String ratings= String.valueOf(selectedratings);
-        String path= Urls.BASE_URL+"api/viewRatingPerRatee/ratee/" + m.getEntertainmentID() ;
+        String path= Urls.BASE_URL+"api/viewRatingPerRatee/ratee/" + m.getEntertainmentID() +"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");
         Log.e(TAG,"path url for viewing ratings "+ path);
 
         Ion.with(EntertainmentDetailActivity.this)
@@ -523,7 +461,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
 
     private void updateratings(float selectedratings) {
         String ratings= String.valueOf(selectedratings);
-        String path= Urls.BASE_URL+"api/addDeleteRating/ratee/" + m.getEntertainmentID() + "/rating/" +ratings +"/email/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","").toString()+"/rateID/-" ;
+        String path= Urls.BASE_URL+"api/addDeleteRating/ratee/" + m.getEntertainmentID() + "/rating/" +ratings +"/email/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","").toString()+"/rateID/-"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","") ;
         Log.e(TAG,"path url for adding ratings "+ path);
 
         Ion.with(EntertainmentDetailActivity.this)
@@ -538,112 +476,10 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
 
     }
 
-    public ArrayList<Doctor> getDoctorsForMedical(String medical, String name, double lat, double longi, String sortBy, String specialization, int start, int count){
-        String url = BASE_URL + "api/viewAllDoctorsForMedical";
-        url += "/latitude/" + lat;
-        url += "/longitude/" + longi;
-        if(specialization != null){
-            url += "/specialization/" + specialization;
-        }
-        else{
-            url += "/specialization/-";
-        }
-        url += "/medical/" + medical + "/limitStart/"+ start +"/count/" + count;
-        if(sortBy != null){
-            url += "/sortBy/" + sortBy;
-        }
-        if(name != null){
-            url += "/searchBy/" + name;
-        }
-        final ArrayList<Doctor> doctors = new ArrayList<>();
-        System.out.println(url);
-
-        Ion.with(getApplicationContext())
-                .load(url)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if (e == null) {
-                            JsonArray doc = result.getAsJsonArray("result");
-                            for (int i = 0; i < doc.size(); i++) {
-                                Doctor d = new Doctor();
-                                JsonElement obj = doc.get(i);
-                                d.setDoctorId(obj.getAsJsonObject().get("DoctorID").toString());
-                                d.setDoctorname(obj.getAsJsonObject().get("DoctorName").getAsString());
-                                d.setDoctorDetail(obj.getAsJsonObject().get("DoctorDetail").toString());
-                                d.setEmail(obj.getAsJsonObject().get("Email").toString());
-                                d.setProcedure(obj.getAsJsonObject().get("Procedure").toString());
-                                d.setPrice(obj.getAsJsonObject().get("Price").toString());
-                                d.setSchedule(obj.getAsJsonObject().get("Schedule").toString());
-                                d.setFrequency(obj.getAsJsonObject().get("Frequency").toString());
-                                d.setImage(obj.getAsJsonObject().get("Image").getAsString());
-                                d.setName(obj.getAsJsonObject().get("Name").toString());
-                                d.setAddress(obj.getAsJsonObject().get("Address").toString());
-                                d.setPostal(obj.getAsJsonObject().get("Postal").toString());
-                                d.setLatlong(obj.getAsJsonObject().get("LatLong").toString());
-                                d.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsInt());
-                                d.setDistance(obj.getAsJsonObject().get("Distance").toString());
-                                d.setYearOfExp(obj.getAsJsonObject().get("YearExperience").toString());
-                                d.setMySchedule(obj.getAsJsonObject().get("MySchedule").toString());
-                                d.setRates(obj.getAsJsonObject().get("Rate").toString());
-                                d.setTags(obj.getAsJsonObject().get("Tags").toString());
-                                ArrayList<Specialization> spe = new ArrayList<Specialization>();
-                                if (obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
-                                    JsonArray spec = obj.getAsJsonObject().get("Specialization").getAsJsonArray();
-                                    for (int j = 0; j < spec.size(); j++) {
-                                        Specialization s = new Specialization();
-                                        s.setSpecialization(spec.get(j).getAsJsonObject().get("Specialization").getAsString());
-                                        s.setSpecializationId(spec.get(j).getAsJsonObject().get("SpecializationID").getAsString());
-                                        spe.add(s);
-                                    }
-                                }
-                                d.setSpecializations(spe);
-                                ArrayList<Contact> con = new ArrayList<>();
-                                JsonArray cont = obj.getAsJsonObject().get("Contacts").getAsJsonArray();
-                                for (int j = 0; j < cont.size(); j++) {
-                                    Contact c = new Contact();
-                                    c.setContactId(cont.get(j).getAsJsonObject().get("ContactID").getAsLong());
-                                    c.setOwnerId(cont.get(j).getAsJsonObject().get("OwnerID").getAsString());
-                                    c.setPhoneNo(cont.get(j).getAsJsonObject().get("PhoneNo").getAsString());
-                                    con.add(c);
-                                }
-                                d.setContacts(con);
-                                ArrayList<String> images = new ArrayList<String>();
-
-                                if (obj.getAsJsonObject().get("Images").isJsonArray()) {
-                                    for (int j = 0; j < obj.getAsJsonObject().get("Images").getAsJsonArray().size(); j++) {
-                                        images.add(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
-                                    }
-                                }
-                                d.setImages(images);
-                                doctors.add(d);
-                            }
-                            for (int i = 0; i < doctors.size(); i++) {
-                                View doc_layout = LayoutInflater.from(EntertainmentDetailActivity.this).inflate(R.layout.doctor_single, mLinearLayout, false);
-                                ImageView img = (ImageView) doc_layout.findViewById(R.id.doctor_img);
-                                TextView tv = (TextView) doc_layout.findViewById(R.id.doctor_name_tv);
-                                Doctor doct = doctors.get(i);
-                                if (doct.getImages().size() > 0) {
-                                    Ion.with(img)
-                                            .placeholder(R.drawable.doc_dummy)
-                                            .error(R.drawable.doc_dummy)
-                                            .load(doct.getImages().get(0));
-                                }
-                                tv.setText(doct.getDoctorname());
-                                mLinearLayout.addView(doc_layout);
-                            }
-
-                        }
-                    }
-                });
-
-        return doctors;
-    }
 
     private void getIfBookmarked() {
         Ion.with(this)
-                .load(Urls.BASE_URL+"api/viewAllBookmarks/email/" +prefrences.getString("emailId","")+"/class/CLS3")
+                .load(Urls.BASE_URL+"api/viewAllBookmarks/email/" +prefrences.getString("emailId","")+"/class/CLS3"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city",""))
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
@@ -705,7 +541,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
 
     private void postReview(String reviewText) {
         if (!prefrences.getString("emailId", "").toString().trim().isEmpty()) {
-            String url = Urls.BASE_URL + "api/addDeleteReview/reviewee/" + m.getEntertainmentID() + "/review/" + reviewText + "/email/" + prefrences.getString("emailId", "") + "/reviewID/-";
+            String url = Urls.BASE_URL + "api/addDeleteReview/reviewee/" + m.getEntertainmentID() + "/review/" + reviewText + "/email/" + prefrences.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");;
             Log.e(TAG, "url" + url);
 
 
@@ -751,7 +587,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
 
     public void populateReviews() {
         reviews = new ArrayList<>();
-        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getEntertainmentID();
+        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getEntertainmentID()+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
                 new Response.Listener<String>() {
@@ -883,7 +719,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc,15));
     }
     private void getAllratingsthumbsdown() {
-        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","") +"/class/CLS3/categoryItem/"+m.getEntertainmentID();
+        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("emailId","") +"/class/CLS3/categoryItem/"+m.getEntertainmentID()+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");
         Ion.with(EntertainmentDetailActivity.this)
                 .load(Urls.BASE_URL+getthumbsdown)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {

@@ -49,10 +49,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.gokids.yoda_tech.gokids.R;
+import com.gokids.yoda_tech.gokids.eat.activity.FoodFragment;
 import com.gokids.yoda_tech.gokids.eat.adapter.HintAdapter;
+import com.gokids.yoda_tech.gokids.eat.model.HintBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
+import com.gokids.yoda_tech.gokids.entertainment.activity.DaytripsFragment;
+import com.gokids.yoda_tech.gokids.entertainment.activity.EntertainFragment;
 import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.EntertainlistAdapter;
 import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.EntertainmentListAdapter;
+import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.EventsShows;
+import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.FourthEntertainment;
+import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.OuterEntertainment;
+import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.SummerEntertainment;
+import com.gokids.yoda_tech.gokids.entertainment.activity.adapter.ToursEntertainment;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.learn.Util.AllTopics;
 import com.gokids.yoda_tech.gokids.learn.Util.Classes;
@@ -63,8 +72,14 @@ import com.gokids.yoda_tech.gokids.learn.Util.Reviews;
 import com.gokids.yoda_tech.gokids.learn.Util.SubTopic;
 import com.gokids.yoda_tech.gokids.learn.Util.Topics;
 import com.gokids.yoda_tech.gokids.learn.activity.DialogActivity;
-import com.gokids.yoda_tech.gokids.medical.adapter.MedicalAdapter;
+import com.gokids.yoda_tech.gokids.medical.activity.SearchResultActivity;
 import com.gokids.yoda_tech.gokids.medical.adapter.MedicalListAdapter;
+import com.gokids.yoda_tech.gokids.shop.activity.ApperealsFragment;
+import com.gokids.yoda_tech.gokids.shop.activity.EducationFragment;
+import com.gokids.yoda_tech.gokids.shop.activity.KidsWearFragment;
+import com.gokids.yoda_tech.gokids.shop.activity.MaternityFragment;
+import com.gokids.yoda_tech.gokids.shop.activity.ShoeFragment;
+import com.gokids.yoda_tech.gokids.shop.activity.ToyFragment;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoplistAdapter;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoppingListAdapter;
 import com.gokids.yoda_tech.gokids.signup.activity.SignUpActivity;
@@ -95,14 +110,15 @@ public class Utils {
     private static String TAG = "Utils";
     private static String Bucket_name = "kisimages/User";
     private static String flagupload="";
-    private static Context context;
+    public static Context context;
+    public static String place_id;
     public static String currentloc;
     private static LocationManager mLocationManager;
     private static long LOCATION_REFRESH_TIME=0;
     private static float LOCATION_REFRESH_DISTANCE=0;
     private static RecyclerView hintlistview;
     private static LinearLayoutManager lm;
-    private static ArrayList<String> hintlist= new ArrayList<>();
+    private static ArrayList<HintBean> hintlist= new ArrayList<>();
     private static HintAdapter hintadapter;
 
     public static boolean checkStatus(Context context, String jSONString){
@@ -473,6 +489,7 @@ public class Utils {
     }
 
     public static boolean checkLoginWithUserName(Context context,String jSonString) {
+        Log.e(TAG,"login result"+jSonString);
 
         try {
 
@@ -832,8 +849,8 @@ public class Utils {
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                 LOCATION_REFRESH_DISTANCE, mLocationListener);
-  mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE, mLocationListener);
+      //   mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME,
+         //       LOCATION_REFRESH_DISTANCE, mLocationListener);
   //Log.v("i am outside util loc", location[0].toString());
         return location[0] == null?l:location[0];
     }
@@ -1124,7 +1141,7 @@ public class Utils {
 
 
     }
-    public static void getSearchDialogEntertainment(final Context context, final ArrayList<MainBean> list, final RecyclerView rv_list, final String firstflag)
+    public static void getSearchDialogEntertainment(final Context context, final ArrayList<MainBean> list, final RecyclerView rv_list, final String firstflag, final String entertaincategory)
     {
         final AlertDialog.Builder builder= new AlertDialog.Builder(context);
         //LayoutInflater inflater = context.getLayoutInflater(null);
@@ -1162,7 +1179,7 @@ public class Utils {
                 new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         queryTv.removeTextChangedListener(mTextwatcher);
-                       queryTv.setText( hintlist.get(position));
+                       queryTv.setText( hintlist.get(position).getmDescription());
                         // TODO Handle item click
                     }
                 })
@@ -1186,33 +1203,41 @@ public class Utils {
 
                     final String location = list.get(i).getAddress().toLowerCase();
                     if (restaurantName.contains(query)) {
-                        Log.e(TAG, " resaurant name" + query);
+                        Log.e(Utils.TAG, " resaurant name" + query);
                         filteredList.add(list.get(i));
                     } else if (location.contains(query)) {
-                        Log.e(TAG, " location name" + query);
+                        Log.e(Utils.TAG, " location name" + query);
 
                         filteredList.add(list.get(i));
                     }
                 }
+                if (filteredList.size() == 0) {
+                    list.clear();
+                  rv_list.setLayoutManager(new LinearLayoutManager(context));
+                  if(Utils.getLatLongUsingGoogle(context,place_id, entertaincategory,rv_list, query)) {
+                  }
+                    alertDialog.dismiss();
 
-                rv_list.setLayoutManager(new LinearLayoutManager(context));
-                EntertainlistAdapter mAdapter = new EntertainlistAdapter(context, filteredList,firstflag);
-                rv_list.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                alertDialog.dismiss();
+                }
+                else {
+
+                    rv_list.setLayoutManager(new LinearLayoutManager(context));
+                    EntertainlistAdapter mAdapter = new EntertainlistAdapter(context, filteredList, firstflag);
+                    rv_list.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                    alertDialog.dismiss();
+                }
             }
         });
     }
-    public static void getSearchDialog(final Context context, final ArrayList<MainBean> list, final RecyclerView rv_list)
+    public static void getSearchDialog(final Context context, final ArrayList<MainBean> list, final RecyclerView rv_list, final String entertaincategory)
     {
         final AlertDialog.Builder builder= new AlertDialog.Builder(context);
-        //LayoutInflater inflater = context.getLayoutInflater(null);
 
         final View dialogView = LayoutInflater.from(context).inflate(R.layout.search_layout, null);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
-        // builder.setView(R.layout.search_layout);
         final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
         Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
         hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
@@ -1246,12 +1271,12 @@ public class Utils {
                     @Override public void onItemClick(View view, int position) {
                         try {
                             queryTv.removeTextChangedListener(mTextwatcher);
-                            queryTv.setText(hintlist.get(position));
+                            queryTv.setText(hintlist.get(position).getmDescription());
 
                         }
                         catch (Exception e)
                         {
-                            Log.e(TAG,"exception"+ e.getMessage());
+                            Log.e(Utils.TAG,"exception"+ e.getMessage());
 
                         }
                         // TODO Handle item click
@@ -1271,24 +1296,34 @@ public class Utils {
 
                     final String location = list.get(i).getAddress().toLowerCase();
                     if (restaurantName.contains(query)) {
-                        Log.e(TAG, " resaurant name" + query);
+                        Log.e(Utils.TAG, " resaurant name" + query);
                         filteredList.add(list.get(i));
                     } else if (location.contains(query)) {
-                        Log.e(TAG, " location name" + query);
+                        Log.e(Utils.TAG, " location name" + query);
 
                         filteredList.add(list.get(i));
                     }
                 }
+                if (filteredList.size() == 0) {
+                    list.clear();
+                    rv_list.setLayoutManager(new LinearLayoutManager(context));
+                   if(Utils.getLatLongUsingGoogle(context,place_id, entertaincategory,rv_list, query)) {
+                    }
+                    alertDialog.dismiss();
 
-                rv_list.setLayoutManager(new LinearLayoutManager(context));
-                ShoplistAdapter mAdapter = new ShoplistAdapter(context, filteredList);
-                rv_list.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                alertDialog.dismiss();
+                }
+                else {
+
+                    rv_list.setLayoutManager(new LinearLayoutManager(context));
+                    ShoplistAdapter mAdapter = new ShoplistAdapter(context, filteredList);
+                    rv_list.setAdapter(mAdapter);
+                    mAdapter.notifyDataSetChanged();
+                    alertDialog.dismiss();
+                }
             }
         });
     }
-    public static void getHints(String searchhint, Context context, final HintAdapter hintAdapter, final ArrayList<String> hintlist) {
+    public static void getHints(String searchhint, Context context, final HintAdapter hintAdapter, final ArrayList<HintBean> hintlist) {
 String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+searchhint+"&location=1.3521,103.8198&radius=1000&key=AIzaSyAVFxqmmNDjbLUEZ7mDqN-65VqHtc0xvTk";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
                 new Response.Listener<String>() {
@@ -1306,9 +1341,17 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
                                     JSONArray predictions = result.getJSONArray("predictions");
                                     if (predictions.length() > 0) {
                                         for (int i = 0; i < predictions.length(); i++) {
+                                            HintBean bean = new HintBean();
                                             JSONObject obj = predictions.getJSONObject(i);
                                             String description = obj.getString("description");
-                                            hintlist.add(description);
+                                             bean.setmDescription(description);
+                                            if(obj.has("place_id"))
+                                            {
+                                                place_id = obj.getString("place_id");
+                                               bean.setmPlaceId(place_id);
+
+                                            }
+                                            hintlist.add(bean);
 
                                         }
                                     }
@@ -1336,53 +1379,41 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
         });
         Volley.newRequestQueue(context).add(stringRequest);
 
-
-
-        /*Ion.with(context)
-                .load("https://maps.googleapis.com/maps/api/place/queryautocomplete/json?input="+searchhint+"&location=1.3521,103.8198&radius=1000&key=AIzaSyAVFxqmmNDjbLUEZ7mDqN-65VqHtc0xvTk")
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        Log.e(TAG,"result hint"+result.toString());
-
-                        if (result != null) {
-                            if (result.has("predictions")) {
-
-                                JsonArray predictions = result.getAsJsonArray("predictions");
-                                if (predictions.size() > 0) {
-                                    for (int i = 0; i < predictions.size(); i++) {
-                                        JsonObject obj = predictions.get(i).getAsJsonObject();
-                                        String description = obj.get("description").getAsString();
-                                        hintlist.add(description);
-
-                                    }
-                                }
-                                hintAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    }
-                });*/
     }
-    public static void getfilterDistance(Context context, final ArrayList<MainBean> list, PopupMenu popup, final ShoppingListAdapter adapter)
+    public static void getfilterDistance(final Context ctx, final ArrayList<MainBean> list, final PopupMenu popup, final ShoppingListAdapter adapter, final String TAG)
     {
+        context=ctx;
 
         popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.filter_distance_only) {
-
+                    list.clear();
+                    Location loc=getLatLong(ctx);
                     Log.e("log", "i m in sort distance here");
-                    Collections.sort(list, new Comparator<MainBean>() {
-                        @Override
-                        public int compare(MainBean lhs, MainBean rhs) {
-
-                            return lhs.getDistance().compareTo(rhs.getDistance());
-
-
-                        }
-                    });
-                    adapter.notifyDataSetChanged();
+                    if(TAG.equalsIgnoreCase("ApperealsFragment")) {
+                        ApperealsFragment.getRestaurants("-",MySharedPrefrence.getPrefrence(context).getString("emailId",""),loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+                    }
+                    else if(TAG.equalsIgnoreCase("EducationFragment"))
+                    {
+                        EducationFragment.getRestaurants("-",MySharedPrefrence.getPrefrence(context).getString("emailId",""),loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+                    }
+                    else if(TAG.equalsIgnoreCase("KidsWearFragment"))
+                    {
+                        KidsWearFragment.getRestaurants("-",MySharedPrefrence.getPrefrence(context).getString("emailId",""),loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+                    }
+                    else if(TAG.equalsIgnoreCase("MaternityFragment"))
+                    {
+                        MaternityFragment.getRestaurants("-",MySharedPrefrence.getPrefrence(context).getString("emailId",""),loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+                    }
+                    else if(TAG.equalsIgnoreCase("ShoeFragment"))
+                    {
+                        ShoeFragment.getRestaurants("-",MySharedPrefrence.getPrefrence(context).getString("emailId",""),loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+                    }
+                    else if(TAG.equalsIgnoreCase("ToyFragment"))
+                    {
+                        ToyFragment.getRestaurants("-",MySharedPrefrence.getPrefrence(context).getString("emailId",""),loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+                    }
 
                 }
                 return true;
@@ -1392,25 +1423,52 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
         popup.show();
 
     }
-    public static void getfilterDistanceEntertainment(Context context, final ArrayList<MainBean> list, PopupMenu popup, final EntertainmentListAdapter adapter)
+    public static void getfilterDistanceEntertainment(final Context context, final ArrayList<MainBean> list, PopupMenu popup, final EntertainmentListAdapter adapter, final String TAG)
     {
 
         popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.filter_distance_only) {
+                    list.clear();
+                    Location loc=getLatLong(context);
 
                     Log.e("log", "i m in sort distance here");
-                    Collections.sort(list, new Comparator<MainBean>() {
-                        @Override
-                        public int compare(MainBean lhs, MainBean rhs) {
+                   if(TAG.equalsIgnoreCase("EventShows"))
+                   {
+                       EventsShows.getRestaurants(DaytripsFragment.dte,"-",loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
 
-                            return lhs.getDistance().compareTo(rhs.getDistance());
+                   }
+                   else if(TAG.equalsIgnoreCase("FourthEntertainment"))
+                    {
+                        FourthEntertainment.getRestaurants(DaytripsFragment.dte,"-",loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
 
+                    }
+                   else if(TAG.equalsIgnoreCase("OuterEntertainment"))
+                   {
+                       OuterEntertainment.getRestaurants(DaytripsFragment.dte,"-",loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
 
-                        }
-                    });
-                    adapter.notifyDataSetChanged();
+                   }
+                   else if(TAG.equalsIgnoreCase("ToursEnterainment"))
+                   {
+                       ToursEntertainment.getRestaurants(DaytripsFragment.dte,"-",loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+
+                   }
+                   else if(TAG.equalsIgnoreCase("SummerEntertainment"))
+                   {
+                       SummerEntertainment.getRestaurants(DaytripsFragment.dte,"-",loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+
+                   }
+                   else if(TAG.equalsIgnoreCase("DaytripsFragment"))
+                   {
+                       DaytripsFragment.getRestaurants(DaytripsFragment.dte,"-",loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+
+                   }
+                   else if(TAG.equalsIgnoreCase("EntertainFragment"))
+                   {
+                       EntertainFragment.getRestaurants(DaytripsFragment.dte,"-",loc.getLatitude(),loc.getLongitude(),"Distance",0,50);
+
+                   }
 
                 }
                 return true;
@@ -1469,7 +1527,7 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
                     @Override public void onItemClick(View view, int position) {
                         try {
                             queryTv.removeTextChangedListener(mTextwatcher);
-                            queryTv.setText(hintlist.get(position));
+                            queryTv.setText(hintlist.get(position).getmDescription());
 
                         }
                         catch (Exception e)
@@ -1504,12 +1562,22 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
                         filteredList.add(list.get(i));
                     }
                 }
+                if (filteredList.size() == 0) {
+                    list.clear();
+                    rvlist.setLayoutManager(new LinearLayoutManager(context));
+                    rvlist.setAdapter(SearchResultActivity.medicalAdapter);
+                    if(Utils.getLatLongUsingGoogle(context,place_id, "SearchResultActivity", rvlist,query)) {
+                    }
+                    alertDialog.dismiss();
 
-                rvlist.setLayoutManager(new LinearLayoutManager(context));
-                MedicalAdapter mAdapter = new MedicalAdapter(filteredList);
-                rvlist.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                alertDialog.dismiss();
+                }
+                else {
+                    rvlist.setLayoutManager(new LinearLayoutManager(context));
+                  MedicalListAdapter  medicalAdapter = new MedicalListAdapter(context,list);
+                    rvlist.setAdapter(medicalAdapter);
+                    medicalAdapter.notifyDataChanged();
+                    alertDialog.dismiss();
+                }
 
 
 
@@ -1518,24 +1586,168 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
         });
 
     }
-    public static void getfilterDistanceMedical(Context context, final ArrayList<MainBean> list, PopupMenu popup, final MedicalListAdapter adapter)
+    public static  double[] latlon = new double[2];
+
+    public static boolean getLatLongUsingGoogle(final Context ctx, String placeId, final String searchResultActivity, final RecyclerView rv_list, final String query) {
+        context= ctx;
+
+        String url="https://maps.googleapis.com/maps/api/place/details/json?placeid="+placeId+"&key=AIzaSyAVFxqmmNDjbLUEZ7mDqN-65VqHtc0xvTk";
+
+        final StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.e("add result","add result"+response);
+                        JSONObject result = null;
+                        try {
+                            result = new JSONObject(response);
+                            Log.e(TAG,"result hint"+result.toString());
+
+                            if (result != null) {
+                                if (result.has("result")) {
+                                    JSONObject resultobj = result.getJSONObject("result");
+                                    if (resultobj.has("geometry")) {
+                                        JSONObject geometryobject = resultobj.getJSONObject("geometry");
+                                        JSONObject locatoobj = geometryobject.getJSONObject("location");
+                                        double lat = locatoobj.getDouble("lat");
+                                        double lng = locatoobj.getDouble("lng");
+                                        latlon[0] = lat;
+                                        latlon[1] = lng;
+                                        Log.e(TAG,"lat long"+ lat + " "+ lng);
+                                        if(searchResultActivity.equalsIgnoreCase("SearchResultActivity"))
+                                        {
+                                            SearchResultActivity.getMedicals(SearchResultActivity.category,query,latlon[0],latlon[1],"Distance",SearchResultActivity.specializ,0,50);
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase("FoodFragment")) {
+                                            FoodFragment.getRestaurants(query, MySharedPrefrence.getPrefrence(ctx).getString("emailId", ""), Utils.latlon[0], Utils.latlon[1], "distance", 0, 50);
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(EntertainFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(EntertainFragment.adapter);
+                                            EntertainFragment.getRestaurants(EntertainFragment.dte,query,latlon[0],latlon[1],"Distance",0,50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(DaytripsFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(DaytripsFragment.adapter);
+                                            DaytripsFragment.getRestaurants(DaytripsFragment.dte,query,latlon[0],latlon[1],"Distance",0,50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(DaytripsFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(DaytripsFragment.adapter);
+                                            DaytripsFragment.getRestaurants(DaytripsFragment.dte,query,latlon[0],latlon[1],"Distance",0,50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(EventsShows.TAG))
+                                        {
+                                            rv_list.setAdapter(EventsShows.adapter);
+                                            EventsShows.getRestaurants(EventsShows.dte,query,latlon[0],latlon[1],"Distance",0,50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(FourthEntertainment.TAG))
+                                        {
+                                            rv_list.setAdapter(FourthEntertainment.adapter);
+                                            FourthEntertainment.getRestaurants(FourthEntertainment.dte,query,latlon[0],latlon[1],"Distance",0,50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(OuterEntertainment.TAG))
+                                        {
+                                            rv_list.setAdapter(OuterEntertainment.adapter);
+                                            OuterEntertainment.getRestaurants(OuterEntertainment.dte,MySharedPrefrence.getPrefrence(context).getString("emailId",""),latlon[0],latlon[1],"Distance",0,50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(SummerEntertainment.TAG))
+                                        {
+                                            rv_list.setAdapter(SummerEntertainment.adapter);
+                                            SummerEntertainment.getRestaurants(SummerEntertainment.dte,query,latlon[0],latlon[1],"Distance",0,50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(ToursEntertainment.TAG))
+                                        {
+                                            rv_list.setAdapter(ToursEntertainment.adapter);
+                                            ToursEntertainment.getRestaurants(ToursEntertainment.dte,query,latlon[0],latlon[1],"Distance",0,50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(ApperealsFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(ApperealsFragment.adapter);
+                                            ApperealsFragment.getRestaurants(query, MySharedPrefrence.getPrefrence(ctx).getString("emailId", ""), Utils.latlon[0], Utils.latlon[1], "distance", 0, 50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(EducationFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(EducationFragment.adapter);
+                                            EducationFragment.getRestaurants(query, MySharedPrefrence.getPrefrence(ctx).getString("emailId", ""), Utils.latlon[0], Utils.latlon[1], "distance", 0, 50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(KidsWearFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(KidsWearFragment.adapter);
+                                            KidsWearFragment.getRestaurants(query, MySharedPrefrence.getPrefrence(ctx).getString("emailId", ""), Utils.latlon[0], Utils.latlon[1], "distance", 0, 50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(MaternityFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(MaternityFragment.adapter);
+                                            MaternityFragment.getRestaurants(query, MySharedPrefrence.getPrefrence(ctx).getString("emailId", ""), Utils.latlon[0], Utils.latlon[1], "distance", 0, 50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(ShoeFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(ShoeFragment.adapter);
+                                            ShoeFragment.getRestaurants(query, MySharedPrefrence.getPrefrence(ctx).getString("emailId", ""), Utils.latlon[0], Utils.latlon[1], "distance", 0, 50);
+
+                                        }
+                                        else if(searchResultActivity.equalsIgnoreCase(ToyFragment.TAG))
+                                        {
+                                            rv_list.setAdapter(ToyFragment.adapter);
+                                            ToyFragment.getRestaurants(query, MySharedPrefrence.getPrefrence(ctx).getString("emailId", ""), Utils.latlon[0], Utils.latlon[1], "distance", 0, 50);
+
+                                        }
+                                    }
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                // Error handling
+                System.out.println("Something went wrong!");
+                error.printStackTrace();
+
+            }
+        });
+        Volley.newRequestQueue(context).add(stringRequest);
+
+
+     return  true;
+    }
+
+    public static void getResults() {
+
+    }
+
+    public static void getfilterDistanceMedical(final Context context, final ArrayList<MainBean> list, PopupMenu popup, final MedicalListAdapter adapter)
     {
         popup.getMenuInflater().inflate(R.menu.filter_only_distance, popup.getMenu());
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.filter_distance_only) {
+                    list.clear();
+                    Location loc= getLatLong(context);
 
                     Log.e("log", "i m in sort distance here");
-                    Collections.sort(list, new Comparator<MainBean>() {
-                        @Override
-                        public int compare(MainBean lhs, MainBean rhs) {
+                    SearchResultActivity.getMedicals(SearchResultActivity.category,"-",loc.getLatitude(),loc.getLongitude(),"Distance",SearchResultActivity.specializ,0,50);
 
-                            return lhs.getDistance().compareTo(rhs.getDistance());
-
-
-                        }
-                    });
-                    adapter.notifyDataSetChanged();
 
                 }
                 return true;
@@ -1572,42 +1784,6 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
         }
         return isValid;
     }
-/*
-    public static String getDataWithMessage(String URL, Context mContext) {
-        DefaultHttpClient httpClient = null;
 
-
-        try {
-            // Setup a custom SSL Factory object which simply ignore the certificates validation and accept all type of self signed certificates
-            SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
-            sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-            // Enable HTTP parameters
-            HttpParams params = new BasicHttpParams();
-            HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-            HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-
-            // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
-            SchemeRegistry registry = new SchemeRegistry();
-            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            registry.register(new Scheme("https", sslFactory, 443));
-
-            // Create a new connection manager using the newly created registry and then create a new HTTP client using this connection manager
-            ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
-            httpClient = new DefaultHttpClient(ccm, params);
-            HttpPost httpPost = new HttpPost(URL);
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-            if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                return EntityUtils.toString(httpResponse.getEntity());
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            Log.e("Error", TAG + " " + e.getMessage());
-            httpClient.getConnectionManager().shutdown();
-            return null;
-        }
-    }
-*/
 }
 

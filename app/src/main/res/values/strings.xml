@@ -16,7 +16,7 @@
     <string name="academics">Academics</string>
     <string name="arts">Arts &amp; Crafts</string>
     <string name="sports">Sports</string>
-    <string name="base_url">http://52.77.82.210/api/</string>
+    <string name="base_url">https://api.gokids.mobi/api/</string>
     <string name="viewTopics">viewAllTopics</string>
     <string name="listClass">List Of Classes</string>
 

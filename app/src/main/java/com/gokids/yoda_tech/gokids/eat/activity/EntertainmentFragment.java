@@ -46,6 +46,7 @@ public class EntertainmentFragment extends Fragment implements FoodAdapter.ItemC
         View view=  inflater.inflate(R.layout.entertain_food_layout, container, false);
         categoriesListview= (RecyclerView)view.findViewById(R.id.entertainment_cat_list);
         layoutmanager= new LinearLayoutManager(getActivity());
+        categoryBeanArrayList.clear();
         adapter= new EntertainCategoriesAdapter(getActivity(),categoryBeanArrayList);
         categoriesListview.setLayoutManager(layoutmanager);
         categoriesListview.setAdapter(adapter);

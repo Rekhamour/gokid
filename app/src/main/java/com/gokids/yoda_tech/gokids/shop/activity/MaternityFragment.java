@@ -18,16 +18,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gokids.yoda_tech.gokids.R;
-import com.gokids.yoda_tech.gokids.eat.adapter.FoodAdapter;
 import com.gokids.yoda_tech.gokids.eat.adapter.HintAdapter;
 import com.gokids.yoda_tech.gokids.eat.model.Contact;
 import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
-import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoplistAdapter;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoppingListAdapter;
 import com.gokids.yoda_tech.gokids.utils.Constants;
+import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -42,23 +42,22 @@ import java.util.ArrayList;
  */
 
 public class MaternityFragment extends Fragment  {
-    RecyclerView rvdatalistview;
+    public static RecyclerView rvdatalistview;
     TextView numFoods;
-    ShoppingListAdapter adapter;
-    ArrayList<MainBean> datalist;
-    String  category= "Eat";
-    public int  mCount =  0;
-    Context ctx;
-    private boolean loading = true;
+    public static ShoppingListAdapter adapter;
+    public static ArrayList<MainBean> datalist;
+    public static String TAG = "MaternityFragment";
+
+    String  category= "-";
+    public static int  mCount =  0;
+    public static Context ctx;
 
     LinearLayoutManager layoutManager;
-    private static final String BASE_URL = "http://52.77.82.210/";
-    private String TAG = getClass().getName();
     private int total;
     private SwipeRefreshLayout swipe_food;
     private SharedPreferences prefrence;
     private int countlimit = 50;
-    private Location latlon;
+    private static Location latlon;
     private LinearLayout datalistmap_LL;
     private RecyclerView hintdatalistview;
     private LinearLayoutManager lm;
@@ -125,7 +124,7 @@ public class MaternityFragment extends Fragment  {
     }
     public int getTotalRestaurants(final String category) {
         Ion.with(getActivity())
-                .load("http://52.77.82.210/api/categoryTotalCount/category/CLS2/subCategory/CAT7")
+                .load(Urls.BASE_URL+"api/categoryTotalCount/category/CLS2/subCategory/CAT7")
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
@@ -146,13 +145,13 @@ public class MaternityFragment extends Fragment  {
 
 
 
-    public ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
+    public static ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
         mCount =  start;
 
-        String PATH= BASE_URL + "api/viewAllShops/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/CAT7/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/-";
+        String PATH= Urls.BASE_URL + "api/viewAllShops/latitude/"+lat+"/longitude/"+longi+"/category/CAT7/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/"+category;
         Log.e(TAG,"path"+PATH);
 
-        Ion.with(getActivity())
+        Ion.with(ctx)
                 .load(PATH)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
@@ -242,6 +241,10 @@ public class MaternityFragment extends Fragment  {
 
                                         adapter.notifyDataChanged();
                                     }
+                                    else
+                                    {
+                                        Toast.makeText(ctx,message, Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
 
@@ -266,10 +269,10 @@ public class MaternityFragment extends Fragment  {
 
         } else if (item.getItemId() == R.id.filter_search) {
             PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.filter_search));
-            Utils.getfilterDistance(getActivity(),datalist,popup,adapter);
+            Utils.getfilterDistance(getActivity(),datalist,popup,adapter,TAG);
 
         } else if (item.getItemId() == R.id.lens_search) {
-            Utils.getSearchDialog(getActivity(),datalist,rvdatalistview);
+            Utils.getSearchDialog(getActivity(),datalist,rvdatalistview, TAG);
 
         }
         return super.onOptionsItemSelected(item);

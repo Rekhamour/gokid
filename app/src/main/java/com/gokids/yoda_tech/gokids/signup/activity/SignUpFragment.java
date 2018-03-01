@@ -225,56 +225,6 @@ public class SignUpFragment extends Fragment {
 
     }
 
-    public   class ChooseGalleryOrCamera extends DialogFragment {
-
-        TextView gallery, camera, remove;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.pick_capture_dialog, container, false);
-            gallery = (TextView) view.findViewById(R.id.fromgallery);
-            camera = (TextView) view.findViewById(R.id.fromcamera);
-            remove = (TextView) view.findViewById(R.id.remove_pic);
-            remove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.e(TAG, "heheheh");
-                   // UtilAPI.sendPathToAPI(preferences, EmployeeProfile.this, "");
-                  /*  Intent intent = new Intent(EmployeeProfile.this, RemoveProfileimageService.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("uploadImage", "");
-                    intent.putExtras(bundle);
-                    startService(intent);*/
-                    dismiss();
-
-                }
-            });
-            gallery.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dismiss();
-                    startGallery();
-                }
-            });
-            camera.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dismiss();
-                    startCamera();
-                }
-            });
-            return view;
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            Dialog dialog = getDialog();
-            if (dialog != null) {
-                dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            }
-        }
-    }  // end Chooseiamge class
     private void startGallery() {
         openGallery();
     }

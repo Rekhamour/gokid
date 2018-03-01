@@ -30,6 +30,12 @@
             android:title="Settings"
             />
     </group>
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_selectcity"
+            android:icon="@drawable/globe_black"
+            android:title="Select City"
+            />
+    </group>
 
     <group android:checkableBehavior="single">
         <item android:id="@+id/nav_sign_out"

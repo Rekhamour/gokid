@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.gokids.yoda_tech.gokids.R;
+import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 
 import org.json.JSONArray;
@@ -51,7 +52,7 @@ public class SignInTask extends AsyncTask<Void,Void,Void> {
         BufferedReader reader = null;
 
 
-        final String URL = mContext.getResources().getString(R.string.base_url)
+        final String URL = Urls.BASE_URL+"api/"
                 + mContext.getResources().getString(R.string.api_login)
                 + mContext.getResources().getString(R.string.email)
                 + emailId + "/"
@@ -62,6 +63,7 @@ public class SignInTask extends AsyncTask<Void,Void,Void> {
                 + mContext.getResources().getString(R.string.api_google)
                 + "-/";
 
+        Log.e("utils","login api "+URL);
         Uri uri = Uri.parse(URL).buildUpon().build();
 
         try {

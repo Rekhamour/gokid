@@ -18,15 +18,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gokids.yoda_tech.gokids.R;
-import com.gokids.yoda_tech.gokids.eat.adapter.FoodAdapter;
 import com.gokids.yoda_tech.gokids.eat.model.Contact;
 import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
-import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoplistAdapter;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoppingListAdapter;
 import com.gokids.yoda_tech.gokids.utils.Constants;
+import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -41,24 +41,24 @@ import java.util.ArrayList;
  */
 
 public class ShoeFragment extends Fragment  {
-    RecyclerView rvListview;
+    public static RecyclerView rvListview;
     TextView numList;
-    ShoppingListAdapter adapter;
-    ArrayList<MainBean> datalist;
-    public int  mCount =  0;
-    Context ctx;
-    private boolean loading = true;
+    public static ShoppingListAdapter adapter;
+    public static ArrayList<MainBean> datalist;
+    public static String TAG = "ShoeFragment";
+
+    public static int  mCount =  0;
+    public static Context ctx;
 
     LinearLayoutManager layoutManager;
     private static final String BASE_URL = "http://52.77.82.210/";
-    private String TAG = getClass().getName();
     private int total;
     private SwipeRefreshLayout swipeView;
     private SharedPreferences prefrence;
     private int countlimit = 50;
-    private Location latlon;
+    private static Location latlon;
     private LinearLayout listmap_LL;
-    String  category= "Eat";
+    String  category= "-";
 
     public static ShoeFragment newInstance(){
         ShoeFragment itemOnFragment = new ShoeFragment();
@@ -120,7 +120,7 @@ public class ShoeFragment extends Fragment  {
     }
     public int getTotalRestaurants(final String category) {
         Ion.with(getActivity())
-                .load("http://52.77.82.210/api/categoryTotalCount/category/CLS2/subCategory/CAT3")
+                .load(Urls.BASE_URL+"api/categoryTotalCount/category/CLS2/subCategory/CAT3")
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
@@ -141,12 +141,12 @@ public class ShoeFragment extends Fragment  {
 
 
 
-    public ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
+    public static ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
 
-        String PATH= BASE_URL + "api/viewAllShops/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/CAT3/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/-";
+        String PATH= Urls.BASE_URL + "api/viewAllShops/latitude/"+lat+"/longitude/"+longi+"/category/CAT3/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/"+category;
         Log.e(TAG,"path"+PATH);
 
-        Ion.with(getActivity())
+        Ion.with(ctx)
                 .load(PATH)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
@@ -238,6 +238,10 @@ public class ShoeFragment extends Fragment  {
 
                                         adapter.notifyDataChanged();
                                     }
+                                    else
+                                    {
+                                        Toast.makeText(ctx,message, Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
 
@@ -261,10 +265,10 @@ public class ShoeFragment extends Fragment  {
             Utils.NavigatetoHome(getActivity());
         } else if (item.getItemId() == R.id.filter_search) {
             PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.filter_search));
-                Utils.getfilterDistance(getActivity(),datalist,popup,adapter);
+                Utils.getfilterDistance(getActivity(),datalist,popup,adapter,TAG);
 
         } else if (item.getItemId() == R.id.lens_search) {
-            Utils.getSearchDialog(getActivity(),datalist,rvListview);
+            Utils.getSearchDialog(getActivity(),datalist,rvListview, TAG);
 
         }
         return super.onOptionsItemSelected(item);

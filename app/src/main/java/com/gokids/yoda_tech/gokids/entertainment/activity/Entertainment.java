@@ -69,55 +69,7 @@ public class Entertainment extends AppCompatActivity implements SearchView.OnQue
 
             }
         });
-       // HorizontalCalendar horizontalCalendar = new HorizontalCalendar.Builder(Entertainment.this, R.id.calendarView)
-              // Date to be seleceted at start (default to Today)
-               // .build();
 
-
-        //setSupportActionBar(toolbar);
-       // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-       // getSupportActionBar().setDisplayShowHomeEnabled(true);
-       // toolbar.setTitle("Appereals");
-
-
-        /*BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                findViewById(R.id.shopping_navigation);*/
-/*
-
-        bottomNavigationView.setOnNavigationItemSelectedListener
-                (new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        Fragment selectedFragment = ApperealsFragment.newInstance();
-                        switch (item.getItemId()) {
-                            case R.id.appereals:
-                                selectedFragment = ApperealsFragment.newInstance();
-                                break;
-                            case R.id.education:
-                                // selectedFragment = ShopFragment.newInstance();
-                                break;
-                            case R.id.kidswear:
-                                break;
-                            case R.id.maternity:
-                                break;
-                            case R.id.toy:
-                                break;
-
-                        }
-                        FragmentTransaction transaction = getSupportFragmentManager().
-                                beginTransaction();
-                        transaction.replace(R.id.shppoingframe_layout, selectedFragment);
-                        transaction.commit();
-                        return true;
-                    }
-                });
-*/
-
-        //Manually displaying the first fragment - one time only
-        //FragmentTransaction transaction = getSupportFragmentManager().
-               // beginTransaction();
-        //transaction.replace(R.id.shppoingframe_layout, ApperealsFragment.newInstance(position + 1));
-        //transaction.commit();
     }
 
     @Override

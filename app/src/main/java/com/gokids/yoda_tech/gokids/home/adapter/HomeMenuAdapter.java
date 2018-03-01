@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gokids.yoda_tech.gokids.R;
@@ -17,6 +18,7 @@ import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.learn.activity.LearnActivity;
 import com.gokids.yoda_tech.gokids.medical.activity.MedicalMainActivty;
 import com.gokids.yoda_tech.gokids.shop.activity.Shopping;
+import com.gokids.yoda_tech.gokids.utils.DetailActivity;
 
 import java.util.ArrayList;
 
@@ -52,16 +54,22 @@ public class HomeMenuAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
 
         View rootView = inflater.inflate(R.layout.list_home_menu, null );
 
         ImageView imageView = (ImageView) rootView.findViewById(R.id.menuItemImage);
+        LinearLayout row = (LinearLayout) rootView.findViewById(R.id.parent_LL);
         TextView menuTextview = (TextView) rootView.findViewById(R.id.menu_name);
         imageView.setImageResource(intIDs.get(i));
         menuTextview.setText(menuNames[i]);
+        if (i > 3) {
+            row.setBackgroundColor(mContext.getResources().getColor( R.color.pale_white));
+
+
+        }
 
 
         rootView.setLayoutParams(new GridView.LayoutParams(GridView.AUTO_FIT, GoKidsHome.height1));
@@ -71,9 +79,16 @@ public class HomeMenuAdapter extends BaseAdapter {
             rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(position==0 ||position==1||position==2||position==3||position==6) {
+                    if(position==0 ||position==1||position==2||position==3) {
                         Intent intent = new Intent(mContext, getClassFromPos(position));
                         mContext.startActivity(intent);
+                    }
+                    else
+                    {
+                        Intent intent = new Intent(mContext, DetailActivity.class);
+                        intent.putExtra("pos",position);
+                        mContext.startActivity(intent);
+
                     }
                 }
             });

@@ -55,6 +55,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -108,6 +109,7 @@ public class SettingsActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         setSupportActionBar(toolbar);
         handleintent();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         setupUi();
@@ -201,7 +203,8 @@ public class SettingsActivity extends AppCompatActivity {
         settins_phone = (EditText) findViewById(R.id.settins_phone);
         profile_img = (ImageView) findViewById(R.id.settings_user_image);
         final Button update_profile= (Button)findViewById(R.id.update_profile);
-        TextView change_profile_pic= (TextView)findViewById(R.id.change_profile_pic);
+        final TextView change_profile_pic= (TextView)findViewById(R.id.change_profile_pic);
+        change_profile_pic.setEnabled(false);
         change_profile_pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,13 +222,19 @@ public class SettingsActivity extends AppCompatActivity {
         settins_city.setText(prefs.getString("city",""));
         settings_mail.setText(prefs.getString("emailId",""));
         settins_phone.setText(prefs.getString("phoneNo",""));
+        if(!MySharedPrefrence.getPrefrence(SettingsActivity.this).getString("emailId","").trim().isEmpty()) {
+            String path = "https://s3-ap-southeast-1.amazonaws.com/kisimages/User/" + MySharedPrefrence.getPrefrence(SettingsActivity.this).getString("emailId", "") + ".jpg";
+            Picasso.with(SettingsActivity.this).load(path).memoryPolicy(MemoryPolicy.NO_CACHE).into(profile_img);
+        }
         update_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                change_profile_pic.setEnabled(true);
+
                 if(update_profile.getText().toString().equalsIgnoreCase("Change Profile"))
                 {
 
-                    settins_phone.setFocusable(true);
+                     settins_phone.setFocusable(true);
                     settins_city.setEnabled(true);
                     settins_city.setFocusable(true);
 
@@ -241,6 +250,14 @@ public class SettingsActivity extends AppCompatActivity {
                         if(!settings_currentpass.getText().toString().trim().isEmpty()) {
                             setUpUpdateProfile(settins_username.getText().toString(), settins_city.getText().toString(), settings_mail.getText().toString(), settings_currentpass.getText().toString(), settings_newpass.getText().toString(), settins_phone.getText().toString());
                             update_profile.setText("Change Profile");
+                            settings_currentpass.getText().clear();
+                            settings_newpass.getText().clear();
+                            settings_newpass.setEnabled(false);
+                            settings_currentpass.setEnabled(false);
+                            change_profile_pic.setEnabled(false);
+
+
+
                         }
                        else
                         {
@@ -277,12 +294,14 @@ public class SettingsActivity extends AppCompatActivity {
                             String status= response.get("status").toString();
                             String message= response.get("message").toString();
                             JSONArray res = response.getJSONArray("result");
+                            if(status.equalsIgnoreCase("200")) {
 
-                            if(res!=null) {
-                                Utils.updateprefrences(SettingsActivity.this,res.toString());
+                                if (res != null) {
+                                    Utils.updateprefrences(SettingsActivity.this, res.toString());
+                                }
+
+                                Toast.makeText(SettingsActivity.this, message, Toast.LENGTH_SHORT).show();
                             }
-
-                            Toast.makeText(SettingsActivity.this, message, Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -748,8 +767,20 @@ public class SettingsActivity extends AppCompatActivity {
             Log.e("Signin fragment", "emailId " + prefs.getString("emailId", ""));
             if (prefs.contains("ImageURL") && !prefs.getString("ImageURL", "").isEmpty()) {
                 Log.e(TAG, " image url" + prefs.getString("ImageURL", ""));
-                String path="https://s3-ap-southeast-1.amazonaws.com/kisimages/User/kk@gmail.com.jpg";
-                Picasso.with(SettingsActivity.this).load(path).into(profile_img);
+                if(!MySharedPrefrence.getPrefrence(SettingsActivity.this).getString("emailId","").trim().isEmpty()) {
+                    String path = "https://s3-ap-southeast-1.amazonaws.com/kisimages/User/" + MySharedPrefrence.getPrefrence(SettingsActivity.this).getString("emailId", "") + ".jpg";
+                   // Picasso.with(SettingsActivity.this).load(path).memoryPolicy(MemoryPolicy.NO_CACHE).into(profile_img);
+                }
+
+                /*  Ion.with(SettingsActivity.this)
+                        .load(path)
+                        .asBitmap()
+                        .setCallback(new FutureCallback<Bitmap>() {
+                            @Override
+                            public void onCompleted(Exception e, Bitmap result) {
+                                profile_img.setImageBitmap(result);
+                            }
+                        });*/
             }
         }
 

@@ -91,9 +91,7 @@ public class AllBookmarksActivity extends AppCompatActivity {
     private void apiCall() {
         list.clear();
         if (!prefrence.getString("emailId", "").trim().isEmpty()) {
-            //  double[] latlon= Utils.getLatLong(AllBookmarksActivity.this,prefrence.getString("CurrentLocation",""));
             String url = "api/viewAllBookmarks/email/" + prefrence.getString("emailId", "") + "/class/-"+"/latitude/"+loc.getLatitude()+"/longitude/"+loc.getLongitude();
-            //String url= "api/viewAllBookmarks/email/manjularavula69@gmail.com/class/-";
 
             String getAllBookmark = Urls.BASE_URL + url;
             Log.e(TAG,"path"+getAllBookmark);

@@ -1,6 +1,7 @@
 package com.gokids.yoda_tech.gokids.medical.activity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -22,15 +23,22 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.eat.adapter.FoodListAdapter;
 import com.gokids.yoda_tech.gokids.eat.model.Contact;
+import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.eat.model.Specialization;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.medical.adapter.MedicalAdapter;
 import com.gokids.yoda_tech.gokids.medical.adapter.MedicalListAdapter;
 import com.gokids.yoda_tech.gokids.utils.Constants;
+import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
 import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 import com.google.gson.JsonArray;
@@ -40,29 +48,33 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class SearchResultActivity extends AppCompatActivity implements MedicalAdapter.ItemClickCallback{
 
-    private static final String BASE_URL = "http://52.77.82.210/";
     RecyclerView medical_list;
-    MedicalListAdapter medicalAdapter;
-    ArrayList<MainBean> list;
+    public static MedicalListAdapter medicalAdapter;
+    static ArrayList<MainBean> list;
     TextView numMedicals;
     Intent intent;
-    String category,specializ;
+    public static String category,specializ;
     private SharedPreferences prefrence;
     private Location latlon;
-    private String TAG= getClass().getName();
+    public static String TAG= "Searchresultactivity";
     private LinearLayoutManager layoutManager;
     private int total;
-    public int  mCount =  0;
+    public static int  mCount =  0;
 
     private boolean loading=false;
     private SwipeRefreshLayout swipe;
-    private ProgressDialog dialog;
+    private static ProgressDialog dialog;
     private Handler handler;
+    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +91,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         medicalAdapter = new MedicalListAdapter(SearchResultActivity.this,list);
         medicalAdapter.setItemCallback(SearchResultActivity.this);
         medical_list.setAdapter(medicalAdapter);
+        context= getApplicationContext();
         getSupportActionBar().setTitle("Medical Assistance");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -143,7 +156,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
 
 
         dialog.show();
-        getMedicals(category,null,latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,0,50);
+        getMedicals(category,"-",latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,0,50);
 
 
     }
@@ -153,13 +166,13 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         bean.setType("load");
         list.add(bean);
         medicalAdapter.notifyItemInserted(list.size()+1);
-        getMedicals(category,null,latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,index,50);
+        getMedicals(category,"-",latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,index,50);
 
     }
 
 
     public void getTotalMedicals(final String category){
-        String url = Urls.BASE_URL+"/api/categoryTotalCount/category/CLS4/subCategory/" + category;
+        String url = Urls.BASE_URL+"/api/categoryTotalCount/category/CLS4/subCategory/" + category+"/city/"+ MySharedPrefrence.getPrefrence(SearchResultActivity.this).getString("current_city","");;
         Ion.with(getApplicationContext())
                 .load(url)
                 .asJsonObject()
@@ -193,8 +206,8 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                 });
     }
 
-    public ArrayList<MainBean> getMedicals(final String category, final String name, double lat, double longi, final String sortBy, String specialization, final int start, final int count){
-        String url = BASE_URL + "api/viewAllMedical";
+    public static ArrayList<MainBean> getMedicals(final String category, final String name, double lat, double longi, final String sortBy, String specialization, final int start, final int count){
+        String url = Urls.BASE_URL + "api/viewAllMedical";
         mCount =  start;
 
         url += "/latitude/" + lat;
@@ -206,25 +219,138 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         else{
             url += "/specialization/-";
         }
-        url +="/limitStart/"+mCount+"/count/" + mCount+50;
+        url +="/limitStart/"+mCount+"/count/" + (mCount+50);
         if(sortBy != null){
             url += "/sortBy/" + sortBy;
         }
         if(name != null){
-            url += "/searchBy/" + name;
+            url += "/searchBy/" + name+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");;
         }
         System.out.println(url);
 
-        Ion.with(getApplicationContext())
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                System.out.println(response);
+                String status = null;
+                try {
+                    status = String.valueOf(response.get("status")).replace("\"", "");
+                    dialog.dismiss();
+                    if (status.equalsIgnoreCase("200")) {
+                        Log.e(TAG, " i m if status" + status);
+
+
+                        Log.e("Foodfragment", "status" + status);
+                        String message = String.valueOf(response.get("message"));
+                        Log.e("Foodfragment", "message" + message);
+                        JSONArray res = response.getJSONArray("result");
+                        if (response.has("result")) {
+                            Log.e(TAG,"result size"+res.length());
+                            if (res.length() > 0) {
+                                for (int i = 0; i < res.length(); i++) {
+                                    MainBean m = new MainBean();
+                                    JSONObject obj = res.getJSONObject(i);
+                                    m.setMedicalID(obj.getString("MedicalID"));
+                                    m.setCategory(obj.getString("Category"));
+                                    m.setName(obj.getString("Name"));
+                                    m.setWebsite(obj.getString("Website"));
+                                    m.setEmail(obj.getString("Email"));
+                                    m.setAddress(obj.getString("Address"));
+                                    m.setPostal(obj.getString("Postal"));
+                                    m.setLatlong(obj.getString("LatLong"));
+                                    m.setPrice(obj.getString("Schedule"));
+                                    m.setKidsfinityScore(obj.getDouble("KidsfinityScore"));
+                                    m.setDistance(obj.getString("Distance"));
+                                    m.setType("data");
+                                    // ArrayList<CuisinesBean> spe = new ArrayList<>();
+                                    // if(obj.getStringhas("Specialization") && obj.getString("Specialization").isJsonArray()) {
+                                    // JsonArray spec = obj.getString("Cuisines").getAsJsonArray();
+
+                                    if (obj.get("Contacts") instanceof JSONArray) {
+
+                                        if (obj.getJSONArray("Contacts").length()>0) {
+                                            ArrayList<Contact> hr = new ArrayList<>();
+                                            JSONArray cont = obj.getJSONArray("Contacts");
+                                            for (int j = 0; j < cont.length(); j++) {
+                                                Contact c = new Contact();
+                                                c.setContactId(cont.getJSONObject(j).getLong("ContactID"));
+                                                c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
+                                                c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
+                                                hr.add(c);
+                                            }
+                                            m.setContacts(hr);
+                                        }
+                                    }
+                                    if (obj.get("Specialization") instanceof JSONArray) {
+
+                                        ArrayList<Specialization> spe = new ArrayList<>();
+                                        if (obj.getJSONArray("Specialization").length()>0) {
+                                            JSONArray spec = obj.getJSONArray("Specialization");
+                                            for (int j = 0; j < spec.length(); j++) {
+                                                Specialization s = new Specialization();
+                                                s.setSpecializationHC(spec.getJSONObject(j).getString("SpecializationHC"));
+                                                s.setSpecializationId(spec.getJSONObject(j).getString("SpecializationHCID"));
+                                                spe.add(s);
+                                            }
+                                        }
+                                    }
+                                    if (obj.get("Images") instanceof JSONArray) {
+
+                                        ArrayList<String> images = new ArrayList<String>();
+                                        if (obj.getJSONArray("Images").length() > 0) {
+                                            for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
+                                                //System.out.println(obj.getString("Images").getAsJsonArray().get(j).getString("ImageURL"));
+                                                images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                            }
+                                        }
+
+                                        Log.e(TAG, "images array size" + images.size());
+                                        m.setImages(images);
+                                    }
+                                    list.add(m);
+                                    mCount++;
+                                }
+                                medicalAdapter.notifyDataChanged();
+
+                            }
+                            else
+                            {
+                                Toast.makeText(context,message, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        Volley.newRequestQueue(context).add(jsonObjectRequest);
+
+
+
+
+        /*Ion.with(context)
                 .load(url)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
 
+
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
                         if (e == null) {
+
                             System.out.println(result);
                             if(result.has("result")) {
+                                dialog.dismiss();
                                 JsonArray med = result.getAsJsonObject().get("result").getAsJsonArray();
                                 for (int i = 0; i < med.size(); i++) {
                                     MainBean m = new MainBean();
@@ -278,7 +404,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
 
 
                                 }
-
+                                Log.e(" list size","list size"+list.size());
                                 medicalAdapter.notifyDataChanged();
 
                             }
@@ -286,11 +412,11 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                         }
                         else
                         {
-                            Toast.makeText(SearchResultActivity.this, getResources().getString(R.string.oops), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getResources().getString(R.string.oops), Toast.LENGTH_SHORT).show();
                         }
                     }
 
-                });
+                });*/
         return list;
     }
 

@@ -46,7 +46,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import static android.view.KeyCharacterMap.load;
 
@@ -55,25 +60,26 @@ import static android.view.KeyCharacterMap.load;
  */
 
 public class ApperealsFragment extends Fragment {
-    RecyclerView rvdatalistview;
+   public static RecyclerView rvdatalistview;
     TextView numdata;
-    ShoppingListAdapter adapter;
-    ArrayList<MainBean> datalist;
+    public static ShoppingListAdapter adapter;
+    public static ArrayList<MainBean> datalist;
+    public static String TAG = "ApperealsFragment";
+
     String  category= "Eat";
-    public int  mCount =  0;
-    Context ctx;
+    public static int  mCount =  0;
+    public static Context ctx;
     private boolean loading = true;
 
     LinearLayoutManager layoutManager;
     private static final String BASE_URL = "http://52.77.82.210/";
 
 
-    private String TAG = getClass().getName();
     private int total;
     private SwipeRefreshLayout swipeView;
     private SharedPreferences prefrence;
     private int countlimit = 50;
-    private Location latlon;
+    private static Location latlon;
     private LinearLayout datalistmap_LL;
     private RecyclerView hintdatalistview;
     private LinearLayoutManager lm;
@@ -125,7 +131,7 @@ public class ApperealsFragment extends Fragment {
     }
     private void load(int index) {
 
-        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,total);
+        getRestaurants("-",prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,total);
 
     }
 
@@ -134,7 +140,7 @@ public class ApperealsFragment extends Fragment {
         bean.setType("load");
         datalist.add(bean);
         adapter.notifyItemInserted(datalist.size()+1);
-        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,total);
+        getRestaurants("-",prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,total);
 
 
     }
@@ -162,136 +168,24 @@ public class ApperealsFragment extends Fragment {
 
 
 
-    public ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
+    public  static ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
 
-        String PATH= BASE_URL + "api/viewAllShops/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/CAT1/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/-";
+        String PATH= Urls.BASE_URL + "api/viewAllShops/latitude/"+lat+"/longitude/"+longi+"/category/CAT1/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/"+category;
         Log.e(TAG,"path"+PATH);
 
-        /*StringRequest stringRequest = new StringRequest(Request.Method.GET, PATH,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        JSONObject result= null;
-                        try {
-                            result = new JSONObject(response);
-                            System.out.println(result);
-                            String status = String.valueOf(result.get("status")).replace("\"", "");
-                            if (status.equalsIgnoreCase("200")) {
-                                Log.e(TAG, " i m if status" + status);
-
-                                Log.e("Foodfragment", "status" + status);
-                                String message = String.valueOf(result.get("message"));
-                                Log.e("Foodfragment", "message" + message);
-                                JSONArray res = result.getJSONArray("result");
-
-                                if(result.has("result")) {
-                                    if (res.length() > 0) {
-                                        for (int i = 0; i < res.length(); i++) {
-                                            MainBean m = new MainBean();
-                                            JSONObject obj = res.getJSONObject(i);
-                                            m.setShopID(obj.getString("ShopID"));
-                                            m.setShopName(obj.getString("ShopName"));
-                                            m.setShopSubName(obj.getString("ShopSubName"));
-                                            m.setShopDetail(obj.getString("ShopDetail"));
-                                            m.setSpecialty(obj.getString("Specialty"));
-                                            m.setWebsite(obj.getString("Website"));
-                                            m.setEmail(obj.getString("Email"));
-                                            m.setAddress(obj.getString("Address"));
-                                            m.setPostal(obj.getString("Postal"));
-                                            m.setLatlong(obj.getString("LatLong"));
-                                            m.setKidsfinityScore(obj.getDouble("KidsfinityScore"));
-                                            m.setDistance(obj.getString("Distance"));
-                                            m.setWorkingHour(obj.getString("WorkingHour"));
-                                            m.setType("data");
-
-                                            ArrayList<CuisinesBean> spe = new ArrayList<>();
-                                            // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
-                                            // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
-
-                                            if (obj.has("Categories")) {
-                                                ArrayList<CuisinesBean> con = new ArrayList<>();
-                                                if(!obj.getString("Categories").trim().isEmpty());
-                                                {
-
-                                                    JSONArray cont = obj.getJSONArray("Categories");
-                                                    for (int j = 0; j < cont.length(); j++) {
-                                                        CuisinesBean c = new CuisinesBean();
-
-                                                        c.setCuisine(cont.getJSONObject(j).getString("Category"));
-                                                        con.add(c);
-                                                    }
-                                                    Log.e(TAG, "con array size" + con.size());
-
-                                                    m.setCuisines(con);
-                                                }
-                                            }
-
-
-
-                                            m.setCuisines(spe);
-                                            if (obj.has("Contacts")) {
-                                                ArrayList<Contact> hr = new ArrayList<>();
-                                                if(!obj.getString("Contacts").trim().isEmpty());
-                                                {
-                                                    JSONArray cont = obj.getJSONArray("Contacts");
-                                                    for (int j = 0; j < cont.length(); j++) {
-                                                        Contact c = new Contact();
-                                                        c.setContactId(cont.getJSONObject(j).getLong("ContactID"));
-                                                        c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
-                                                        c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
-                                                        hr.add(c);
-                                                    }
-                                                    m.setContacts(hr);
-                                                }
-                                            }
-
-                                            ArrayList<String> images = new ArrayList<String>();
-                                            if (obj.has("Images")) {
-                                                if(!obj.getString("Images").trim().isEmpty());
-                                                {
-
-                                                    for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
-                                                        images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
-                                                    }
-                                                }
-                                            }
-                                            Log.e(TAG, "images array size" + images.size());
-                                            m.setImages(images);
-                                            datalist.add(m);
-                                            mCount++;
-                                        }
-
-                                        adapter.notifyDataChanged();
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-
-
-
-
-
-                }, new Response.ErrorListener() {
+        Ion.getDefault(ctx).getHttpClient().getSSLSocketMiddleware().setTrustManagers(new TrustManager[] {new X509TrustManager() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {}
 
-                // Error handling
-                Toast.makeText(getActivity(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-                error.printStackTrace();
+            @Override
+            public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {}
 
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
             }
-        });
-        Volley.newRequestQueue(getActivity()).add(stringRequest);
-
-
-*/
-       Ion.with(getActivity())
+        }});
+       Ion.with(ctx)
                 .load(PATH)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
@@ -379,6 +273,10 @@ public class ApperealsFragment extends Fragment {
 
                                         adapter.notifyDataChanged();
                                     }
+                                    else
+                                    {
+                                        Toast.makeText(ctx,message, Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             }
 
@@ -406,9 +304,9 @@ public class ApperealsFragment extends Fragment {
 
         } else if (item.getItemId() == R.id.filter_search) {
             PopupMenu popup = new PopupMenu(getActivity(), getActivity().findViewById(R.id.filter_search));
-            Utils.getfilterDistance(getActivity(),datalist,popup,adapter);
+            Utils.getfilterDistance(getActivity(),datalist,popup,adapter,TAG);
         } else if (item.getItemId() == R.id.lens_search) {
-            Utils.getSearchDialog(getActivity(),datalist,rvdatalistview);
+            Utils.getSearchDialog(getActivity(),datalist,rvdatalistview,TAG);
 
         }
         return super.onOptionsItemSelected(item);

@@ -34,11 +34,13 @@ import com.gokids.yoda_tech.gokids.home.adapter.HomeMenuAdapter;
 import com.gokids.yoda_tech.gokids.home.service.GPSService;
 import com.gokids.yoda_tech.gokids.home.util.RoundedImageView;
 import com.gokids.yoda_tech.gokids.referfriend.activity.ReferFriend;
+import com.gokids.yoda_tech.gokids.settings.activity.CityActivity;
 import com.gokids.yoda_tech.gokids.settings.activity.SettingsActivity;
 import com.gokids.yoda_tech.gokids.signup.activity.SignUpActivity;
 import com.gokids.yoda_tech.gokids.utils.Constants;
 import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
 import com.gokids.yoda_tech.gokids.utils.Utils;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
@@ -108,15 +110,15 @@ public class GoKidsHome extends AppCompatActivity {
     public void setGridViewAdapterForMenu() {
 
         ArrayList<Integer> intIDS = new ArrayList<>();
+        intIDS.add(R.drawable.ic_food);
+        intIDS.add(R.drawable.ic_shopping);
+        intIDS.add(R.drawable.ic_entertain);
+        intIDS.add(R.drawable.ic_medical);
+        intIDS.add(R.drawable.ic_sos);
+        intIDS.add(R.drawable.ic_buy);
+        intIDS.add(R.drawable.ic_learn);
         intIDS.add(R.drawable.sample);
-        intIDS.add(R.drawable.sample);
-        intIDS.add(R.drawable.sample);
-        intIDS.add(R.drawable.sample);
-        intIDS.add(R.drawable.sample);
-        intIDS.add(R.drawable.sample);
-        intIDS.add(R.drawable.sample);
-        intIDS.add(R.drawable.sample);
-        intIDS.add(R.drawable.sample);
+        intIDS.add(R.drawable.ic_advice);
         String[] menuNames = {"Eat","Shopping","Entertain","Medical","SOS","Buy","Learn","Advertise","Advice"};
 
         homeMenuAdapter = new HomeMenuAdapter(GoKidsHome.this, intIDS,menuNames);
@@ -212,13 +214,13 @@ public class GoKidsHome extends AppCompatActivity {
                         {
                             Utils.setSharedPreferenceEmpty(editor);
                             LoginManager.getInstance().logOut();
-
-                            disconnectFromFacebook();
+                            Intent intent = new Intent(GoKidsHome.this, SignUpActivity.class);
+                            startActivity(intent);
+                            finish();
 
                         }
                         else {
                             Utils.setSharedPreferenceEmpty(editor);
-                           // LoginManager.getInstance().logOut();
 
                             Intent intent = new Intent(GoKidsHome.this, SignUpActivity.class);
                             startActivity(intent);
@@ -246,6 +248,10 @@ public class GoKidsHome extends AppCompatActivity {
                         Intent homeintent = new Intent(GoKidsHome.this,GoKidsHome.class);
                         homeintent.putExtra("flag","3");
                         startActivity(homeintent);
+                        return true;
+                    case R.id.nav_selectcity:
+                        Intent intent= new Intent(GoKidsHome.this, CityActivity.class);
+                        startActivity(intent);
                         return true;
 
                     case R.id.nav_bookmark:
@@ -305,6 +311,10 @@ public class GoKidsHome extends AppCompatActivity {
     protected void onResume() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
         name.setText(prefs.getString("userName","Guest"));
+        if(!MySharedPrefrence.getPrefrence(GoKidsHome.this).getString("emailId","").trim().isEmpty()) {
+            String path = "https://s3-ap-southeast-1.amazonaws.com/kisimages/User/" + MySharedPrefrence.getPrefrence(GoKidsHome.this).getString("emailId", "") + ".jpg";
+            Picasso.with(GoKidsHome.this).load(path).memoryPolicy(MemoryPolicy.NO_CACHE).into(image);
+        }
         super.onResume();
     }
 

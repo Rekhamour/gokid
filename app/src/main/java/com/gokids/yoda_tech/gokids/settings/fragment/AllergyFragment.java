@@ -22,6 +22,15 @@ import com.gokids.yoda_tech.gokids.settings.adapter.AllergyAdapter;
 import com.gokids.yoda_tech.gokids.settings.model.Allergy;
 import com.gokids.yoda_tech.gokids.utils.GridItemView;
 import com.gokids.yoda_tech.gokids.utils.MyGridView;
+import com.gokids.yoda_tech.gokids.utils.Urls;
+import com.google.gson.JsonArray;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.util.ArrayList;
 
@@ -144,6 +153,57 @@ public class AllergyFragment extends Fragment {
 
 
            public void setupData() {
+               /*Ion.with(getActivity())
+                       .load(Urls.BASE_URL+"api/viewSpecialNeedPerCategory/category/SNC1")
+                       .asString()
+                       .setCallback(new FutureCallback<String>() {
+                           @Override
+                           public void onCompleted(Exception e, String result) {
+                               if(e==null)
+                               {
+                                   Log.e(TAG," result"+result);
+                                   if (result != null) {
+                                       try {
+                                           Object json = new JSONTokener(result).nextValue();
+                                              if(json instanceof JSONArray)
+                                              {
+                                                  for(int i=0;i<((JSONArray) json).length();i++)
+                                                  {
+
+
+                                                      String Enabled= null;
+                                                      try {
+                                                          JSONObject obj= ((JSONArray) json).getJSONObject(i);
+
+
+                                                          String SpecialNeedID= obj.getString("SpecialNeedID").replaceAll("/"," ");
+                                                          String SpecialNeed= obj.getString("SpecialNeed").replaceAll("/"," ");
+                                                          String ImageURL= obj.getString("ImageURL").replaceAll("/"," ");
+                                                          Enabled = obj.getString("Enabled").replaceAll("/"," ");
+                                                          if(Enabled.equalsIgnoreCase("1"))
+                                                          {
+                                                              allergies.add(new Allergy(R.drawable.Imag,true,SpecialNeed,SpecialNeedID));
+                                                          }
+                                                      } catch (JSONException e1) {
+                                                          e1.printStackTrace();
+                                                      }
+
+
+                                                     }
+                                                  }
+                                              } catch (JSONException e1) {
+                                           e1.printStackTrace();
+                                       }
+                                       catch (Exception e1)
+                                       {
+
+                                       }
+                                   }
+
+                               }
+
+                           }
+                       });*/
                allergies.add(new Allergy(R.drawable.allergy_dairyfree, false, "Dairy Free", "SN26"));
                allergies.add(new Allergy(R.drawable.allergy_eggfree, false, "Egg Free", "SN4"));
                allergies.add(new Allergy(R.drawable.allergy_gluttenfree, false, "Glutten Free", "SN6"));

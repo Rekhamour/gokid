@@ -38,31 +38,11 @@ public class FoodMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.map_fragment_layout, container, false);
-        //String location = MySharedPrefrence.getPrefrence(getActivity()).getString("city", "delhi");
-        //Log.v("current loc----------",location + "|-------------");
+
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
 
-
-    /*  mapFragment.getMapAsync(new OnMapReadyCallback() {
-          @Override
-          public void onMapReady(GoogleMap googleMap) {
-              String location= MySharedPrefrence.getPrefrence(getActivity()).getString("city","");
-              latlon= Utils.getLatLong(getActivity(), MySharedPrefrence.getPrefrence(getActivity()).getString("city",""));
-              LatLng loc = null;
-              if(location != null && location.contains(",")) {
-
-                  loc = new LatLng(latlon[0],latlon[1]);
-              }
-              else{
-                  loc = new LatLng(1.23,103.23);
-              }
-              googleMap.addMarker(new MarkerOptions().position(loc)
-                      .title("delhi"));
-              googleMap.moveCamera(CameraUpdateFactory.newLatLng(loc));
-          }
-      });*/
         return view;
     }
 
@@ -74,10 +54,8 @@ public class FoodMapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //String location = MySharedPrefrence.getPrefrence(getActivity()).getString("city", "");
         latlon = Utils.getLatLong(getActivity());
         LatLng loc = null;
-        //Log.v("loc-----------",location);
         String nameOfPlace = " ";
         if (latlon != null) {
             loc = new LatLng (latlon.getLatitude(), latlon.getLongitude());

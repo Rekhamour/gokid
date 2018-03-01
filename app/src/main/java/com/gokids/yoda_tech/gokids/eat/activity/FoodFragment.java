@@ -33,21 +33,22 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.gokids.yoda_tech.gokids.R;
-import com.gokids.yoda_tech.gokids.eat.adapter.FoodAdapter;
 import com.gokids.yoda_tech.gokids.eat.adapter.FoodListAdapter;
 import com.gokids.yoda_tech.gokids.eat.adapter.HintAdapter;
 import com.gokids.yoda_tech.gokids.eat.model.Contact;
 import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
+import com.gokids.yoda_tech.gokids.eat.model.HintBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.utils.Constants;
+import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
 import com.gokids.yoda_tech.gokids.utils.RecyclerItemClickListener;
+import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import com.koushikdutta.async.future.FutureCallback;
@@ -68,24 +69,24 @@ import java.util.Comparator;
  */
 
 public class FoodFragment extends Fragment  {
-    RecyclerView food_rv_list;
+    private static Context context;
+    static RecyclerView food_rv_list;
     TextView numFoods;
-    FoodListAdapter mfoodAdapter;
-    ArrayList<MainBean> Foodlist;
+    static FoodListAdapter mfoodAdapter;
+    static ArrayList<MainBean> Foodlist;
     String  category= "Eat";
-    public int  mCount =  0;
+    public static int  mCount =  0;
     Context ctx;
     private boolean loading = true;
     LinearLayoutManager layoutManager;
-    private static final String BASE_URL = "http://52.77.82.210/";
-    private String TAG = getClass().getName();
+    private static String TAG = "Foodfragment";
     private int total;
     private SwipeRefreshLayout swipe_food;
     private SharedPreferences prefrence;
     private int countlimit = 50;
     private Location latlon;
-    private ArrayList<CuisinesBean> con;
-    private ArrayList<String> hintlist= new ArrayList<>();
+    private static ArrayList<CuisinesBean> con;
+    private ArrayList<HintBean> hintlist= new ArrayList<HintBean>();
     private ImageView btnLocation;
     private ImageView btnList;
     private FrameLayout frameMap;
@@ -94,10 +95,11 @@ public class FoodFragment extends Fragment  {
     private LinearLayoutManager lm;
     private RecyclerView hintlistview;
     private static DecimalFormat df = new DecimalFormat(".##");
-    private ProgressDialog dialog;
+    private static ProgressDialog dialog;
     private Handler handler;
     private TextWatcher mTextwatcher;
     private TextView no_result;
+    public static String place_id;
 
 
     public static FoodFragment newInstance(){
@@ -120,6 +122,7 @@ public class FoodFragment extends Fragment  {
         btnList = (ImageView)view. findViewById(R.id.btn_list);
         btnLocation = (ImageView)view. findViewById(R.id.btn_location);
         fm= new FoodMapFragment();
+        context= getActivity();
         btnLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,7 +155,6 @@ public class FoodFragment extends Fragment  {
         Utils.getCurrentdate();
        total= getTotalRestaurants(category);
         Foodlist = new ArrayList<>();
-       // swipe_food.setOnRefreshListener(this);
         layoutManager = new LinearLayoutManager(getActivity());
         food_rv_list.setLayoutManager(layoutManager);
         mfoodAdapter = new FoodListAdapter(getActivity(),Foodlist);
@@ -198,7 +200,7 @@ public class FoodFragment extends Fragment  {
 
 
        dialog.show();
-        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLongitude(),latlon.getLongitude(),"Distance",0,countlimit);
+        getRestaurants("-",prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",0,index+50);
 
     }
 
@@ -207,22 +209,22 @@ public class FoodFragment extends Fragment  {
         bean.setType("load");
         Foodlist.add(bean);
         mfoodAdapter.notifyItemInserted(Foodlist.size()+1);
-        getRestaurants(category,prefrence.getString("emailId",""),latlon.getLongitude(),latlon.getLongitude(),"Distance",index,countlimit);
+        getRestaurants("-",prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",index,index+50);
 
     }
 
 
     public int getTotalRestaurants(final String category) {
         Ion.with(getActivity())
-                .load("http://52.77.82.210/api/categoryTotalCount/category/CLS1/subCategory/-")
+                .load(Urls.BASE_URL+"api/categoryTotalCount/category/CLS1/subCategory/-"+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city",""))
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
                         if (e == null) {
 
-                            if (result.getAsJsonObject().get("status").getAsString().equals("200")) {
-                                total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
+                            if (result.get("status").getAsString().equals("200")) {
+                                total = result.get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
                             }
                             String category_actual = "Restaurants";
 
@@ -235,13 +237,129 @@ public class FoodFragment extends Fragment  {
 
 
 
-    public ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
-
-        String PATH= BASE_URL + "api/viewAllRestaurants/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/email/"+name+"/limitStart/"+start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/-";
+    public static ArrayList<MainBean>  getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
+         dialog.show();
+        String PATH= Urls.BASE_URL + "api/viewAllRestaurants/latitude/"+lat+"/longitude/"+longi+"/email/"+name+"/limitStart/"+start+"/count/"+count+"/sortBy/"+sortBy+"/searchBy/"+category+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");
         Log.e(TAG,"path"+PATH);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, PATH, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                System.out.println(response);
+                String status = null;
+                try {
+                    status = String.valueOf(response.get("status")).replace("\"", "");
+                    dialog.dismiss();
+                    if (status.equalsIgnoreCase("200")) {
+                        Log.e(TAG, " i m if status" + status);
 
 
-        Ion.with(getActivity())
+                        Log.e("Foodfragment", "status" + status);
+                        String message = String.valueOf(response.get("message"));
+                        Log.e("Foodfragment", "message" + message);
+                        JSONArray res = response.getJSONArray("result");
+                        if (response.has("result")) {
+                            Log.e(TAG,"result size"+res.length());
+                            if (res.length() > 0) {
+                                for (int i = 0; i < res.length(); i++) {
+                                    MainBean m = new MainBean();
+                                    JSONObject obj = res.getJSONObject(i);
+                                    m.setRestaurantID(obj.getString("RestaurantID"));
+                                    m.setRestaurantName(obj.getString("RestaurantName"));
+                                    m.setRestaurantSubName(obj.getString("RestaurantSubName"));
+                                    m.setSpecialty(obj.getString("Specialty"));
+                                    m.setWebsite(obj.getString("Website"));
+                                    m.setEmail(obj.getString("Email"));
+                                    m.setAddress(obj.getString("Address"));
+                                    m.setPostal(obj.getString("Postal"));
+                                    m.setLatlong(obj.getString("LatLong"));
+                                    m.setPrice(obj.getString("Price"));
+                                    m.setKidsfinityScore(obj.getDouble("KidsfinityScore"));
+                                    m.setDistance(obj.getString("Distance"));
+                                    m.setWorkingHour(obj.getString("WorkingHour"));
+                                    m.setType("data");
+                                    // ArrayList<CuisinesBean> spe = new ArrayList<>();
+                                    // if(obj.getStringhas("Specialization") && obj.getString("Specialization").isJsonArray()) {
+                                    // JsonArray spec = obj.getString("Cuisines").getAsJsonArray();
+                                    if (obj.get("Cuisines") instanceof JSONArray) {
+
+                                        if (obj.getJSONArray("Cuisines").length() > 0) {
+                                            con = new ArrayList<>();
+
+                                            JSONArray cont = obj.getJSONArray("Cuisines");
+                                            for (int j = 0; j < cont.length(); j++) {
+                                                CuisinesBean c = new CuisinesBean();
+
+                                                c.setCuisine(cont.getJSONObject(j).getString("Cuisine"));
+                                                c.getCuisine();
+                                                Log.e(TAG, "cousine " + c.getCuisine().toString());
+
+                                                con.add(c);
+                                            }
+                                            Log.e(TAG, "con array size" + con.toString());
+
+                                            m.setCuisines(con);
+                                            Log.e(TAG, "cousine " + m.getCuisines().toString());
+
+                                        }
+                                    }
+                                    if (obj.get("Contacts") instanceof JSONArray) {
+
+                                        if (obj.getJSONArray("Contacts").length()>0) {
+                                        ArrayList<Contact> hr = new ArrayList<>();
+                                            JSONArray cont = obj.getJSONArray("Contacts");
+                                            for (int j = 0; j < cont.length(); j++) {
+                                                Contact c = new Contact();
+                                                c.setContactId(cont.getJSONObject(j).getLong("ContactID"));
+                                                c.setOwnerId(cont.getJSONObject(j).getString("OwnerID"));
+                                                c.setPhoneNo(cont.getJSONObject(j).getString("PhoneNo"));
+                                                hr.add(c);
+                                            }
+                                            m.setContacts(hr);
+                                        }
+                                    }
+                                    if (obj.get("Images") instanceof JSONArray) {
+
+                                        ArrayList<String> images = new ArrayList<String>();
+                                        if (obj.getJSONArray("Images").length() > 0) {
+                                            for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
+                                                //System.out.println(obj.getString("Images").getAsJsonArray().get(j).getString("ImageURL"));
+                                                images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                            }
+                                        }
+
+                                        Log.e(TAG, "images array size" + images.size());
+                                        m.setImages(images);
+                                    }
+                                    Foodlist.add(m);
+                                    mCount++;
+                                }
+                                mfoodAdapter.notifyDataChanged();
+
+                            }
+                            else
+                            {
+                                Toast.makeText(context,message, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        Volley.newRequestQueue(context).add(jsonObjectRequest);
+
+
+/*        Ion.with(context)
                 .load(PATH)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
@@ -267,32 +385,32 @@ public class FoodFragment extends Fragment  {
                                         for (int i = 0; i < res.size(); i++) {
                                             MainBean m = new MainBean();
                                             JsonElement obj = res.get(i);
-                                            m.setRestaurantID(obj.getAsJsonObject().get("RestaurantID").getAsString());
-                                            m.setRestaurantName(obj.getAsJsonObject().get("RestaurantName").getAsString());
-                                            m.setRestaurantSubName(obj.getAsJsonObject().get("RestaurantSubName").getAsString());
-                                            m.setSpecialty(obj.getAsJsonObject().get("Specialty").getAsString());
-                                            m.setWebsite(obj.getAsJsonObject().get("Website").getAsString());
-                                            m.setEmail(obj.getAsJsonObject().get("Email").getAsString());
-                                            m.setAddress(obj.getAsJsonObject().get("Address").getAsString());
-                                            m.setPostal(obj.getAsJsonObject().get("Postal").getAsString());
-                                            m.setLatlong(obj.getAsJsonObject().get("LatLong").getAsString());
-                                            m.setPrice(obj.getAsJsonObject().get("Price").getAsString());
-                                            m.setKidsfinityScore(obj.getAsJsonObject().get("KidsfinityScore").getAsDouble());
-                                            m.setDistance(obj.getAsJsonObject().get("Distance").getAsString());
-                                            m.setWorkingHour(obj.getAsJsonObject().get("WorkingHour").getAsString());
+                                            m.setRestaurantID(obj.getString("RestaurantID").getAsString());
+                                            m.setRestaurantName(obj.getString("RestaurantName").getAsString());
+                                            m.setRestaurantSubName(obj.getString("RestaurantSubName").getAsString());
+                                            m.setSpecialty(obj.getString("Specialty").getAsString());
+                                            m.setWebsite(obj.getString("Website").getAsString());
+                                            m.setEmail(obj.getString("Email").getAsString());
+                                            m.setAddress(obj.getString("Address").getAsString());
+                                            m.setPostal(obj.getString("Postal").getAsString());
+                                            m.setLatlong(obj.getString("LatLong").getAsString());
+                                            m.setPrice(obj.getString("Price").getAsString());
+                                            m.setKidsfinityScore(obj.getString("KidsfinityScore").getAsDouble());
+                                            m.setDistance(obj.getString("Distance").getAsString());
+                                            m.setWorkingHour(obj.getString("WorkingHour").getAsString());
                                             m.setType("data");
                                             // ArrayList<CuisinesBean> spe = new ArrayList<>();
-                                            // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
-                                            // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
+                                            // if(obj.getStringhas("Specialization") && obj.getString("Specialization").isJsonArray()) {
+                                            // JsonArray spec = obj.getString("Cuisines").getAsJsonArray();
 
-                                            if (obj.getAsJsonObject().get("Cuisines").isJsonArray()) {
+                                            if (obj.getString("Cuisines").isJsonArray()) {
                                                 con = new ArrayList<>();
 
-                                                JsonArray cont = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
+                                                JsonArray cont = obj.getString("Cuisines").getAsJsonArray();
                                                 for (int j = 0; j < cont.size(); j++) {
                                                     CuisinesBean c = new CuisinesBean();
 
-                                                    c.setCuisine(cont.get(j).getAsJsonObject().get("Cuisine").getAsString());
+                                                    c.setCuisine(cont.get(j).getString("Cuisine").getAsString());
                                                     c.getCuisine();
                                                     Log.e(TAG, "cousine " + c.getCuisine().toString());
 
@@ -304,30 +422,25 @@ public class FoodFragment extends Fragment  {
                                                 Log.e(TAG, "cousine " + m.getCuisines().toString());
 
                                             }
-                                            //m.setCuisines(con);
 
-
-                                            //}
-                                            //m.setCuisines(con);
-                                            // m.setCuisines(spe);
-                                            if (obj.getAsJsonObject().get("Contacts").isJsonArray()) {
+                                            if (obj.getString("Contacts").isJsonArray()) {
                                                 ArrayList<Contact> hr = new ArrayList<>();
-                                                JsonArray cont = obj.getAsJsonObject().get("Contacts").getAsJsonArray();
+                                                JsonArray cont = obj.getString("Contacts").getAsJsonArray();
                                                 for (int j = 0; j < cont.size(); j++) {
                                                     Contact c = new Contact();
-                                                    c.setContactId(cont.get(j).getAsJsonObject().get("ContactID").getAsLong());
-                                                    c.setOwnerId(cont.get(j).getAsJsonObject().get("OwnerID").getAsString());
-                                                    c.setPhoneNo(cont.get(j).getAsJsonObject().get("PhoneNo").getAsString());
+                                                    c.setContactId(cont.get(j).getString("ContactID").getAsLong());
+                                                    c.setOwnerId(cont.get(j).getString("OwnerID").getAsString());
+                                                    c.setPhoneNo(cont.get(j).getString("PhoneNo").getAsString());
                                                     hr.add(c);
                                                 }
                                                 m.setContacts(hr);
                                             }
 
                                             ArrayList<String> images = new ArrayList<String>();
-                                            if (obj.getAsJsonObject().get("Images").isJsonArray()) {
-                                                for (int j = 0; j < obj.getAsJsonObject().get("Images").getAsJsonArray().size(); j++) {
-                                                    //System.out.println(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
-                                                    images.add(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
+                                            if (obj.getString("Images").isJsonArray()) {
+                                                for (int j = 0; j < obj.getString("Images").getAsJsonArray().size(); j++) {
+                                                    //System.out.println(obj.getString("Images").getAsJsonArray().get(j).getString("ImageURL").getAsString());
+                                                    images.add(obj.getString("Images").getAsJsonArray().get(j).getString("ImageURL").getAsString());
                                                 }
                                             }
                                             Log.e(TAG, "images array size" + images.size());
@@ -345,12 +458,13 @@ public class FoodFragment extends Fragment  {
 
                         }
                         else{
+                            Log.e(TAG,"API EXception"+e.getMessage());
 
 
-                            Toast.makeText(getActivity(), "oops something went wrong", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "oops something went wrong", Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
+                });*/
 
         return Foodlist;
     }
@@ -384,67 +498,31 @@ public class FoodFragment extends Fragment  {
                 public boolean onMenuItemClick(MenuItem item) {
                     if (item.getItemId() == R.id.low_to_high) {
                         Log.e("log", "i m in low to high ");
-                        Collections.sort(Foodlist, new Comparator<MainBean>() {
-                            @Override
-                            public int compare(MainBean lhs, MainBean rhs) {
+                        dialog.show();
+                        Foodlist.clear();
 
-                                return lhs.getPrice().compareTo(rhs.getPrice());
-
-
-                            }
-                        });
-                        mfoodAdapter.notifyDataSetChanged();
+                        getRestaurants("-",prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"AscPrice",0,50);
                     } else if (item.getItemId() == R.id.high_to_low) {
 
                         Log.e("log", "i m in high to low sort");
-                        Collections.sort(Foodlist, new Comparator<MainBean>() {
-                            @Override
-                            public int compare(MainBean lhs, MainBean rhs) {
-
-                                return lhs.getPrice().compareTo(rhs.getPrice());
-
-
-                            }
-                        });
-
-                        //layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,true);
-                       // layoutManager.setStackFromEnd(true);
-                       // layoutManager.setReverseLayout(true);
-
-                       // food_rv_list.setLayoutManager(layoutManager);
-                        Collections.reverse(Foodlist);
-                        mfoodAdapter.notifyDataSetChanged();
+                        dialog.show();
+                        Foodlist.clear();
+                        getRestaurants("-",prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"DescPrice",0,50);
 
 
                     } else if (item.getItemId() == R.id.kidfinity_Score) {
 
                         Log.e("log", "i m in sort score");
-                        Collections.sort(Foodlist, new Comparator<MainBean>() {
-                            @Override
-                            public int compare(MainBean lhs, MainBean rhs) {
+                        dialog.show();
+                        Foodlist.clear();
 
-                                return String.valueOf(lhs.getKidsfinityScore()).compareTo(String.valueOf(rhs.getKidsfinityScore()));
-
-
-                            }
-                        });
-                        Collections.reverse(Foodlist);
-
-                        mfoodAdapter.notifyDataSetChanged();
-
+                        getRestaurants("-",prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Score",0,50);
                     } else if (item.getItemId() == R.id.distance) {
 
                         Log.e("log", "i m in sort distance here");
-                        Collections.sort(Foodlist, new Comparator<MainBean>() {
-                            @Override
-                            public int compare(MainBean lhs, MainBean rhs) {
-
-                                return lhs.getDistance().compareTo(rhs.getDistance());
-
-
-                            }
-                        });
-                        mfoodAdapter.notifyDataSetChanged();
+                        dialog.show();
+                        Foodlist.clear();
+                        getRestaurants("-",prefrence.getString("emailId",""),latlon.getLatitude(),latlon.getLongitude(),"Distance",0,50);
 
 
                     }
@@ -497,7 +575,7 @@ public class FoodFragment extends Fragment  {
                         @Override public void onItemClick(View view, int position) {
                             try {
                                 queryTv.removeTextChangedListener(mTextwatcher);
-                                queryTv.setText(hintlist.get(position));
+                                queryTv.setText(hintlist.get(position).getmDescription());
 
                             }
                             catch (Exception e)
@@ -521,29 +599,34 @@ public class FoodFragment extends Fragment  {
                     filteredList.clear();
 
                     for (int i = 0; i < Foodlist.size(); i++) {
-                        final String   restaurantName= Foodlist.get(i).getRestaurantName().toLowerCase();
+                        final String restaurantName = Foodlist.get(i).getRestaurantName().toLowerCase();
 
-                        final String location   = Foodlist.get(i).getAddress().toLowerCase();
+                        final String location = Foodlist.get(i).getAddress().toLowerCase();
                         if (restaurantName.contains(query)) {
-                            Log.e(TAG," resaurant name" + query);
+                            Log.e(TAG, " resaurant name" + query);
                             filteredList.add(Foodlist.get(i));
-                        }
-                        else if(location.contains(query))
-                        {
-                            Log.e(TAG," location name" + query);
+                        } else if (location.contains(query)) {
+                            Log.e(TAG, " location name" + query);
 
                             filteredList.add(Foodlist.get(i));
                         }
                     }
-                    if(filteredList.size()==0)
-                    {
-                        no_result.setVisibility(View.VISIBLE);
-                    }
-                    food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    FoodAdapter mAdapter = new FoodAdapter(getActivity(),filteredList);
-                    food_rv_list.setAdapter(mAdapter);
-                    mAdapter.notifyDataSetChanged();
-                    alertDialog.dismiss();
+                    if (filteredList.size() == 0) {
+                        Foodlist.clear();
+                        food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        mfoodAdapter = new FoodListAdapter(getActivity(),Foodlist);
+                        food_rv_list.setAdapter(mfoodAdapter);
+                            if(Utils.getLatLongUsingGoogle(getActivity(),place_id, "FoodFragment", food_rv_list, query)) {
+                            }
+                            alertDialog.dismiss();
+
+                    } else {
+                        food_rv_list.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        FoodListAdapter mAdapter = new FoodListAdapter(getActivity(), filteredList);
+                        food_rv_list.setAdapter(mAdapter);
+                        mAdapter.notifyDataChanged();
+                        alertDialog.dismiss();
+                   }
 
 
 
@@ -576,12 +659,19 @@ public class FoodFragment extends Fragment  {
                                     JSONArray predictions = result.getJSONArray("predictions");
                                     if (predictions.length() > 0) {
                                         for (int i = 0; i < predictions.length(); i++) {
+                                            HintBean bean= new HintBean();
                                             JSONObject obj = predictions.getJSONObject(i);
                                             String description = obj.getString("description");
-                                            hintlist.add(description);
+                                            bean.setmDescription(description);
+                                            if(obj.has("place_id")) {
+                                                place_id = obj.getString("place_id");
+                                                bean.setmPlaceId(place_id);
+                                            }
+                                            hintlist.add(bean);
 
                                         }
                                     }
+
                                     adapter.notifyDataSetChanged();
                                 }
                             }

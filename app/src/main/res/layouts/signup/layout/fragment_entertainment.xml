@@ -26,6 +26,14 @@
         android:fontFamily="sans-serif"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold" />
+    <ProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:id="@+id/progressBar"
+
+        />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/entertainment_rv_list"
         android:layout_width="match_parent"

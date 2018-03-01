@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gokids.yoda_tech.gokids.R;
+import com.gokids.yoda_tech.gokids.eat.model.HintBean;
 
 import java.util.ArrayList;
 
@@ -17,12 +18,12 @@ import java.util.ArrayList;
 
 public class HintAdapter extends RecyclerView.Adapter<HintAdapter.MyViewHolder> {
 
-    ArrayList<String> list;
+    ArrayList<HintBean> list;
     private ItemClickCallback itemClickCallback;
     Context ctx;
 
 
-    public HintAdapter(Context ctx, ArrayList<String> list){
+    public HintAdapter(Context ctx, ArrayList<HintBean> list){
         this.list = list;
         this.ctx= ctx;
     }
@@ -43,8 +44,8 @@ public class HintAdapter extends RecyclerView.Adapter<HintAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         holder.setIsRecyclable(false);
-        String  hint = list.get(position);
-        holder.hint_text.setText(hint);
+        HintBean hint = list.get(position);
+        holder.hint_text.setText(hint.getmDescription());
 
 
     }

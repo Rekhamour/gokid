@@ -95,13 +95,13 @@ public class SignUpFragment extends Fragment {
     }
 
     private void SetupSignup(View rootView) {
-        signup_city = (EditText) rootView.findViewById(R.id.signup_city);
-        profile_img = (ImageView) rootView.findViewById(R.id.profile_img);
-        signup_email = (EditText) rootView.findViewById(R.id.signup_email);
-        signup_password = (EditText) rootView.findViewById(R.id.signup_password);
-        signup_phoneno = (EditText) rootView.findViewById(R.id.signup_phoneno);
-        signup_username = (EditText) rootView.findViewById(R.id.signup_username);
-        btn_signup = (Button) rootView.findViewById(R.id.btn_signup);
+        signup_city = rootView.findViewById(R.id.signup_city);
+        profile_img = rootView.findViewById(R.id.profile_img);
+        signup_email = rootView.findViewById(R.id.signup_email);
+        signup_password = rootView.findViewById(R.id.signup_password);
+        signup_phoneno = rootView.findViewById(R.id.signup_phoneno);
+        signup_username = rootView.findViewById(R.id.signup_username);
+        btn_signup = rootView.findViewById(R.id.btn_signup);
         city= String.valueOf(signup_city.getText());
         email= String.valueOf(signup_email.getText());
         password= String.valueOf(signup_password.getText());
@@ -599,20 +599,14 @@ public class SignUpFragment extends Fragment {
 
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     /* Checks if external storage is available to at least read */
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
     @Override

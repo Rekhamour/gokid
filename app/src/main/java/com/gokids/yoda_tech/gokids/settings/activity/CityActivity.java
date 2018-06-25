@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.settings.adapter.CityAdapter;
 import com.gokids.yoda_tech.gokids.settings.model.CityBean;
+import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
 import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -32,11 +34,14 @@ public class CityActivity extends AppCompatActivity {
     }
 
     private void iniiUi() {
-        cityView= (RecyclerView)findViewById(R.id.city_rv);
+        cityView= findViewById(R.id.city_rv);
         adapter= new CityAdapter(CityActivity.this,list);
         layoutmanager= new LinearLayoutManager(this);
+        MySharedPrefrence.getPrefrence(CityActivity.this).edit().putString("current_city","CITY1").commit();
         cityView.setLayoutManager(layoutmanager);
         cityView.setAdapter(adapter);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getCity();
 
     }
@@ -81,5 +86,13 @@ public class CityActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            finish();
+        }
+        return true;
     }
 }

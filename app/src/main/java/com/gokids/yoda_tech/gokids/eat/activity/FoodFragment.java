@@ -114,13 +114,13 @@ public class FoodFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view  = inflater.inflate(R.layout.fragment_food, container, false);
         prefrence = getActivity().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,Context.MODE_PRIVATE);
-        food_rv_list = (RecyclerView) view.findViewById(R.id.food_rv_list);
-        swipe_food = (SwipeRefreshLayout) view.findViewById(R.id.swipe_food);
-        numFoods = (TextView)view. findViewById(R.id.food_num);
-        no_result = (TextView)view. findViewById(R.id.no_result);
-        frameMap = (FrameLayout)view. findViewById(R.id.frame_in_food_fragment);
-        btnList = (ImageView)view. findViewById(R.id.btn_list);
-        btnLocation = (ImageView)view. findViewById(R.id.btn_location);
+        food_rv_list = view.findViewById(R.id.food_rv_list);
+        swipe_food = view.findViewById(R.id.swipe_food);
+        numFoods = view. findViewById(R.id.food_num);
+        no_result = view. findViewById(R.id.no_result);
+        frameMap = view. findViewById(R.id.frame_in_food_fragment);
+        btnList = view. findViewById(R.id.btn_list);
+        btnLocation = view. findViewById(R.id.btn_location);
         fm= new FoodMapFragment();
         context= getActivity();
         btnLocation.setOnClickListener(new View.OnClickListener() {
@@ -318,18 +318,27 @@ public class FoodFragment extends Fragment  {
                                             m.setContacts(hr);
                                         }
                                     }
-                                    if (obj.get("Images") instanceof JSONArray) {
+                                    if(obj.has("Images"))
+                                    {
+                                        if (obj.get("Images") instanceof JSONArray) {
 
-                                        ArrayList<String> images = new ArrayList<String>();
-                                        if (obj.getJSONArray("Images").length() > 0) {
-                                            for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
-                                                //System.out.println(obj.getString("Images").getAsJsonArray().get(j).getString("ImageURL"));
-                                                images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                            ArrayList<String> images = new ArrayList<String>();
+                                            if (obj.getJSONArray("Images").length() > 0) {
+                                                for (int j = 0; j < obj.getJSONArray("Images").length(); j++) {
+                                                    //System.out.println(obj.getString("Images").getAsJsonArray().get(j).getString("ImageURL"));
+                                                    images.add(obj.getJSONArray("Images").getJSONObject(j).getString("ImageURL"));
+                                                }
+                                                Log.e(TAG, "images array size" + images.size());
+                                                m.setImages(images);
                                             }
+
+
+                                        }
+                                        else
+                                        {
+                                            m.setImages(new ArrayList<String>(0));
                                         }
 
-                                        Log.e(TAG, "images array size" + images.size());
-                                        m.setImages(images);
                                     }
                                     Foodlist.add(m);
                                     mCount++;
@@ -540,8 +549,8 @@ public class FoodFragment extends Fragment  {
             final AlertDialog alertDialog = builder.create();
             alertDialog.show();
            // builder.setView(R.layout.search_layout);
-            final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
-             hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
+            final EditText queryTv= dialogView.findViewById(R.id.queryText);
+             hintlistview= dialogView.findViewById(R.id.search_hint_list);
             lm= new LinearLayoutManager(getActivity());
             hintlistview.setLayoutManager(lm);
             hintlist.clear();
@@ -589,7 +598,7 @@ public class FoodFragment extends Fragment  {
             );
 
             queryTv.addTextChangedListener(mTextwatcher);
-            Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
+            Button searchbtn= dialogView.findViewById(R.id.searchText);
             searchbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

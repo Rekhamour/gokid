@@ -33,13 +33,13 @@ public class Entertainment extends AppCompatActivity implements SearchView.OnQue
         getSupportActionBar().setTitle(tabTitles[pos]);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
          getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.entertainment_viewpager);
+        ViewPager viewPager = findViewById(R.id.entertainment_viewpager);
         viewPager.setAdapter(new EntertainmentFragmentPagerAdapter(getSupportFragmentManager(),
                 Entertainment.this));
 
         // Give the TabLayout the ViewPager
       //  TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
-        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.entertainment_tabs);
+        PagerSlidingTabStrip tabsStrip = findViewById(R.id.entertainment_tabs);
 
         tabsStrip.setViewPager(viewPager);
         viewPager.setCurrentItem(pos);

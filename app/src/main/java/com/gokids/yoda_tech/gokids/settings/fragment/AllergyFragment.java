@@ -72,9 +72,9 @@ public class AllergyFragment extends Fragment {
         // Inflate the layout for this fragment
 
          rootView = inflater.inflate(R.layout.fragment_allergy, container, false);
-        allergy_continue = (Button) rootView.findViewById(R.id.allergy_continue);
-        values = (TextView) rootView.findViewById(R.id.values);
-        skipallergy = (TextView) rootView.findViewById(R.id.skip_allergy);
+        allergy_continue = rootView.findViewById(R.id.allergy_continue);
+        values = rootView.findViewById(R.id.values);
+        skipallergy = rootView.findViewById(R.id.skip_allergy);
         activity=  new AddKidsActivity();
         values.setText("");
         return rootView;
@@ -106,7 +106,7 @@ public class AllergyFragment extends Fragment {
 
     public void setupGridView(View rootView) {
 
-        gridView = (MyGridView) rootView.findViewById(R.id.allergy_gridview);
+        gridView = rootView.findViewById(R.id.allergy_gridview);
 
         gridView.setOnTouchListener(new View.OnTouchListener() {
 
@@ -139,9 +139,9 @@ public class AllergyFragment extends Fragment {
                     selectedStrings.add(allergies.get(position).getSpecialNeedID());
                 }
                 AddKidsActivity.setAllerygies(selectedStrings);
-                for(int j=0;j<activity.SelectedNeeds.size();j++)
+                for(int j = 0; j< AddKidsActivity.SelectedNeeds.size(); j++)
                 {
-                    Log.e(TAG," selected strings" + activity.SelectedNeeds.get(j));
+                    Log.e(TAG," selected strings" + AddKidsActivity.SelectedNeeds.get(j));
                 }
 
 

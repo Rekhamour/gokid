@@ -26,6 +26,7 @@ import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoppingListAdapter;
 import com.gokids.yoda_tech.gokids.utils.Constants;
+import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
 import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 import com.google.gson.JsonArray;
@@ -69,10 +70,10 @@ public class ToyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view  = inflater.inflate(R.layout.fragment_food, container, false);
         prefrence = getActivity().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,Context.MODE_PRIVATE);
-        rvListview = (RecyclerView) view.findViewById(R.id.food_rv_list);
-        swipeView = (SwipeRefreshLayout) view.findViewById(R.id.swipe_food);
-        numList = (TextView)view. findViewById(R.id.food_num);
-        listmap_LL = (LinearLayout)view. findViewById(R.id.listmap_LL);
+        rvListview = view.findViewById(R.id.food_rv_list);
+        swipeView = view.findViewById(R.id.swipe_food);
+        numList = view. findViewById(R.id.food_num);
+        listmap_LL = view. findViewById(R.id.listmap_LL);
         listmap_LL.setVisibility(View.GONE);
         ctx= getActivity();
         setHasOptionsMenu(true);
@@ -119,7 +120,7 @@ public class ToyFragment extends Fragment {
     }
     public int getTotalRestaurants(final String category) {
         Ion.with(getActivity())
-                .load("http://52.77.82.210/api/categoryTotalCount/category/CLS2/subCategory/CAT4")
+                .load("http://52.77.82.210/api/categoryTotalCount/category/CLS2/subCategory/CAT4"+"/city/"+ MySharedPrefrence.getPrefrence(ctx).getString("current_city",""))
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
@@ -142,7 +143,7 @@ public class ToyFragment extends Fragment {
 
     public static ArrayList<MainBean> getRestaurants(final String category, final String name, final double lat, final double longi, final String sortBy, final int start, final int count){
 
-        String PATH= Urls.BASE_URL + "api/viewAllShops/latitude/"+lat+"/longitude/"+longi+"/category/CAT4/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/"+category;
+        String PATH= Urls.BASE_URL + "api/viewAllShops/latitude/"+lat+"/longitude/"+longi+"/category/CAT4/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/"+category+"/city/"+ MySharedPrefrence.getPrefrence(ctx).getString("current_city","");
         Log.e(TAG,"path"+PATH);
 
         Ion.with(ctx)
@@ -187,20 +188,22 @@ public class ToyFragment extends Fragment {
                                             ArrayList<CuisinesBean> spe = new ArrayList<>();
                                             // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
                                             // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
+                                            if(obj.getAsJsonObject().has("Categories")) {
 
-                                            if (obj.getAsJsonObject().get("Categories").isJsonArray()) {
-                                                ArrayList<CuisinesBean> con = new ArrayList<>();
+                                                if (obj.getAsJsonObject().get("Categories").isJsonArray()) {
+                                                    ArrayList<CuisinesBean> con = new ArrayList<>();
 
-                                                JsonArray cont = obj.getAsJsonObject().get("Categories").getAsJsonArray();
-                                                for (int j = 0; j < cont.size(); j++) {
-                                                    CuisinesBean c = new CuisinesBean();
+                                                    JsonArray cont = obj.getAsJsonObject().get("Categories").getAsJsonArray();
+                                                    for (int j = 0; j < cont.size(); j++) {
+                                                        CuisinesBean c = new CuisinesBean();
 
-                                                    c.setCuisine(cont.get(j).getAsJsonObject().get("Category").getAsString());
-                                                    con.add(c);
+                                                        c.setCuisine(cont.get(j).getAsJsonObject().get("Category").getAsString());
+                                                        con.add(c);
+                                                    }
+                                                    Log.e(TAG, "con array size" + con.size());
+
+                                                    m.setCuisines(con);
                                                 }
-                                                Log.e(TAG, "con array size" + con.size());
-
-                                                m.setCuisines(con);
                                             }
                                             //m.setCuisines(con);
 

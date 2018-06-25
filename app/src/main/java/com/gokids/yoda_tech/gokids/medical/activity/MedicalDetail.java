@@ -66,6 +66,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import me.relex.circleindicator.CircleIndicator;
 
@@ -100,31 +101,34 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_medical_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         prefrence= getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
-        address = (TextView) findViewById(R.id.address_tv);
-        email = (TextView) findViewById(R.id.email_tv);
-        website = (TextView) findViewById(R.id.website_tv);
-        timing = (TextView) findViewById(R.id.timings_tv);
-        specialization = (TextView) findViewById(R.id.specialization_tv);
-        distance = (TextView) findViewById(R.id.distance_tv);
-        thumbs_up = (ImageView) findViewById(R.id.thumbs_up_medical);
-        count_up = (TextView) findViewById(R.id.count_up_medical);
-        count_down = (TextView) findViewById(R.id.count_down_medical);
-        thumb_down = (ImageView) findViewById(R.id.thumbs_down_medical);
+        address = findViewById(R.id.address_tv);
+        email = findViewById(R.id.email_tv);
+        website = findViewById(R.id.website_tv);
+        timing = findViewById(R.id.timings_tv);
+        specialization = findViewById(R.id.specialization_tv);
+        distance = findViewById(R.id.distance_tv);
+        thumbs_up = findViewById(R.id.thumbs_up_medical);
+        count_up = findViewById(R.id.count_up_medical);
+        count_down = findViewById(R.id.count_down_medical);
+        thumb_down = findViewById(R.id.thumbs_down_medical);
         //img = (ImageView) findViewById(R.id.medical_detail_image);
-        reviews_list = (RecyclerView) findViewById(R.id.reviews_list);
-        bookmark = (ImageButton) findViewById(R.id.bookmark);
-        chat = (ImageButton) findViewById(R.id.chat);
-        direction = (ImageButton) findViewById(R.id.direction);
-        scrollView = (ScrollView) findViewById(R.id.scrollVie);
-        mLinearLayout = (LinearLayout) findViewById(R.id.doctors_list);
+        reviews_list = findViewById(R.id.reviews_list);
+        bookmark = findViewById(R.id.bookmark);
+        chat = findViewById(R.id.chat);
+        direction = findViewById(R.id.direction);
+        scrollView = findViewById(R.id.scrollVie);
+        mLinearLayout = findViewById(R.id.doctors_list);
         Intent intent = getIntent();
         m = (MainBean) intent.getSerializableExtra("medical_data");
 
-        mViewpager = (ViewPager) findViewById(R.id.image_pager_md);
+        mViewpager = findViewById(R.id.image_pager_md);
+        if(m.getImages().size()>0)
         mViewpager.setAdapter(new ImageSLiderAdapter(MedicalDetail.this,m.getImages()));
-        indicator = (CircleIndicator) findViewById(R.id.md_indicator);
+        else
+            mViewpager.setAdapter(new ImageSLiderAdapter(MedicalDetail.this,new ArrayList<String>()));
+        indicator = findViewById(R.id.md_indicator);
         indicator.setViewPager(mViewpager);
        // setSupportActionBar(toolbar);
 
@@ -195,7 +199,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                     } else {
                         bookmarkFlag = false;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId", "") + "/class/CLS4/categoryItem/" + m.getMedicalID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city","");;
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId", "") + "/class/CLS4/categoryItem/" + m.getMedicalID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city","");
                         Ion.with(MedicalDetail.this)
                                 .load(url)
                                 .asJsonObject()
@@ -246,8 +250,8 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                 final Dialog dialog = new Dialog(MedicalDetail.this);
                 dialog.setContentView(R.layout.review_layout);
                 // set the custom dialog components - text, image and button
-                final EditText input = (EditText) dialog.findViewById(R.id.review_text);
-                Button dialogButton = (Button) dialog.findViewById(R.id.btn_submit_review);
+                final EditText input = dialog.findViewById(R.id.review_text);
+                Button dialogButton = dialog.findViewById(R.id.btn_submit_review);
 
                 // if button is clicked, close the custom dialog
                 dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -338,7 +342,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -472,7 +476,7 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
                     }
                 });*/
         if (!prefrence.getString("emailId", "").toString().trim().isEmpty()) {
-            String url = Urls.BASE_URL+"api/addDeleteReview/reviewee/" + m.getMedicalID() + "/review/" + reviewText + "/email/" + prefrence.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city","");;
+            String url = Urls.BASE_URL+"api/addDeleteReview/reviewee/" + m.getMedicalID() + "/review/" + reviewText + "/email/" + prefrence.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city","");
 
             JsonObjectRequest jsonRequest = new JsonObjectRequest
                     (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -626,7 +630,8 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(loc,0.5F));
     }
     private void getAllratingsthumbsdown() {
-        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","") +"/class/CLS4/categoryItem/"+m.getMedicalID();
+        String getthumbsdown="api/viewAllRatings/email/"+MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("emailId","") +"/class/CLS4/categoryItem/"+m.getMedicalID()+"/city/"+ MySharedPrefrence.getPrefrence(MedicalDetail.this).getString("current_city","");
+        Log.e("RATING THUMB","RATING THUMB"+getthumbsdown);
         Ion.with(MedicalDetail.this)
                 .load(Urls.BASE_URL+getthumbsdown)
                 .asJsonObject().setCallback(new FutureCallback<JsonObject>() {
@@ -634,24 +639,29 @@ public class MedicalDetail extends AppCompatActivity implements OnMapReadyCallba
             public void onCompleted(Exception e, JsonObject result) {
                 if(e==null)
                 {
-                    JsonArray resultarray = result.get("result").getAsJsonArray();
-                    Log.e(TAG," all ratings tumnumber" + result.toString());
-                    try {
-                        JSONArray resultArray= new JSONArray( resultarray.toString());
-                        if(resultArray.length()>0)
-                        {
-                            for(int i=0;i<resultArray.length();i++)
-                            {
-                                JSONObject obj= resultArray.getJSONObject(i);
-                                upcount=  obj.getString("Up_Count");
-                                downcount=   obj.getString("Down_Count");
-                                count_up.setText(upcount);
-                                count_down.setText(downcount);
+                    Log.e(TAG,"rating  result"+ result);
+                    //String resultString = result.get("result").getAsString();
+                    //StringTokenizer ok = new StringTokenizer(resultString);
+                    if(result.get("result") instanceof JsonArray) {
+                        //getAsJsonArray();
+                        Log.e(TAG, " all ratings tumnumber" + result.toString());
+                        JsonArray resultarray= result.get("result").getAsJsonArray();
+                        try {
+                            JSONArray resultArray = new JSONArray(resultarray.toString());
+                            if (resultArray.length() > 0) {
+                                for (int i = 0; i < resultArray.length(); i++) {
+                                    JSONObject obj = resultArray.getJSONObject(i);
+                                    upcount = obj.getString("Up_Count");
+                                    downcount = obj.getString("Down_Count");
+                                    count_up.setText(upcount);
+                                    count_down.setText(downcount);
 
+                                }
                             }
+
+                        } catch (JSONException e1) {
+                            e1.printStackTrace();
                         }
-                    } catch (JSONException e1) {
-                        e1.printStackTrace();
                     }
                 }
             }

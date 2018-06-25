@@ -21,6 +21,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="red_80">#80ff0000</color>
     <color name="half_white">#FEF0E3</color>
+    <color name="lightpale_white">#fcf2e9</color>
     <color name="blue">#0000EE</color>
     <color name="skyblue">#50abf1</color>
     <color name="cafe_americano">#362819</color>

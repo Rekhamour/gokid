@@ -80,8 +80,8 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.MyViewHolder> 
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            cityRL= (RelativeLayout) itemView.findViewById(R.id.single_row_city);
-            city = (TextView) itemView.findViewById(R.id.city);
+            cityRL= itemView.findViewById(R.id.single_row_city);
+            city = itemView.findViewById(R.id.city);
         }
     }
 

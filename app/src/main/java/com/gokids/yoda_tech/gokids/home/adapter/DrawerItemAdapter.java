@@ -53,8 +53,8 @@ public class DrawerItemAdapter extends BaseAdapter {
         LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
         listItem = inflater.inflate(layoutResourceId, parent, false);
 
-        ImageView imageViewIcon = (ImageView) listItem.findViewById(R.id.imageViewIcon);
-        TextView textViewName = (TextView) listItem.findViewById(R.id.textViewName);
+        ImageView imageViewIcon = listItem.findViewById(R.id.imageViewIcon);
+        TextView textViewName = listItem.findViewById(R.id.textViewName);
 
         DrawerItems items = loginDetails.getItemses().get(position);
 

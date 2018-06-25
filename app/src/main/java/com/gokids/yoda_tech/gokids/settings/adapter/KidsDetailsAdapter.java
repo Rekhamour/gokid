@@ -198,10 +198,10 @@ public class KidsDetailsAdapter extends RecyclerView.Adapter<KidsDetailsAdapter.
         Button edit;
         public MyViewHolder(View itemView) {
             super(itemView);
-            img = (ImageView) itemView.findViewById(R.id.kid_icon);
-            detail = (TextView) itemView.findViewById(R.id.age_kid);
-            edit = (Button) itemView.findViewById(R.id.edit_detail);
-            delete = (ImageView) itemView.findViewById(R.id.delete_detail);
+            img = itemView.findViewById(R.id.kid_icon);
+            detail = itemView.findViewById(R.id.age_kid);
+            edit = itemView.findViewById(R.id.edit_detail);
+            delete = itemView.findViewById(R.id.delete_detail);
         }
     }
     private void getAllspecialNeeds(String kidid, final int position) {

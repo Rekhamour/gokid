@@ -160,8 +160,8 @@ public class SeekArc extends View {
             if (thumb != null) {
                 mThumb = thumb;
             }
-            thumbHalfheight = (int) mThumb.getIntrinsicHeight() / 2;
-            thumbHalfWidth = (int) mThumb.getIntrinsicWidth() / 2;
+            thumbHalfheight = mThumb.getIntrinsicHeight() / 2;
+            thumbHalfWidth = mThumb.getIntrinsicWidth() / 2;
             mThumb.setBounds(-thumbHalfWidth, -thumbHalfheight, thumbHalfWidth,
                     thumbHalfheight);
             mMax = a.getInteger(R.styleable.SeekArc_max, mMax);
@@ -529,7 +529,7 @@ public class SeekArc extends View {
     }
 
     public void setTouchInSide(boolean isEnabled) {
-        int thumbHalfheight = (int) mThumb.getIntrinsicHeight() / 2;
+        int thumbHalfheight = mThumb.getIntrinsicHeight() / 2;
         int thumbHalfWidth =0;// (int) mThumb.getIntrinsicWidth() / 2;
         mTouchInside = isEnabled;
         if (mTouchInside) {

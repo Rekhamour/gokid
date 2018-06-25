@@ -43,7 +43,7 @@ public class ImageSLiderAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup view, final int position) {
         View myImageLayout = inflater.inflate(R.layout.slide, view, false);
-        ImageView myImage = (ImageView) myImageLayout
+        ImageView myImage = myImageLayout
                 .findViewById(R.id.food_detail_image);
        Picasso.with(context).load(images.get(position)).into(myImage);
         myImage.setOnClickListener(new View.OnClickListener() {

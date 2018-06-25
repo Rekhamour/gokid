@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:background="@color/grey">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/dp10margin"
+
+        android:text=""
+        android:textStyle="bold"
+        android:textColor="@color/black"
+
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/dp10margin"
+
+        android:text="Are you sure want to remove
+        this number?"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+
+        />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/colorWhite"
+        android:hint="Search for Location or a Place"
+        android:id="@+id/queryText"
+        android:textColor="@color/black"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_marginBottom="10dp"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:textAllCaps="false"
+
+            android:textColor="@color/skyblue"
+            android:text="Cancel"
+            android:id="@+id/cancelclick"
+            />
+        <Button
+            android:layout_marginBottom="10dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:textAllCaps="false"
+
+            android:textColor="@color/skyblue"
+            android:text="Delete"
+            android:id="@+id/deletecontact"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

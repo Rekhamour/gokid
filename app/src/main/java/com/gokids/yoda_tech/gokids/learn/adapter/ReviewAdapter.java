@@ -50,8 +50,8 @@ public class ReviewAdapter extends BaseAdapter {
         final LayoutInflater inflater = LayoutInflater.from(mContext);
         view = inflater.inflate(R.layout.list_review_layout, null);
 
-        TextView userName = (TextView) view.findViewById(R.id.userName);
-        TextView review = (TextView) view.findViewById(R.id.review);
+        TextView userName = view.findViewById(R.id.userName);
+        TextView review = view.findViewById(R.id.review);
 
         userName.setText(reviewses.get(i).getReviewer());
         review.setText(reviewses.get(i).getReview());

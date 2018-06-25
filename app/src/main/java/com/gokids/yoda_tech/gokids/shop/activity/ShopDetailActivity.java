@@ -122,30 +122,30 @@ public class ShopDetailActivity extends AppCompatActivity implements OnMapReadyC
         emailid=prefrences.getString("emailId","");
         latlon= Utils.getLatLong(ShopDetailActivity.this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.shop_detail_toolbar);
-        address = (TextView) findViewById(R.id.shop_detail_address_tv);
-        email = (TextView) findViewById(R.id.shop_detail_email_tv);
-        kidfinityscore_detail = (TextView) findViewById(R.id.kidfinityscore_detail);
-        website = (TextView) findViewById(R.id.shop_detail_website_tv);
-        timing = (TextView) findViewById(R.id.shop_detail_timings_tv);
-        thumbs_up = (ImageView) findViewById(R.id.thumbs_up_shop);
-        count_up = (TextView) findViewById(R.id.count_up_shop);
-        count_down = (TextView) findViewById(R.id.count_down_shop);
-        thumb_down = (ImageView) findViewById(R.id.thumbs_down_shop);
-        detail = (TextView) findViewById(R.id.shop_detail_specialization_tv);
-        knownfor = (TextView) findViewById(R.id.shop_detail_knownfor_tv);
-        distance = (TextView) findViewById(R.id.shop_detail_distance_tv);
-        reviews_list = (RecyclerView) findViewById(R.id.shop_detail_reviews_list);
-        write_review = (Button) findViewById(R.id.shop_detail_write_review);
-        addratingShopping = (RatingBar) findViewById(R.id.addRating_shoping);
-        bookmark = (ImageButton) findViewById(R.id.shop_detail_bookmark);
-        chat = (ImageButton) findViewById(R.id.shop_detail_chat);
-        direction = (ImageButton) findViewById(R.id.shop_detail_direction);
-        scrollView = (ScrollView) findViewById(R.id.shop_detail_scrollVie);
-        mLinearLayout = (LinearLayout) findViewById(R.id.shop_detail_doctors_list);
-        mViewpager = (ViewPager) findViewById(R.id.shop_image_pager);
+        Toolbar toolbar = findViewById(R.id.shop_detail_toolbar);
+        address = findViewById(R.id.shop_detail_address_tv);
+        email = findViewById(R.id.shop_detail_email_tv);
+        kidfinityscore_detail = findViewById(R.id.kidfinityscore_detail);
+        website = findViewById(R.id.shop_detail_website_tv);
+        timing = findViewById(R.id.shop_detail_timings_tv);
+        thumbs_up = findViewById(R.id.thumbs_up_shop);
+        count_up = findViewById(R.id.count_up_shop);
+        count_down = findViewById(R.id.count_down_shop);
+        thumb_down = findViewById(R.id.thumbs_down_shop);
+        detail = findViewById(R.id.shop_detail_specialization_tv);
+        knownfor = findViewById(R.id.shop_detail_knownfor_tv);
+        distance = findViewById(R.id.shop_detail_distance_tv);
+        reviews_list = findViewById(R.id.shop_detail_reviews_list);
+        write_review = findViewById(R.id.shop_detail_write_review);
+        addratingShopping = findViewById(R.id.addRating_shoping);
+        bookmark = findViewById(R.id.shop_detail_bookmark);
+        chat = findViewById(R.id.shop_detail_chat);
+        direction = findViewById(R.id.shop_detail_direction);
+        scrollView = findViewById(R.id.shop_detail_scrollVie);
+        mLinearLayout = findViewById(R.id.shop_detail_doctors_list);
+        mViewpager = findViewById(R.id.shop_image_pager);
         mViewpager.setAdapter(new ImageSLiderAdapter(ShopDetailActivity.this,m.getImages()));
-        indicator = (CircleIndicator) findViewById(R.id.shop_indicator);
+        indicator = findViewById(R.id.shop_indicator);
         indicator.setViewPager(mViewpager);
        int indicatorcount = m.getImages().size();
         final Handler handler = new Handler();
@@ -278,7 +278,7 @@ getAllratingsthumbsdown();
                     if (!bookmarkFlag) {
                         bookmarkFlag = true;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS2/categoryItem/" + m.getShopID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city","");;
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS2/categoryItem/" + m.getShopID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city","");
                         Log.e(TAG, "url" + url);
                         Ion.with(ShopDetailActivity.this)
                                 .load(url)
@@ -299,7 +299,7 @@ getAllratingsthumbsdown();
                     } else {
                         bookmarkFlag = false;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS2/categoryItem/" + m.getShopID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city","");;
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS2/categoryItem/" + m.getShopID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city","");
                         Ion.with(ShopDetailActivity.this)
                                 .load(url)
                                 .asJsonObject()
@@ -355,8 +355,8 @@ getAllratingsthumbsdown();
                 final Dialog dialog = new Dialog(ShopDetailActivity.this);
                 dialog.setContentView(R.layout.review_layout);
                 // set the custom dialog components - text, image and button
-                final EditText input = (EditText) dialog.findViewById(R.id.review_text);
-                Button dialogButton = (Button) dialog.findViewById(R.id.btn_submit_review);
+                final EditText input = dialog.findViewById(R.id.review_text);
+                Button dialogButton = dialog.findViewById(R.id.btn_submit_review);
 
                 // if button is clicked, close the custom dialog
                 dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -429,7 +429,7 @@ getAllratingsthumbsdown();
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.shop_detail_fab);
+        FloatingActionButton fab = findViewById(R.id.shop_detail_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -473,7 +473,7 @@ getAllratingsthumbsdown();
 
     private void getRatings() {
       //  String ratings= String.valueOf(selectedratings);
-        String path= Urls.BASE_URL+"api/viewRatingPerRatee/ratee/" + m.getShopID() ;
+        String path= Urls.BASE_URL+"api/viewRatingPerRatee/ratee/" + m.getShopID()+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city","");
         Log.e(TAG,"path url for viewing ratings "+ path);
 
         Ion.with(ShopDetailActivity.this)
@@ -496,7 +496,7 @@ getAllratingsthumbsdown();
 
     private void updateratings(float selectedratings) {
         String ratings= String.valueOf(selectedratings);
-        String path= Urls.BASE_URL+"api/addDeleteRating/ratee/" + m.getShopID() + "/rating/" +ratings +"/email/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("emailId","").toString()+"/rateID/-" ;
+        String path= Urls.BASE_URL+"api/addDeleteRating/ratee/" + m.getShopID() + "/rating/" +ratings +"/email/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("emailId","").toString()+"/rateID/-"+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city","");
         Log.e(TAG,"path url for adding ratings "+ path);
 
         Ion.with(ShopDetailActivity.this)
@@ -515,7 +515,7 @@ getAllratingsthumbsdown();
 
     private void getIfBookmarked() {
         Ion.with(this)
-                .load(Urls.BASE_URL+"api/viewAllBookmarks/email/" +prefrences.getString("emailId","")+"/class/CLS2")
+                .load(Urls.BASE_URL+"api/viewAllBookmarks/email/" +prefrences.getString("emailId","")+"/class/CLS2"+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city",""))
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
@@ -623,7 +623,7 @@ getAllratingsthumbsdown();
 
     public void populateReviews() {
         reviews = new ArrayList<>();
-        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getShopID()+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city","");;
+        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getShopID()+"/city/"+ MySharedPrefrence.getPrefrence(ShopDetailActivity.this).getString("current_city","");
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
                 new Response.Listener<String>() {

@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.settings.model.Allergy;
 import com.gokids.yoda_tech.gokids.utils.GridItemView;
 
@@ -48,8 +49,10 @@ public class AllergyAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+
         final GridItemView customView = (convertView == null) ? new GridItemView(mContext) : (GridItemView) convertView;
         customView.display(allergy.get(position).getDispText(),allergy.get(position).getDrawableID(),allergy.get(position).isSelected());
+
         return customView;
     }
 }

@@ -62,8 +62,8 @@ public class DietFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
          rootView = inflater.inflate(R.layout.fragment_diet, container, false);
-        diet_continue = (Button) rootView.findViewById(R.id.diet_continue);
-        skipdiet = (TextView) rootView.findViewById(R.id.skip_diet);
+        diet_continue = rootView.findViewById(R.id.diet_continue);
+        skipdiet = rootView.findViewById(R.id.skip_diet);
         //AddKidsActivity.setSeekBarProgress(60);
         //selectedStrings = ;
         activity= new AddKidsActivity();
@@ -106,7 +106,7 @@ public class DietFragment extends Fragment {
 
     public void setupGridView(View rootView) {
 
-        mGridView = (MyGridView) rootView.findViewById(R.id.allergy_gridview);
+        mGridView = rootView.findViewById(R.id.allergy_gridview);
 
         mGridView.setOnTouchListener(new View.OnTouchListener(){
 
@@ -139,9 +139,9 @@ public class DietFragment extends Fragment {
                     selectedStrings.add(diets.get(position).getSpecialNeedID());
                 }
                 AddKidsActivity.setDiets(selectedStrings);
-                for(int j=0;j<activity.SelectedNeeds.size();j++)
+                for(int j = 0; j< AddKidsActivity.SelectedNeeds.size(); j++)
                 {
-                    Log.e(TAG," selected strings" + activity.SelectedNeeds.get(j));
+                    Log.e(TAG," selected strings" + AddKidsActivity.SelectedNeeds.get(j));
                 }
 
 

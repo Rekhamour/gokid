@@ -15,17 +15,20 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:fontFamily="sans-serif"
-        android:text="Clinics"
+        android:text=""
         android:textColor="@color/colorPrimary"
         android:textStyle="bold" />
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
-        android:id="@+id/swipe_medical"
-        android:layout_height="wrap_content">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/medical_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:id="@+id/swipe_medical"
+        android:visibility="gone"
+
+        android:layout_height="wrap_content">
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

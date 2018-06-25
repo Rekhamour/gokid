@@ -79,9 +79,9 @@ public class EntertainCategoriesAdapter extends RecyclerView.Adapter<EntertainCa
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            cate_row = (RelativeLayout) itemView.findViewById(R.id.cate_row);
-            cat_img = (ImageView) itemView.findViewById(R.id.cat_img);
-            cat_name = (TextView) itemView.findViewById(R.id.cat_name);
+            cate_row = itemView.findViewById(R.id.cate_row);
+            cat_img = itemView.findViewById(R.id.cat_img);
+            cat_name = itemView.findViewById(R.id.cat_name);
 
         }
     }

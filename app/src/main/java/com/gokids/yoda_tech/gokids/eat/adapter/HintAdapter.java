@@ -60,7 +60,7 @@ public class HintAdapter extends RecyclerView.Adapter<HintAdapter.MyViewHolder> 
         TextView hint_text;
         public MyViewHolder(View itemView) {
             super(itemView);
-            hint_text = (TextView) itemView.findViewById(R.id.hint_text);
+            hint_text = itemView.findViewById(R.id.hint_text);
         }
     }
 

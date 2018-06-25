@@ -69,7 +69,7 @@ public class EntertainlistAdapter extends RecyclerView.Adapter<EntertainlistAdap
             @Override
             public void onClick(View v) {
                // itemClickCallback.onItemClick(position);
-                Intent intent = new Intent(ctx, EntertainmentDetailActivity.class).putExtra("medical_data", (Serializable) list.get(position));
+                Intent intent = new Intent(ctx, EntertainmentDetailActivity.class).putExtra("medical_data", list.get(position));
                 ctx.startActivity(intent);
             }
         });
@@ -99,14 +99,14 @@ public class EntertainlistAdapter extends RecyclerView.Adapter<EntertainlistAdap
         RelativeLayout single_row;
         public MyViewHolder(View itemView) {
             super(itemView);
-            single_row = (RelativeLayout) itemView.findViewById(R.id.entertainment_single_row_container);
-            img = (ImageView) itemView.findViewById(R.id.entertainment_image);
-            name = (TextView) itemView.findViewById(R.id.entertainment_name);
-            event_date = (TextView) itemView.findViewById(R.id.event_date);
-            dist = (TextView) itemView.findViewById(R.id.entertainment_distance);
-            address = (TextView) itemView.findViewById(R.id.entertainment_address);
-            kids = (TextView) itemView.findViewById(R.id.entertainment_kidsfinity);
-            kidfinity_Score = (TextView) itemView.findViewById(R.id.entertainment_list_kidfinity_Score);
+            single_row = itemView.findViewById(R.id.entertainment_single_row_container);
+            img = itemView.findViewById(R.id.entertainment_image);
+            name = itemView.findViewById(R.id.entertainment_name);
+            event_date = itemView.findViewById(R.id.event_date);
+            dist = itemView.findViewById(R.id.entertainment_distance);
+            address = itemView.findViewById(R.id.entertainment_address);
+            kids = itemView.findViewById(R.id.entertainment_kidsfinity);
+            kidfinity_Score = itemView.findViewById(R.id.entertainment_list_kidfinity_Score);
         }
     }
     private class ItemFilter extends Filter {

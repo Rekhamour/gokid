@@ -2,6 +2,7 @@ package com.gokids.yoda_tech.gokids.utils;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,9 +22,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void initUi() {
-       imgView= (ImageView)findViewById(R.id.icon_page);
-       msgView= (TextView)findViewById(R.id.message);
+       imgView= findViewById(R.id.icon_page);
+       msgView= findViewById(R.id.message);
       mpos=  getIntent().getIntExtra("pos",0);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
       if(mpos==4)
       {
           imgView.setImageResource(R.drawable.ic_sos);
@@ -55,5 +58,14 @@ public class DetailActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home)
+        {
+            finish();
+        }
+        return true;
     }
 }

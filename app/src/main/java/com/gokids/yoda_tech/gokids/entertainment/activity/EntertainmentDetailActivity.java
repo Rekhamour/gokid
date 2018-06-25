@@ -129,29 +129,29 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
         emailid=prefrences.getString("emailId","");
         latlon= Utils.getLatLong(EntertainmentDetailActivity.this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.entertainment_detail_toolbar);
-        address = (TextView) findViewById(R.id.entertainment_detail_address_tv);
-        email = (TextView) findViewById(R.id.entertainment_detail_email_tv);
-        kidfinityscore_detail = (TextView) findViewById(R.id.kidfinityscore_detail);
-        website = (TextView) findViewById(R.id.entertainment_detail_website_tv);
-        timing = (TextView) findViewById(R.id.entertainment_detail_timings_tv);
-        endtime = (TextView) findViewById(R.id.endtime_entertainment);
-        addRatingView = (RatingBar) findViewById(R.id.addRating);
-        thumbs_up = (ImageView) findViewById(R.id.thumbs_up_entertain);
-        count_up = (TextView) findViewById(R.id.count_up_entertain);
-        count_down = (TextView) findViewById(R.id.count_down_entertain);
-        thumb_down = (ImageView) findViewById(R.id.thumbs_down_entertain);
-        knownfor = (TextView) findViewById(R.id.entertainment_detail_knownfor_tv);
-        distance = (TextView) findViewById(R.id.entertainment_detail_distance_tv);
-        reviews_list = (RecyclerView) findViewById(R.id.entertainment_detail_reviews_list);
-        bookmark = (ImageButton) findViewById(R.id.entertainment_detail_bookmark);
-        chat = (ImageButton) findViewById(R.id.entertainment_detail_chat);
-        direction = (ImageButton) findViewById(R.id.entertainment_detail_direction);
-        scrollView = (ScrollView) findViewById(R.id.entertainment_detail_scrollVie);
-        mLinearLayout = (LinearLayout) findViewById(R.id.entertainment_detail_doctors_list);
-        mViewpager = (ViewPager) findViewById(R.id.entertainment_image_pager);
+        Toolbar toolbar = findViewById(R.id.entertainment_detail_toolbar);
+        address = findViewById(R.id.entertainment_detail_address_tv);
+        email = findViewById(R.id.entertainment_detail_email_tv);
+        kidfinityscore_detail = findViewById(R.id.kidfinityscore_detail);
+        website = findViewById(R.id.entertainment_detail_website_tv);
+        timing = findViewById(R.id.entertainment_detail_timings_tv);
+        endtime = findViewById(R.id.endtime_entertainment);
+        addRatingView = findViewById(R.id.addRating);
+        thumbs_up = findViewById(R.id.thumbs_up_entertain);
+        count_up = findViewById(R.id.count_up_entertain);
+        count_down = findViewById(R.id.count_down_entertain);
+        thumb_down = findViewById(R.id.thumbs_down_entertain);
+        knownfor = findViewById(R.id.entertainment_detail_knownfor_tv);
+        distance = findViewById(R.id.entertainment_detail_distance_tv);
+        reviews_list = findViewById(R.id.entertainment_detail_reviews_list);
+        bookmark = findViewById(R.id.entertainment_detail_bookmark);
+        chat = findViewById(R.id.entertainment_detail_chat);
+        direction = findViewById(R.id.entertainment_detail_direction);
+        scrollView = findViewById(R.id.entertainment_detail_scrollVie);
+        mLinearLayout = findViewById(R.id.entertainment_detail_doctors_list);
+        mViewpager = findViewById(R.id.entertainment_image_pager);
         mViewpager.setAdapter(new ImageSLiderAdapter(EntertainmentDetailActivity.this,m.getImages()));
-        indicator = (CircleIndicator) findViewById(R.id.entertainment_indicator);
+        indicator = findViewById(R.id.entertainment_indicator);
         String DATE_FORMAT_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         DateFormat formatter = new SimpleDateFormat(DATE_FORMAT_PATTERN);
 
@@ -244,7 +244,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                         bookmarkFlag = true;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
 
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS3/categoryItem/" + m.getEntertainmentID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");;
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS3/categoryItem/" + m.getEntertainmentID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");
                         Log.e(TAG, "url" + url);
                         Ion.with(EntertainmentDetailActivity.this)
                                 .load(url)
@@ -265,7 +265,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                     } else {
                         bookmarkFlag = false;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS3/categoryItem/" + m.getEntertainmentID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");;
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS3/categoryItem/" + m.getEntertainmentID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");
                         Ion.with(EntertainmentDetailActivity.this)
                                 .load(url)
                                 .asJsonObject()
@@ -362,8 +362,8 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
                 final Dialog dialog = new Dialog(EntertainmentDetailActivity.this);
                 dialog.setContentView(R.layout.review_layout);
                 // set the custom dialog components - text, image and button
-                final EditText input = (EditText) dialog.findViewById(R.id.review_text);
-                Button dialogButton = (Button) dialog.findViewById(R.id.btn_submit_review);
+                final EditText input = dialog.findViewById(R.id.review_text);
+                Button dialogButton = dialog.findViewById(R.id.btn_submit_review);
 
                 // if button is clicked, close the custom dialog
                 dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -395,7 +395,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.entertainment_detail_fab);
+        FloatingActionButton fab = findViewById(R.id.entertainment_detail_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -541,7 +541,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
 
     private void postReview(String reviewText) {
         if (!prefrences.getString("emailId", "").toString().trim().isEmpty()) {
-            String url = Urls.BASE_URL + "api/addDeleteReview/reviewee/" + m.getEntertainmentID() + "/review/" + reviewText + "/email/" + prefrences.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");;
+            String url = Urls.BASE_URL + "api/addDeleteReview/reviewee/" + m.getEntertainmentID() + "/review/" + reviewText + "/email/" + prefrences.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");
             Log.e(TAG, "url" + url);
 
 
@@ -587,7 +587,7 @@ public class EntertainmentDetailActivity extends AppCompatActivity implements On
 
     public void populateReviews() {
         reviews = new ArrayList<>();
-        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getEntertainmentID()+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");;
+        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getEntertainmentID()+"/city/"+ MySharedPrefrence.getPrefrence(EntertainmentDetailActivity.this).getString("current_city","");
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
                 new Response.Listener<String>() {

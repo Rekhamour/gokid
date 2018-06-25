@@ -22,12 +22,12 @@ public class Shopping extends AppCompatActivity {
         getSupportActionBar().setTitle(tabTitles[0]);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(new ShopFragmentPagerAdapter(getSupportFragmentManager(),
                 Shopping.this));
 
-        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.shopping_toolbar);
+        PagerSlidingTabStrip tabsStrip = findViewById(R.id.tabs);
+        Toolbar toolbar = findViewById(R.id.shopping_toolbar);
         tabsStrip.setViewPager(viewPager);
         tabsStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

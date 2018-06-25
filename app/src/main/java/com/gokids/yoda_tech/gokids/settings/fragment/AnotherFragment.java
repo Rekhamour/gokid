@@ -48,11 +48,11 @@ public class AnotherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_another, container, false);
-        another_continue = (Button) rootView.findViewById(R.id.another_continue);
-        yesLL = (LinearLayout) rootView.findViewById(R.id.yes);
-        noLL = (LinearLayout) rootView.findViewById(R.id.no);
-        yesTv = (TextView) rootView.findViewById(R.id.yes_tv);
-        noTv = (TextView) rootView.findViewById(R.id.no_tv);
+        another_continue = rootView.findViewById(R.id.another_continue);
+        yesLL = rootView.findViewById(R.id.yes);
+        noLL = rootView.findViewById(R.id.no);
+        yesTv = rootView.findViewById(R.id.yes_tv);
+        noTv = rootView.findViewById(R.id.no_tv);
         activity= new AddKidsActivity();
         bean= new SpecialNeedBean();
 

@@ -44,7 +44,7 @@ public class FoodListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
 
     public FoodListAdapter(Context context, List<MainBean> list) {
-        this.context = context;
+        FoodListAdapter.context = context;
         this.list = list;
         df.setRoundingMode(RoundingMode.UP);
 
@@ -96,13 +96,13 @@ public class FoodListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         RelativeLayout single_row;
         public MyViewHolder(View itemView) {
             super(itemView);
-            single_row = (RelativeLayout) itemView.findViewById(R.id.food_single_row_container);
-            img = (ImageView) itemView.findViewById(R.id.food_image);
-            name = (TextView) itemView.findViewById(R.id.food_name);
-            dist = (TextView) itemView.findViewById(R.id.food_distance);
-            address = (TextView) itemView.findViewById(R.id.food_address);
-            kids = (TextView) itemView.findViewById(R.id.food_kidsfinity);
-            food_list_kidfinity_Score = (TextView) itemView.findViewById(R.id.food_list_kidfinity_Score);
+            single_row = itemView.findViewById(R.id.food_single_row_container);
+            img = itemView.findViewById(R.id.food_image);
+            name = itemView.findViewById(R.id.food_name);
+            dist = itemView.findViewById(R.id.food_distance);
+            address = itemView.findViewById(R.id.food_address);
+            kids = itemView.findViewById(R.id.food_kidsfinity);
+            food_list_kidfinity_Score = itemView.findViewById(R.id.food_list_kidfinity_Score);
         }
         void bindData(final MainBean m){
 
@@ -111,15 +111,15 @@ public class FoodListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             dist.setText(m.getDistance() + "\nKm ");
             //holder.kids.setText(m.getKidsfinityScore() + "");
             if(m.getImages().size()>0) {
-
-                Picasso.with(context).load(m.getImages().get(0)).into(img);
+                 if(!m.getImages().get(0).isEmpty())
+                     Picasso.with(context).load(m.getImages().get(0)).into(img);
             }
            // img.setImageResource(R.drawable.test_img);
             single_row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // itemClickCallback.onItemClick(position);
-                    Intent intent = new Intent(context, FoodDetailActivity.class).putExtra("medical_data", (Serializable)m);
+                    Intent intent = new Intent(context, FoodDetailActivity.class).putExtra("medical_data", m);
                     context.startActivity(intent);
                 }
             });

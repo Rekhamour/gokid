@@ -27,10 +27,20 @@ public class FullImageActivity extends AppCompatActivity {
 
     private void setUpview() {
 
-        imgView= (ViewPager)findViewById(R.id.full_image);
+        imgView= findViewById(R.id.full_image);
         int positon= getIntent().getIntExtra("position",0);
-         Allimageslist = getIntent().getStringArrayListExtra("Allimageslist");
-        adapter= new FullImageAdapter(FullImageActivity.this,Allimageslist);
+        int flag= getIntent().getIntExtra("flag",0);
+        if(flag==0) {
+            Allimageslist = getIntent().getStringArrayListExtra("Allimageslist");
+            adapter = new FullImageAdapter(FullImageActivity.this, Allimageslist);
+        }
+        else
+        {
+            
+          ArrayList<Integer>  imageslist = getIntent().getIntegerArrayListExtra("Allimageslist");
+            adapter = new FullImageAdapter(FullImageActivity.this, Allimageslist);
+
+        }
         imgView.setAdapter(adapter);
         imgView.setCurrentItem(positon);
 

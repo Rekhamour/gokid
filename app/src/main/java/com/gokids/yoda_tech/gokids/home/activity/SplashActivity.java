@@ -23,10 +23,10 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        final ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        final ImageView imageView = (ImageView) findViewById(R.id.imageView);
+        final ImageView imageView = findViewById(R.id.imageView);
 
         latlon= Utils.getLatLong(SplashActivity.this);
 

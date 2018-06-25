@@ -51,7 +51,7 @@ public class SimpleSSLSocketFactory extends org.apache.http.conn.ssl.SSLSocketFa
 
     @Override
     public Socket createSocket(Socket socket, String host, int port, boolean autoClose)
-            throws IOException, UnknownHostException {
+            throws IOException {
         return sslFactory.createSocket(socket, host, port, autoClose);
     }
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout_ecommerce_class"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/content_search_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_search_result">
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:background="@color/colorPrimary"
+            android:id="@+id/ecommerce_mainclass_toolbar"
+            android:visibility="gone"
+            android:layout_height="50dp"></android.support.v7.widget.Toolbar>
+        <include layout="@layout/ecommerce_class_content_layout" />
+
+
+
+    </LinearLayout>
+
+
+
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation_ecommerce_class"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:itemIconTint="#d20b0d"
+        app:itemTextColor="#333"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/my_navigation_items" />
+</android.support.v4.widget.DrawerLayout>
+

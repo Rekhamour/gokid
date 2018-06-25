@@ -28,7 +28,7 @@ public class AcademicFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_subtopic,container,false);
 
-        listView = (ListView) rootView.findViewById(R.id.listView);
+        listView = rootView.findViewById(R.id.listView);
         topicsAdapter = new TopicsAdapter(getContext(),R.layout.list_topics,null);
         listView.setAdapter(topicsAdapter);
 

@@ -40,8 +40,8 @@ public class TopicsAdapter extends ArrayAdapter<SubTopic> {
             convertView = inflater.inflate(R.layout.list_topics,null);
 
             holder = new ViewHolder();
-            holder.className = (TextView) convertView.findViewById(R.id.classText);
-            holder.select = (CheckBox) convertView.findViewById(R.id.checkbox);
+            holder.className = convertView.findViewById(R.id.classText);
+            holder.select = convertView.findViewById(R.id.checkbox);
 
             convertView.setTag(holder);
 

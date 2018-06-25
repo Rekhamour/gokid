@@ -46,6 +46,7 @@
     <style name="MyCustomTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabTextAppearance">@style/MyCustomTabText</item>
         <item name="tabSelectedTextColor">@android:color/white</item>
+        <item name="android:layout_margin">3dp</item>
         <item name="tabIndicatorColor">@color/grey</item>
         <item name="tabIndicatorHeight">0dp</item>
     </style>

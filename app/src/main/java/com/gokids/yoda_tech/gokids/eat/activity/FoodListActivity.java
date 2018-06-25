@@ -58,8 +58,8 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
         setContentView(R.layout.activity_food_list);
 
             initInstances();
-        PagerSlidingTabStrip tabsStrip = (PagerSlidingTabStrip) findViewById(R.id.food_tabs);
-         viewPager = (ViewPager) findViewById(R.id.food_viewpager);
+        PagerSlidingTabStrip tabsStrip = findViewById(R.id.food_tabs);
+         viewPager = findViewById(R.id.food_viewpager);
         viewPager.setAdapter(new FoodFragmentPagerAdapter(getSupportFragmentManager(),
                 FoodListActivity.this));
 
@@ -100,7 +100,7 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
 
 
     private void initInstances() {
-       Toolbar toolbar = (Toolbar) findViewById(R.id.food_list_toolbar);
+       Toolbar toolbar = findViewById(R.id.food_list_toolbar);
 
        getSupportActionBar().setDisplayHomeAsUpEnabled ( true );
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -109,7 +109,7 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
         getSupportActionBar().setTitle("Food");
 
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout_food);
+        drawerLayout = findViewById(R.id.drawerLayout_food);
         drawerToggle = new ActionBarDrawerToggle(FoodListActivity.this, drawerLayout,toolbar, R.string.hello_world, R.string.hello_world);
          drawerLayout.setDrawerListener(drawerToggle);
         drawerToggle.syncState();
@@ -117,11 +117,11 @@ public class FoodListActivity extends AppCompatActivity implements SearchView.On
         drawerToggle.setDrawerIndicatorEnabled(false);
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
         final SharedPreferences.Editor editor= prefs.edit();
-        navigation = (NavigationView) findViewById(R.id.navigation_food);
+        navigation = findViewById(R.id.navigation_food);
         final View header = navigation.getHeaderView(0);
 
-        image = (RoundedImageView) header.findViewById(R.id.nav_userImage);
-        name = (TextView) header.findViewById(R.id.nav_username);
+        image = header.findViewById(R.id.nav_userImage);
+        name = header.findViewById(R.id.nav_username);
 
 
         Menu menu = navigation.getMenu();

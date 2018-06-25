@@ -30,7 +30,7 @@ public class DisplayClassActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_class);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.listClass));
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         setSupportActionBar(toolbar);
@@ -38,7 +38,7 @@ public class DisplayClassActivity extends AppCompatActivity {
 
         adapter = new ProviderClassAdapter(DisplayClassActivity.this,details);
 
-        final ListView listView = (ListView) findViewById(R.id.listViewClasses);
+        final ListView listView = findViewById(R.id.listViewClasses);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -1,10 +1,12 @@
 package com.gokids.yoda_tech.gokids.settings.model;
 
+import java.io.Serializable;
+
 /**
  * Created by manoj2prabhakar on 01/06/17.
  */
 
-public class Allergy {
+public class Allergy  implements Serializable{
     private int drawableID;
     private boolean isSelected;
     private String dispText;

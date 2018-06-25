@@ -27,10 +27,10 @@ public class AddReviewActivity extends AppCompatActivity {
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        Button button = (Button) findViewById(R.id.postReview);
+        Button button = findViewById(R.id.postReview);
         button.setText("Post Review");
         final String courseId = getIntent().getStringExtra("course");
-        final TextInputEditText text = (TextInputEditText) findViewById(R.id.inputText);
+        final TextInputEditText text = findViewById(R.id.inputText);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

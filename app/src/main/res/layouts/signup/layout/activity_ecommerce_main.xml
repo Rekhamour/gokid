@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/paledark_white"
+    android:layout_height="match_parent"
+    tools:context="com.gokids.yoda_tech.gokids.ecommerce.EcommerceMainActivity">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:id="@+id/viewpager_RL"
+        android:background="@color/white"
+        android:layout_height="wrap_content" >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/ecommerce__pager"
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"
+            android:layout_alignParentTop="true" />
+
+        <me.relex.circleindicator.CircleIndicator
+            android:id="@+id/image_indicator"
+            android:layout_width="fill_parent"
+            android:layout_below="@+id/ecommerce__pager"
+            app:ci_drawable="@drawable/bg_circle_fill"
+            app:ci_drawable_unselected="@drawable/bg_grey"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:padding="10dip"
+            />
+    </RelativeLayout>
+    <com.gokids.yoda_tech.gokids.utils.MyGridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ecommerce_list"
+        android:numColumns="3"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        android:layout_below="@+id/viewpager_RL"
+        android:layout_marginTop="@dimen/dp20margin"
+        android:layout_centerHorizontal="true"
+        android:scrollbars="vertical"
+        android:layout_marginBottom="@dimen/dp30margin"/>
+
+
+
+</LinearLayout>
+    <Button
+        android:layout_width="250dp"
+        android:text="continue"
+        android:layout_marginTop="@dimen/dp20margin"
+        android:layout_gravity="center"
+        android:background="@drawable/continue_bg"
+        android:textAllCaps="false"
+        android:onClick="clickContinue"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/white"
+        android:layout_marginBottom="@dimen/dp10margin"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

@@ -3,7 +3,11 @@
     <string name="location_runtime">Please grant access to location</string>
     <string name="browse">I just want to browse</string>
     <string name="kid">Kid</string>
-
+    <string name="SHOP_DOMAIN">gokids-shop.myshopify.com</string>
+    <string name="API_KEY">825bc87c1f0139b9466bb0f38892e140</string>
+    <string name="APP_ID">8</string>
+    <string name="CHANNELID">50354689</string>
+    <string name="COLLECTION_ID_ENTERTAINMENT">315216065</string>
 
 
     //LEARN
@@ -107,7 +111,19 @@
     <string name="title_activity_Food_list">Food</string>
     <string name="oops">Oops something went wrong,Please try again later</string>
     <string-array name="agearray">
-        <item>Select Age</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+    <string-array name="quantityarray">
+        <item>Select quantity</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>

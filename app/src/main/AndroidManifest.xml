@@ -4,6 +4,8 @@
     package="com.gokids.yoda_tech.gokids">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -28,7 +30,6 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -212,9 +213,111 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity android:name=".utils.MainActivity" />
-        <activity android:name=".settings.activity.CityActivity"
+        <activity
+            android:name=".settings.activity.CityActivity"
+            android:label="Select city"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".sos.SosActivity"
+            android:label="SOS Help"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".sos.ContactsActivity"
+            android:label="SOS Contacts"
+            android:parentActivityName=".sos.SosActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".sos.SendMessageActivity"
+            android:label="Set Help Message"
+            android:parentActivityName=".sos.SosActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".sos.PoliceContactsActivity"
+            android:label="Ploice Assisstance Numbers"
+            android:parentActivityName=".sos.SosActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".sos.VideoSOSActivity"
+            android:parentActivityName=".sos.SosActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".notifications.MyFirebaseMessagingService"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service android:name=".notifications.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".sos.PeopleLocationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".sos.SenderLocationActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ecommerce.EcommerceMainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ecommerce.EcommercProductsListActivity"
+            android:label="E-Commerce"
+            android:parentActivityName=".ecommerce.EcommerceMainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ecommerce.EcommerceClassActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ecommerce.EcommercAllProductsListActivity"
+            android:label="E-Commerce"
+            android:parentActivityName=".ecommerce.EcommercProductsListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".ecommerce.ChackoutActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ecommerce.ProductDetailActivity"
+            android:label="Cart"
+            android:theme="@style/AppTheme" ></activity>
+        <activity android:name=".ecommerce.EditChackoutActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".ecommerce.ProductDetailActivity"
+            android:label="Cart"
+            android:theme="@style/AppTheme" ></activity>
+        <activity android:name=".ecommerce.EcommerceClothingActivity"
+            android:label="E-Commerce"
+            android:parentActivityName=".ecommerce.EcommerceClassActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" ></activity>
+        <activity android:name=".ecommerce.ProductDetailActivity"
+            android:parentActivityName=".ecommerce.EcommercAllProductsListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" ></activity>
+        <activity android:name=".ecommerce.EcommercAllClothesListActivity"
+            android:parentActivityName=".ecommerce.EcommercAllProductsListActivity"
+            android:screenOrientation="portrait"
+            android:label="E-Commerce"
+            android:theme="@style/AppTheme" ></activity>
+        <activity android:name=".ecommerce.ShopifyCheckoutActivity"
+            android:parentActivityName=".ecommerce.EcommercAllProductsListActivity"
+            android:screenOrientation="portrait"
+            android:label="E-Commerce"
+            android:theme="@style/SplashTheme" ></activity>
     </application>
 
 </manifest>

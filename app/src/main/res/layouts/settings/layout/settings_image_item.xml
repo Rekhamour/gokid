@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<LinearLayout android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_marginBottom="7dp"
-    android:layout_marginLeft="7dp"
-    android:layout_marginRight="7dp"
+    android:id="@+id/row_LL"
+    android:gravity="center"
+    android:foregroundGravity="center"
+    android:layout_marginBottom="4dp"
     android:layout_gravity="center_horizontal"
 
     >
@@ -13,7 +19,6 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:src="@drawable/im"
         app:civ_border_width="2dp"
         android:id="@+id/settings_imageitem"
         android:layout_gravity="center_horizontal"
@@ -30,9 +35,12 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:text = "Nutt Freedefgrgrgrtgtrhth"
         android:singleLine="true"
+        android:textColor="@color/black"
+
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         />
 
 
     </LinearLayout>
+</LinearLayout>

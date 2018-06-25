@@ -83,8 +83,8 @@ public class GenderFragment extends Fragment {
 
     private void setAgedetails(View rootView) {
 
-        final Spinner agespinner= (Spinner)rootView.findViewById(R.id.spinner_age);
-        final TextView kidsdetailtext= (TextView)rootView.findViewById(R.id.about_kid);
+        final Spinner agespinner= rootView.findViewById(R.id.spinner_age);
+        final TextView kidsdetailtext= rootView.findViewById(R.id.about_kid);
         kidsdetailtext.setText(mAboutkid);
        // agespinner.setPrompt("Select your kid age");
         //agespinner.setSelection();
@@ -162,15 +162,15 @@ public class GenderFragment extends Fragment {
 
     public void setupLinearClickListener(View rootView) {
 
-        LinearLayout boyLayout = (LinearLayout) rootView.findViewById(R.id.layout_boy);
-        LinearLayout girlLayout = (LinearLayout) rootView.findViewById(R.id.layout_girl);
-        TextView skipgender = (TextView) rootView.findViewById(R.id.skip_gender);
+        LinearLayout boyLayout = rootView.findViewById(R.id.layout_boy);
+        LinearLayout girlLayout = rootView.findViewById(R.id.layout_girl);
+        TextView skipgender = rootView.findViewById(R.id.skip_gender);
 
-        boyText = (TextView) rootView.findViewById(R.id.add_kid_boy_text);
+        boyText = rootView.findViewById(R.id.add_kid_boy_text);
 
-        girlText = (TextView) rootView.findViewById(R.id.add_kid_girl_text);
+        girlText = rootView.findViewById(R.id.add_kid_girl_text);
 
-        Button continueButton = (Button) rootView.findViewById(R.id.continueButton);
+        Button continueButton = rootView.findViewById(R.id.continueButton);
 
         boyLayout.setOnClickListener(new View.OnClickListener() {
             @Override

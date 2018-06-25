@@ -49,7 +49,7 @@ public class ProviderDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_provider_details);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         //setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,22 +63,22 @@ public class ProviderDetailsActivity extends AppCompatActivity {
 
         setTabAndViewPager();
 
-        TextView amountText = (TextView) findViewById(R.id.amountText);
-        TextView amount = (TextView) findViewById(R.id.amount);
-        TextView kidsAffText = (TextView) findViewById(R.id.kidSAffText);
-        RatingBar kidsScore = (RatingBar) findViewById(R.id.ratings);
-        TextView ageRangeText = (TextView) findViewById(R.id.AgeRangeText);
-        TextView ageRange = (TextView) findViewById(R.id.ageRange);
-        TextView providerText = (TextView) findViewById(R.id.providerText);
-        TextView provider = (TextView) findViewById(R.id.provider);
-        TextView detailsText = (TextView) findViewById(R.id.detailsText);
-        final TextView details1 = (TextView) findViewById(R.id.details);
-        TextView addressText = (TextView) findViewById(R.id.addressText);
-        TextView address = (TextView) findViewById(R.id.address);
-        TextView contactText = (TextView) findViewById(R.id.contactText);
-        TextView contactNumbers = (TextView) findViewById(R.id.contactNumbers);
-        TextView emailText = (TextView) findViewById(R.id.emailText);
-        TextView email = (TextView) findViewById(R.id.email);
+        TextView amountText = findViewById(R.id.amountText);
+        TextView amount = findViewById(R.id.amount);
+        TextView kidsAffText = findViewById(R.id.kidSAffText);
+        RatingBar kidsScore = findViewById(R.id.ratings);
+        TextView ageRangeText = findViewById(R.id.AgeRangeText);
+        TextView ageRange = findViewById(R.id.ageRange);
+        TextView providerText = findViewById(R.id.providerText);
+        TextView provider = findViewById(R.id.provider);
+        TextView detailsText = findViewById(R.id.detailsText);
+        final TextView details1 = findViewById(R.id.details);
+        TextView addressText = findViewById(R.id.addressText);
+        TextView address = findViewById(R.id.address);
+        TextView contactText = findViewById(R.id.contactText);
+        TextView contactNumbers = findViewById(R.id.contactNumbers);
+        TextView emailText = findViewById(R.id.emailText);
+        TextView email = findViewById(R.id.email);
 
         amountText.setText("Amount");
         amount.setText(details.getPriceSummary() + "/" + details.getPricePrefix());
@@ -123,7 +123,7 @@ public class ProviderDetailsActivity extends AppCompatActivity {
         setFab();
         setReview();
 
-        final Button addReview = (Button) findViewById(R.id.buttonReview);
+        final Button addReview = findViewById(R.id.buttonReview);
         addReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,10 +180,10 @@ public class ProviderDetailsActivity extends AppCompatActivity {
     }
 
     public void setReview(){
-        final TextView numRating = (TextView) findViewById(R.id.numRating);
+        final TextView numRating = findViewById(R.id.numRating);
         numRating.setText("0");
 
-        listViewReview = (ListView) findViewById(R.id.listViewReview);
+        listViewReview = findViewById(R.id.listViewReview);
         ArrayList<Reviews> reviewses = null;
         reviewAdapter =  new ReviewAdapter(getApplicationContext(),reviewses);
         listViewReview.setAdapter(reviewAdapter);
@@ -204,8 +204,8 @@ public class ProviderDetailsActivity extends AppCompatActivity {
     }
 
     public void setFab(){
-        final FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab1);
-        NestedScrollView scroller = (NestedScrollView) findViewById(R.id.nestedScroll);
+        final FloatingActionButton fab1 = findViewById(R.id.fab1);
+        NestedScrollView scroller = findViewById(R.id.nestedScroll);
 
         if (scroller != null) {
 
@@ -259,7 +259,7 @@ public class ProviderDetailsActivity extends AppCompatActivity {
         final Dialog dialog = new Dialog(ProviderDetailsActivity.this);
         dialog.setContentView(R.layout.dialog_call);
 
-        ListView lv = (ListView ) dialog.findViewById(R.id.lv);
+        ListView lv = dialog.findViewById(R.id.lv);
         dialog.setCancelable(true);
         dialog.setTitle("ListView");
 
@@ -272,7 +272,7 @@ public class ProviderDetailsActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.layout_text,names);
         lv.setAdapter(adapter);
 
-        Button call = (Button) findViewById(R.id.fab);
+        Button call = findViewById(R.id.fab);
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -296,10 +296,10 @@ public class ProviderDetailsActivity extends AppCompatActivity {
         }
 
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        ViewPager viewPager = findViewById(R.id.pager);
         viewPager.setAdapter(new SlidingViewPageAdapter(getApplicationContext(),imageURLs));
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager, true);
     }
 
@@ -313,8 +313,8 @@ public class ProviderDetailsActivity extends AppCompatActivity {
         dialog.setCancelable(true);
         dialog.setTitle("Add Review");
 
-        Button button = (Button) dialogView.findViewById(R.id.postReview);
-        final TextInputEditText text = (TextInputEditText) dialogView.findViewById(R.id.inputText);
+        Button button = dialogView.findViewById(R.id.postReview);
+        final TextInputEditText text = dialogView.findViewById(R.id.inputText);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

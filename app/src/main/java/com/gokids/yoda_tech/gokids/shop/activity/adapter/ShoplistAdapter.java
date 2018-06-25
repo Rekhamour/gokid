@@ -67,7 +67,7 @@ public class ShoplistAdapter extends RecyclerView.Adapter<ShoplistAdapter.MyView
             @Override
             public void onClick(View v) {
                // itemClickCallback.onItemClick(position);
-                Intent intent = new Intent(ctx, ShopDetailActivity.class).putExtra("medical_data", (Serializable) list.get(position));
+                Intent intent = new Intent(ctx, ShopDetailActivity.class).putExtra("medical_data", list.get(position));
                 ctx.startActivity(intent);
             }
         });
@@ -90,13 +90,13 @@ public class ShoplistAdapter extends RecyclerView.Adapter<ShoplistAdapter.MyView
         RelativeLayout single_row;
         public MyViewHolder(View itemView) {
             super(itemView);
-            single_row = (RelativeLayout) itemView.findViewById(R.id.shop_single_row_container);
-            img = (ImageView) itemView.findViewById(R.id.shop_image);
-            name = (TextView) itemView.findViewById(R.id.shop_name);
-            dist = (TextView) itemView.findViewById(R.id.shop_distance);
-            address = (TextView) itemView.findViewById(R.id.shop_address);
-            kids = (TextView) itemView.findViewById(R.id.shop_kidsfinity);
-            food_list_kidfinity_Score = (TextView) itemView.findViewById(R.id.shop_list_kidfinity_Score);
+            single_row = itemView.findViewById(R.id.shop_single_row_container);
+            img = itemView.findViewById(R.id.shop_image);
+            name = itemView.findViewById(R.id.shop_name);
+            dist = itemView.findViewById(R.id.shop_distance);
+            address = itemView.findViewById(R.id.shop_address);
+            kids = itemView.findViewById(R.id.shop_kidsfinity);
+            food_list_kidfinity_Score = itemView.findViewById(R.id.shop_list_kidfinity_Score);
         }
     }
     private class ItemFilter extends Filter {

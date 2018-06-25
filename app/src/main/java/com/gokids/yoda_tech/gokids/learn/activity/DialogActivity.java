@@ -50,7 +50,7 @@ public class DialogActivity extends AppCompatActivity {
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
 
         TabLayout.Tab tab1 = tabLayout.newTab().setText(getResources().getString(R.string.academics));
         TabLayout.Tab tab2 = tabLayout.newTab().setText(getResources().getString(R.string.arts));
@@ -60,7 +60,7 @@ public class DialogActivity extends AppCompatActivity {
         tabLayout.addTab(tab2);
         tabLayout.addTab(tab3);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         tabLayout.setupWithViewPager(viewPager);
 
         final AcademicFragment academicFragment = new AcademicFragment();
@@ -140,7 +140,7 @@ public class DialogActivity extends AppCompatActivity {
 
     public void CheckIfButtonClicked(){
 
-        Button button = (Button) findViewById(R.id.button);
+        Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

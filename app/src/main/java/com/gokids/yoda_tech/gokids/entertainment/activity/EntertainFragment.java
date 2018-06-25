@@ -99,11 +99,11 @@ public class EntertainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view  = inflater.inflate(R.layout.fragment_entertainment, container, false);
         prefrence = getActivity().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,Context.MODE_PRIVATE);
-        food_rv_list = (RecyclerView) view.findViewById(R.id.entertainment_rv_list);
-        swipe_food = (SwipeRefreshLayout) view.findViewById(R.id.swipe_enterainment);
-        numFoods = (TextView)view. findViewById(R.id.enterment_num);
-        calendarLL = (LinearLayout)view. findViewById(R.id.calendarLL);
-        progressBar = (ProgressBar)view.findViewById(R.id.progressBar);
+        food_rv_list = view.findViewById(R.id.entertainment_rv_list);
+        swipe_food = view.findViewById(R.id.swipe_enterainment);
+        numFoods = view. findViewById(R.id.enterment_num);
+        calendarLL = view. findViewById(R.id.calendarLL);
+        progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         context= getActivity();
         setHasOptionsMenu(true);
@@ -207,7 +207,7 @@ public class EntertainFragment extends Fragment {
 
     }
     public int getTotalRestaurants(final String date) {
-        String getTotals= Urls.BASE_URL+"api/categoryTotalCount/category/CLS3/subCategory/" +"CATSPE"+ "/startDate/"+date+"/endDate/"+Utils.getLastofMonth()+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");;
+        String getTotals= Urls.BASE_URL+"api/categoryTotalCount/category/CLS3/subCategory/" +"CATSPE"+ "/startDate/"+date+"/endDate/"+Utils.getLastofMonth()+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");
         Log.e(TAG," total items"+ getTotals);
         Ion.with(getActivity())
                 .load(getTotals)
@@ -236,7 +236,7 @@ public class EntertainFragment extends Fragment {
 
         String dte= date;
 
-            PATH= Urls.BASE_URL + "api/viewAllEntertainments/latitude/"+lat+"/longitude/"+longi+"/category/"+"CATSPE"+"/startDate/"+dte+"/endDate/"+dte+"/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/"+name+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");;
+            PATH= Urls.BASE_URL + "api/viewAllEntertainments/latitude/"+lat+"/longitude/"+longi+"/category/"+"CATSPE"+"/startDate/"+dte+"/endDate/"+dte+"/limitStart/"+ start+"/count/"+(start+50)+"/sortBy/Distance/searchBy/"+name+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");
 
         Log.e(TAG,"path in else"+PATH);
 
@@ -288,20 +288,22 @@ public class EntertainFragment extends Fragment {
                                             ArrayList<CuisinesBean> spe = new ArrayList<>();
                                             // if(obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
                                             // JsonArray spec = obj.getAsJsonObject().get("Cuisines").getAsJsonArray();
+                                            if(obj.getAsJsonObject().has("Categories")) {
 
-                                            if (obj.getAsJsonObject().get("Categories").isJsonArray()) {
-                                                ArrayList<CuisinesBean> con = new ArrayList<>();
+                                                if (obj.getAsJsonObject().get("Categories").isJsonArray()) {
+                                                    ArrayList<CuisinesBean> con = new ArrayList<>();
 
-                                                JsonArray cont = obj.getAsJsonObject().get("Categories").getAsJsonArray();
-                                                for (int j = 0; j < cont.size(); j++) {
-                                                    CuisinesBean c = new CuisinesBean();
+                                                    JsonArray cont = obj.getAsJsonObject().get("Categories").getAsJsonArray();
+                                                    for (int j = 0; j < cont.size(); j++) {
+                                                        CuisinesBean c = new CuisinesBean();
 
-                                                    c.setCuisine(cont.get(j).getAsJsonObject().get("Category").getAsString());
-                                                    con.add(c);
+                                                        c.setCuisine(cont.get(j).getAsJsonObject().get("Category").getAsString());
+                                                        con.add(c);
+                                                    }
+                                                    Log.e(TAG, "con array size" + con.size());
+
+                                                    m.setCuisines(con);
                                                 }
-                                                Log.e(TAG, "con array size" + con.size());
-
-                                                m.setCuisines(con);
                                             }
                                             //m.setCuisines(con);
 

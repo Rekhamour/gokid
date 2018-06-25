@@ -61,8 +61,8 @@ public class ForgotPassword extends AppCompatActivity {
 
 
     private void SetUpforgetPassword() {
-        emailId= (EditText)findViewById(R.id.email_id);
-        forgot_password_btn= (Button)findViewById(R.id.forgot_password_btn);
+        emailId= findViewById(R.id.email_id);
+        forgot_password_btn= findViewById(R.id.forgot_password_btn);
         final String email= emailId.getText().toString();
         forgot_password_btn.setOnClickListener(new View.OnClickListener() {
             @Override

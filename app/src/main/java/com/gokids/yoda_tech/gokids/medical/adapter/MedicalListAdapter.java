@@ -44,7 +44,7 @@ public class MedicalListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
     public MedicalListAdapter(Context context,List<MainBean> list) {
-        this.context = context;
+        MedicalListAdapter.context = context;
         this.list = list;
         df.setRoundingMode(RoundingMode.UP);
 
@@ -96,12 +96,12 @@ public class MedicalListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         RelativeLayout single_row;
         public MyViewHolder(View itemView) {
             super(itemView);
-            single_row = (RelativeLayout) itemView.findViewById(R.id.single_row_container);
-            img = (ImageView) itemView.findViewById(R.id.medical_image);
-            name = (TextView) itemView.findViewById(R.id.medical_name);
-            dist = (TextView) itemView.findViewById(R.id.medical_distance);
-            address = (TextView) itemView.findViewById(R.id.medical_address);
-            kids = (TextView) itemView.findViewById(R.id.kidsfinity);
+            single_row = itemView.findViewById(R.id.single_row_container);
+            img = itemView.findViewById(R.id.medical_image);
+            name = itemView.findViewById(R.id.medical_name);
+            dist = itemView.findViewById(R.id.medical_distance);
+            address = itemView.findViewById(R.id.medical_address);
+            kids = itemView.findViewById(R.id.kidsfinity);
         }
         void bindData(final MainBean m, final int position){
 
@@ -110,10 +110,14 @@ public class MedicalListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //        double dist = m.getDistance()/1000
             dist.setText(m.getDistance() + "\nKms Away");
             //holder.kids.setText(m.getKidsfinityScore() + "");
-            Ion.with(img)
-                    .placeholder(R.drawable.med_error_image)
-                    .error(R.drawable.med_error_image)
-                    .load(m.getImages().get(0));
+            if(m.getImages().size()>0) {
+                if (!m.getImages().get(0).isEmpty()) {
+                    Ion.with(img)
+                            .placeholder(R.drawable.med_error_image)
+                            .error(R.drawable.med_error_image)
+                            .load(m.getImages().get(0));
+                }
+            }
             single_row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -137,7 +141,7 @@ public class MedicalListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public void setItemCallback(final MedicalAdapter.ItemClickCallback itemCallback) {
-        this.itemClickCallback = itemCallback;
+        itemClickCallback = itemCallback;
         if(itemClickCallback != null);
     }
 

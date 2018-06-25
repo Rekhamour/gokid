@@ -43,7 +43,7 @@ public class SlidingViewPageAdapter extends PagerAdapter {
         View rootView = inflater.inflate(R.layout.image_item,container,false);
         assert rootView != null;
 
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.img_pager_item);
+        ImageView imageView = rootView.findViewById(R.id.img_pager_item);
 
         Picasso.with(mContext).load(mImageURLs[position]).into(imageView);
 

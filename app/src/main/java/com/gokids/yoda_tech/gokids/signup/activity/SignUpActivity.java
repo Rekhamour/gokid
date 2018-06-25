@@ -115,7 +115,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void setupHomePageClick(){
 
-        homePageClick = (TextView) findViewById(R.id.homeClick);
+        homePageClick = findViewById(R.id.homeClick);
         homePageClick.setText(R.string.browse);
         homePageClick.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,9 +131,9 @@ public class SignUpActivity extends AppCompatActivity {
     public void setupTabLayout(){
 
 
-        mTabLayout = (TabLayout) findViewById(R.id.sign_tab);
+        mTabLayout = findViewById(R.id.sign_tab);
 
-        mViewPager = (ViewPager) findViewById(R.id.viewpager_signup);
+        mViewPager = findViewById(R.id.viewpager_signup);
         mTabLayout.setupWithViewPager(mViewPager);
 
         TabLayout.Tab signup = mTabLayout.newTab().setText("Sign Up");

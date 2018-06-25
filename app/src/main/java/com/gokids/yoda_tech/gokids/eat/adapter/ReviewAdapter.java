@@ -46,8 +46,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.MyViewHold
         TextView name,review;
         public MyViewHolder(View itemView) {
             super(itemView);
-            name = (TextView) itemView.findViewById(R.id.reviewer);
-            review = (TextView) itemView.findViewById(R.id.review_tv);
+            name = itemView.findViewById(R.id.reviewer);
+            review = itemView.findViewById(R.id.review_tv);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.gokids.yoda_tech.gokids.settings.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -106,7 +107,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
+        toolbar = findViewById(R.id.settings_toolbar);
         setSupportActionBar(toolbar);
         handleintent();
 
@@ -193,17 +194,17 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setupUi() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
-        settins_username = (EditText) findViewById(R.id.settins_username);
-        rv_child = (RecyclerView) findViewById(R.id.rv_child_details);
-        mEditKids = (ImageView) findViewById(R.id.setttings_add_kid);
-        settins_city = (EditText) findViewById(R.id.settins_city);
-        settings_mail = (EditText) findViewById(R.id.settings_mail);
-        settings_currentpass = (EditText) findViewById(R.id.settings_currentpass);
-        settings_newpass = (EditText) findViewById(R.id.settings_newpass);
-        settins_phone = (EditText) findViewById(R.id.settins_phone);
-        profile_img = (ImageView) findViewById(R.id.settings_user_image);
-        final Button update_profile= (Button)findViewById(R.id.update_profile);
-        final TextView change_profile_pic= (TextView)findViewById(R.id.change_profile_pic);
+        settins_username = findViewById(R.id.settins_username);
+        rv_child = findViewById(R.id.rv_child_details);
+        mEditKids = findViewById(R.id.setttings_add_kid);
+        settins_city = findViewById(R.id.settins_city);
+        settings_mail = findViewById(R.id.settings_mail);
+        settings_currentpass = findViewById(R.id.settings_currentpass);
+        settings_newpass = findViewById(R.id.settings_newpass);
+        settins_phone = findViewById(R.id.settins_phone);
+        profile_img = findViewById(R.id.settings_user_image);
+        final Button update_profile= findViewById(R.id.update_profile);
+        final TextView change_profile_pic= findViewById(R.id.change_profile_pic);
         change_profile_pic.setEnabled(false);
         change_profile_pic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -521,7 +522,7 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         Log.e(TAG, "requestCode " + requestCode + "resultCode " + resultCode + "data " + data);
-        if (requestCode == CAMERA_REQUEST && resultCode == SettingsActivity.this.RESULT_OK) {
+        if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             Log.d(TAG, "picture userImage in camera " + userImage);
 
             //Utils.uploadImagetoserver(SettingsActivity.this,userImage);
@@ -530,9 +531,9 @@ public class SettingsActivity extends AppCompatActivity {
                 new ImageCompressionAsyncTask(false).execute(mCurrentPhotoPath);
                 setPic(profile_img, mCurrentPhotoPath);
             }
-        } else if (resultCode ==SettingsActivity.this. RESULT_CANCELED) {
+        } else if (resultCode == RESULT_CANCELED) {
             Log.e(TAG, "canceled");
-        } else if (data.getAction() != null && data.getAction().equalsIgnoreCase("android.intent.action.VIEW") && requestCode == RESULT_LOAD_IMAGE && resultCode ==SettingsActivity.this. RESULT_OK && null != data) {
+        } else if (data.getAction() != null && data.getAction().equalsIgnoreCase("android.intent.action.VIEW") && requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Uri content = data.getData();
 
             userImage = ImageFilePath.getPath(SettingsActivity.this, content);
@@ -548,7 +549,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
             Log.e(TAG, "i m here");
 
-        } else if (data.getFlags() == 0 && data.getAction() == null && requestCode == RESULT_LOAD_IMAGE && resultCode == SettingsActivity.this.RESULT_OK && null != data) {
+        } else if (data.getFlags() == 0 && data.getAction() == null && requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Log.d(TAG, "data"+ data+"gallery  here" + data.getAction() + "flag " + data.getFlags());
             Uri content = data.getData();
             userImage = ImageFilePath.getPath(SettingsActivity.this, content);
@@ -562,7 +563,7 @@ public class SettingsActivity extends AppCompatActivity {
                 flagupload="y";
                 Utils.uploadImagetoserver(SettingsActivity.this,userImage,flagupload);
             }
-        } else if (data.getAction() == null && requestCode == RESULT_LOAD_IMAGE && resultCode == SettingsActivity.this.RESULT_OK && null != data) {
+        } else if (data.getAction() == null && requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && null != data) {
             Log.d(TAG, "gallery  here" + data.getAction() + "flag " + data.getFlags());
             userImage = Utils.getAbsolutePath(SettingsActivity.this, data.getData());
            // Utils.uploadImagetoserver(SettingsActivity.this,userImage);
@@ -818,20 +819,14 @@ public class SettingsActivity extends AppCompatActivity {
     }
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     /* Checks if external storage is available to at least read */
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
-        if ( Environment.MEDIA_MOUNTED.equals( state ) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals( state ) ) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 }
 

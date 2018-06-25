@@ -20,6 +20,7 @@ import com.gokids.yoda_tech.gokids.eat.model.CuisinesBean;
 import com.gokids.yoda_tech.gokids.eat.model.MainBean;
 import com.gokids.yoda_tech.gokids.eat.model.Specialization;
 import com.gokids.yoda_tech.gokids.utils.Constants;
+import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
 import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 import com.google.gson.JsonArray;
@@ -63,7 +64,7 @@ public class AllBookmarksActivity extends AppCompatActivity {
     }
 
     private void setUpUi() {
-        spinner = (Spinner) findViewById(R.id.bookmark_filter);
+        spinner = findViewById(R.id.bookmark_filter);
         List<String> lists = new ArrayList<String>();
         lists.add("All");
         lists.add("Food");
@@ -79,7 +80,7 @@ public class AllBookmarksActivity extends AppCompatActivity {
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);*/
 
-        recyclerview= (RecyclerView)findViewById(R.id.rv_bookmark);
+        recyclerview= findViewById(R.id.rv_bookmark);
         layoutmanager= new LinearLayoutManager(this);
         recyclerview.setLayoutManager(layoutmanager);
         adapter= new BookmarksAdapter(AllBookmarksActivity.this,list);
@@ -91,7 +92,8 @@ public class AllBookmarksActivity extends AppCompatActivity {
     private void apiCall() {
         list.clear();
         if (!prefrence.getString("emailId", "").trim().isEmpty()) {
-            String url = "api/viewAllBookmarks/email/" + prefrence.getString("emailId", "") + "/class/-"+"/latitude/"+loc.getLatitude()+"/longitude/"+loc.getLongitude();
+            String url = "api/viewAllBookmarks/email/" + prefrence.getString("emailId", "") + "/class/-"+"/latitude/"+loc.getLatitude()+"/longitude/"+loc.getLongitude()+"/city/"+ MySharedPrefrence.getPrefrence(AllBookmarksActivity.this).getString("current_city","");
+            //String url = "api/viewAllBookmarks/email/" + prefrence.getString("emailId", "") + "/class/-"+"/city/"+ MySharedPrefrence.getPrefrence(AllBookmarksActivity.this).getString("current_city","");
 
             String getAllBookmark = Urls.BASE_URL + url;
             Log.e(TAG,"path"+getAllBookmark);

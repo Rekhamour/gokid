@@ -63,8 +63,8 @@ public class CuisineFragment extends Fragment {
         // Inflate the layout for this fragment
 
          rootView = inflater.inflate(R.layout.fragment_cuisine, container, false);
-        cuisine_continue = (Button) rootView.findViewById(R.id.cuisine_continue);
-        cuisineSkip = (TextView) rootView.findViewById(R.id.skip_cuisine);
+        cuisine_continue = rootView.findViewById(R.id.cuisine_continue);
+        cuisineSkip = rootView.findViewById(R.id.skip_cuisine);
        // AddKidsActivity.setSeekBarProgress(80);
         activity=  new AddKidsActivity();
         bean =  new SpecialNeedBean();
@@ -101,7 +101,7 @@ public class CuisineFragment extends Fragment {
 
     public void setupGridView(View rootView) {
 
-        mGridView = (MyGridView) rootView.findViewById(R.id.allergy_gridview);
+        mGridView = rootView.findViewById(R.id.allergy_gridview);
 
 
 
@@ -127,9 +127,9 @@ public class CuisineFragment extends Fragment {
                     selectedStrings.add(cuisines.get(position).getSpecialNeedID());
                 }
                 AddKidsActivity.setCuisines(selectedStrings);
-                for(int j=0;j<activity.SelectedNeeds.size();j++)
+                for(int j = 0; j< AddKidsActivity.SelectedNeeds.size(); j++)
                 {
-                    Log.e(TAG," selected strings" + activity.SelectedNeeds.get(j));
+                    Log.e(TAG," selected strings" + AddKidsActivity.SelectedNeeds.get(j));
                 }
 
 

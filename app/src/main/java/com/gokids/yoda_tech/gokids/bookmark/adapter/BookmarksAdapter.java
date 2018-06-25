@@ -157,18 +157,18 @@ public class BookmarksAdapter extends RecyclerView.Adapter<BookmarksAdapter.MyVi
         TextView name,address,distance;
         public MyViewHolder(View itemView) {
             super(itemView);
-            address = (TextView) itemView.findViewById(R.id.bookmark_address);
-            single_row_bookmark = (RelativeLayout) itemView.findViewById(R.id.single_row_bookmark);
-            distance = (TextView) itemView.findViewById(R.id.bookmark_distance);
-            bookmark_image = (ImageView) itemView.findViewById(R.id.bookmark_image);
-            name = (TextView) itemView.findViewById(R.id.bookmark_name);
-            bookmark_flag = (ImageView) itemView.findViewById(R.id.bookmark_flag);
+            address = itemView.findViewById(R.id.bookmark_address);
+            single_row_bookmark = itemView.findViewById(R.id.single_row_bookmark);
+            distance = itemView.findViewById(R.id.bookmark_distance);
+            bookmark_image = itemView.findViewById(R.id.bookmark_image);
+            name = itemView.findViewById(R.id.bookmark_name);
+            bookmark_flag = itemView.findViewById(R.id.bookmark_flag);
         }
     }
     public void removebookmark(String Id, final int position, String classname)
     {
         try {
-            String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(context).getString("emailId", "") + "/class/" + classname + "/categoryItem/" + Id + "/bookmark/-";
+            String url = Urls.BASE_URL + "api/setBookMark/email/" + MySharedPrefrence.getPrefrence(context).getString("emailId", "") + "/class/" + classname + "/categoryItem/" + Id + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");
             Log.e("adapter", "delete bookmark" + url);
             Ion.with(context)
                     .load(url)

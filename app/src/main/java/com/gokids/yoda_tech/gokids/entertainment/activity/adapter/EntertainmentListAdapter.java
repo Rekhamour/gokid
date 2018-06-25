@@ -95,14 +95,14 @@ public class EntertainmentListAdapter extends RecyclerView.Adapter<RecyclerView.
         RelativeLayout single_row;
         public MyViewHolder(View itemView) {
             super(itemView);
-            single_row = (RelativeLayout) itemView.findViewById(R.id.entertainment_single_row_container);
-            img = (ImageView) itemView.findViewById(R.id.entertainment_image);
-            name = (TextView) itemView.findViewById(R.id.entertainment_name);
-            event_date = (TextView) itemView.findViewById(R.id.event_date);
-            dist = (TextView) itemView.findViewById(R.id.entertainment_distance);
-            address = (TextView) itemView.findViewById(R.id.entertainment_address);
-            kids = (TextView) itemView.findViewById(R.id.entertainment_kidsfinity);
-            kidfinity_Score = (TextView) itemView.findViewById(R.id.entertainment_list_kidfinity_Score);
+            single_row = itemView.findViewById(R.id.entertainment_single_row_container);
+            img = itemView.findViewById(R.id.entertainment_image);
+            name = itemView.findViewById(R.id.entertainment_name);
+            event_date = itemView.findViewById(R.id.event_date);
+            dist = itemView.findViewById(R.id.entertainment_distance);
+            address = itemView.findViewById(R.id.entertainment_address);
+            kids = itemView.findViewById(R.id.entertainment_kidsfinity);
+            kidfinity_Score = itemView.findViewById(R.id.entertainment_list_kidfinity_Score);
         }
         void bindData(final MainBean m){
 
@@ -119,7 +119,7 @@ public class EntertainmentListAdapter extends RecyclerView.Adapter<RecyclerView.
             single_row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(ctx, EntertainmentDetailActivity.class).putExtra("medical_data", (Serializable) m);
+                    Intent intent = new Intent(ctx, EntertainmentDetailActivity.class).putExtra("medical_data", m);
                     ctx.startActivity(intent);
                 }
             });

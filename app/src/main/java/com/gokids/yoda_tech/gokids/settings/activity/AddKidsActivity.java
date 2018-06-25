@@ -85,9 +85,9 @@ public class AddKidsActivity extends AppCompatActivity {
         DeitNeeds.clear();
         CuisineNeeds.clear();
         getIntentsvalues();
-        mTabLayout = (TabLayout) findViewById(R.id.add_kid_tablayout);
-        indicatorLL = (LinearLayout) findViewById(R.id.indicators_layout);
-        lasttabnskipLL = (LinearLayout) findViewById(R.id.lastskipnindicator);
+        mTabLayout = findViewById(R.id.add_kid_tablayout);
+        indicatorLL = findViewById(R.id.indicators_layout);
+        lasttabnskipLL = findViewById(R.id.lastskipnindicator);
         setupSeekBar();
         setupViewPager();
     }
@@ -140,11 +140,11 @@ public class AddKidsActivity extends AppCompatActivity {
 
     public void setupSeekBar() {
 
-        mSeekbar = (SeekBar) findViewById(R.id.seekbar_addkid);
-        continuebtn = (Button) findViewById(R.id.btn_continue);
-        skipbtn = (TextView) findViewById(R.id.skip_addkid);
+        mSeekbar = findViewById(R.id.seekbar_addkid);
+        continuebtn = findViewById(R.id.btn_continue);
+        skipbtn = findViewById(R.id.skip_addkid);
         mSeekbar.setThumb(getResources().getDrawable(android.R.color.transparent));
-        profileprogress = (TextView) findViewById(R.id.profile_progress);
+        profileprogress = findViewById(R.id.profile_progress);
         setSeekBarProgress(0);
         skipbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -470,7 +470,7 @@ public static ArrayList<String> getSelectedNeeds()
 
     public void setupViewPager() {
 
-        mViewPager = (ViewPager) findViewById(R.id.addKid_pager);
+        mViewPager = findViewById(R.id.addKid_pager);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

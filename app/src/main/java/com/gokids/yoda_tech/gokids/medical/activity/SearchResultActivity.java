@@ -37,6 +37,7 @@ import com.gokids.yoda_tech.gokids.eat.model.Specialization;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.medical.adapter.MedicalAdapter;
 import com.gokids.yoda_tech.gokids.medical.adapter.MedicalListAdapter;
+import com.gokids.yoda_tech.gokids.settings.activity.CityActivity;
 import com.gokids.yoda_tech.gokids.utils.Constants;
 import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
 import com.gokids.yoda_tech.gokids.utils.Urls;
@@ -83,15 +84,16 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         list = new ArrayList<>();
 
         setContentView(R.layout.activity_search_result);
-        medical_list = (RecyclerView) findViewById(R.id.medical_list);
+        medical_list = findViewById(R.id.medical_list);
         prefrence= getSharedPreferences(Constants.SHARED_SIGNIN_NAME,MODE_PRIVATE);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        numMedicals = (TextView) findViewById(R.id.num_medicals);
-        swipe = (SwipeRefreshLayout) findViewById(R.id.swipe_medical);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        numMedicals = findViewById(R.id.num_medicals);
         medicalAdapter = new MedicalListAdapter(SearchResultActivity.this,list);
         medicalAdapter.setItemCallback(SearchResultActivity.this);
         medical_list.setAdapter(medicalAdapter);
         context= getApplicationContext();
+       // MySharedPrefrence.getPrefrence(SearchResultActivity.this).edit().putString("current_city","CITY1").commit();
+
         getSupportActionBar().setTitle("Medical Assistance");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -99,11 +101,8 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         intent = getIntent();
         category = intent.getStringExtra("medical_slecet");
         specializ = intent.getStringExtra("spec_select");
-
         getTotalMedicals(category);
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,7 +118,6 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         dialog= new ProgressDialog(SearchResultActivity.this);
         dialog.setMessage("Please wait..");
         handler= new Handler();
-
         medicalAdapter.setLoadMoreListener(new MedicalListAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -148,17 +146,11 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
 
             }
         },200);
-
-
     }
 
     private void load(int index) {
-
-
         dialog.show();
         getMedicals(category,"-",latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,0,50);
-
-
     }
 
     private void loadMore(int index) {
@@ -169,10 +161,18 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         getMedicals(category,"-",latlon.getLatitude(),latlon.getLongitude(),"Distance",specializ,index,50);
 
     }
-
-
     public void getTotalMedicals(final String category){
-        String url = Urls.BASE_URL+"/api/categoryTotalCount/category/CLS4/subCategory/" + category+"/city/"+ MySharedPrefrence.getPrefrence(SearchResultActivity.this).getString("current_city","");;
+        latlon= Utils.getLatLong(SearchResultActivity.this);
+        String url =Urls.BASE_URL+"api/viewAllMedicalTotalCount/latitude/"+latlon.getLatitude()+"/longitude/"+latlon.getLongitude()+"/category/"+category;
+        if(specializ != null){
+            url += "/specialization/" + specializ;
+        }////
+        else{
+            url += "/specialization/-";
+        }
+        url+="/limitStart/0/count/50/city/"+ MySharedPrefrence.getPrefrence(SearchResultActivity.this).getString("current_city","");
+        //String url = Urls.BASE_URL+"/api/categoryTotalCount/category/CLS4/subCategory/" + category+"/city/"+ MySharedPrefrence.getPrefrence(SearchResultActivity.this).getString("current_city","");
+        Log.e(TAG,"total url "+url);
         Ion.with(getApplicationContext())
                 .load(url)
                 .asJsonObject()
@@ -181,10 +181,11 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                     public void onCompleted(Exception e, JsonObject result) {
                         if (e == null) {
                             total = 0;
+                            Log.e(TAG," total result"+ result);
                             if (result.getAsJsonObject().get("status").getAsString().equals("200")) {
                                 total = result.getAsJsonObject().get("result").getAsJsonArray().get(0).getAsJsonObject().get("TOTAL_COUNT").getAsInt();
                             }
-                           String category_actual = "Clinic";
+                           String category_actual = "Docters";
                           if (category.equals("CAT15")) {
                                 category_actual = "Clinic";
                             } else if (category.equals("CAT14")) {
@@ -196,6 +197,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                             if (category.equals("CAT17")) {
                                 category_actual = "Child Care";
                             }
+
                             numMedicals.setText(total + " " + category_actual);
                         }
                         else
@@ -207,7 +209,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
     }
 
     public static ArrayList<MainBean> getMedicals(final String category, final String name, double lat, double longi, final String sortBy, String specialization, final int start, final int count){
-        String url = Urls.BASE_URL + "api/viewAllMedical";
+       /* String url = Urls.BASE_URL + "api/viewAllMedical";
         mCount =  start;
 
         url += "/latitude/" + lat;
@@ -225,8 +227,17 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         }
         if(name != null){
             url += "/searchBy/" + name+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");;
+        }*/
+
+       String url= Urls.BASE_URL+"api/viewAllMedical/latitude/"+lat+"/longitude/"+longi+"/category/"+category;
+        if(specialization != null){
+            url += "/specialization/" + specialization;
         }
-        System.out.println(url);
+        else{
+            url += "/specialization/-";
+        }
+        url+="/limitStart/"+start+"/count/"+(start+50)+"/sortBy/"+sortBy+"/searchBy/"+ name+"/city/"+ MySharedPrefrence.getPrefrence(context).getString("current_city","");
+       System.out.println(url);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -316,7 +327,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
                             }
                             else
                             {
-                                Toast.makeText(context,message, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context,"no medical entry found", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -334,95 +345,12 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
             }
         });
         Volley.newRequestQueue(context).add(jsonObjectRequest);
-
-
-
-
-        /*Ion.with(context)
-                .load(url)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-
-
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        if (e == null) {
-
-                            System.out.println(result);
-                            if(result.has("result")) {
-                                dialog.dismiss();
-                                JsonArray med = result.getAsJsonObject().get("result").getAsJsonArray();
-                                for (int i = 0; i < med.size(); i++) {
-                                    MainBean m = new MainBean();
-                                    JsonElement obj = med.get(i);
-                                    m.setMedicalID(obj.getAsJsonObject().get("MedicalID").getAsString());
-                                    m.setCategory(obj.getAsJsonObject().get("Category").getAsString());
-                                    m.setName(obj.getAsJsonObject().get("Name").getAsString());
-                                    m.setWebsite(obj.getAsJsonObject().get("Website").getAsString());
-                                    m.setEmail(obj.getAsJsonObject().get("Email").getAsString());
-                                    m.setAddress(obj.getAsJsonObject().get("Address").getAsString());
-                                    m.setPostal(obj.getAsJsonObject().get("Postal").getAsString());
-                                    m.setLatLong(obj.getAsJsonObject().get("LatLong").getAsString());
-                                    m.setSchedule(obj.getAsJsonObject().get("Schedule").getAsString());
-                                    m.setKidsfinityScore(Integer.parseInt(obj.getAsJsonObject().get("KidsfinityScore").toString()));
-                                    m.setDistance(obj.getAsJsonObject().get("Distance").getAsString());
-                                    m.setType("data");
-                                    ArrayList<Specialization> spe = new ArrayList<>();
-                                    if (obj.getAsJsonObject().has("Specialization") && obj.getAsJsonObject().get("Specialization").isJsonArray()) {
-                                        JsonArray spec = obj.getAsJsonObject().get("Specialization").getAsJsonArray();
-                                        for (int j = 0; j < spec.size(); j++) {
-                                            Specialization s = new Specialization();
-                                            s.setSpecializationHC(spec.get(j).getAsJsonObject().get("SpecializationHC").getAsString());
-                                            s.setSpecializationId(spec.get(j).getAsJsonObject().get("SpecializationHCID").getAsString());
-                                            spe.add(s);
-                                        }
-                                    }
-                                    m.setSpecializations(spe);
-                                    if (obj.getAsJsonObject().get("Contacts").isJsonArray()) {
-                                        ArrayList<Contact> con = new ArrayList<>();
-                                        JsonArray cont = obj.getAsJsonObject().get("Contacts").getAsJsonArray();
-                                        for (int j = 0; j < cont.size(); j++) {
-                                            Contact c = new Contact();
-                                            c.setContactId(cont.get(j).getAsJsonObject().get("ContactID").getAsLong());
-                                            c.setOwnerId(cont.get(j).getAsJsonObject().get("OwnerID").getAsString());
-                                            c.setPhoneNo(cont.get(j).getAsJsonObject().get("PhoneNo").getAsString());
-                                            con.add(c);
-                                        }
-                                        m.setContacts(con);
-                                    }
-
-                                    ArrayList<String> images = new ArrayList<String>();
-                                    if (obj.getAsJsonObject().get("Images").isJsonArray()) {
-                                        for (int j = 0; j < obj.getAsJsonObject().get("Images").getAsJsonArray().size(); j++) {
-                                            //System.out.println(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
-                                            images.add(obj.getAsJsonObject().get("Images").getAsJsonArray().get(j).getAsJsonObject().get("ImageURL").getAsString());
-                                        }
-                                    }
-                                    m.setImages(images);
-                                    list.add(m);
-                                    mCount++;
-
-
-                                }
-                                Log.e(" list size","list size"+list.size());
-                                medicalAdapter.notifyDataChanged();
-
-                            }
-
-                        }
-                        else
-                        {
-                            Toast.makeText(context, context.getResources().getString(R.string.oops), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                });*/
         return list;
     }
 
     @Override
     public void onItemClick(int p) {
-        Intent intent = new Intent(SearchResultActivity.this, MedicalDetail.class).putExtra("medical_data", (Serializable) list.get(p));
+        Intent intent = new Intent(SearchResultActivity.this, MedicalDetail.class).putExtra("medical_data", list.get(p));
         startActivity(intent);
     }
 
@@ -456,6 +384,7 @@ public class SearchResultActivity extends AppCompatActivity implements MedicalAd
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 
 }

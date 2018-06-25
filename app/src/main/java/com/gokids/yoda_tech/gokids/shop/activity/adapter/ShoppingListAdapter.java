@@ -43,7 +43,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
 
     public ShoppingListAdapter(Context context, List<MainBean> list) {
-        this.context = context;
+        ShoppingListAdapter.context = context;
         this.list = list;
         df.setRoundingMode(RoundingMode.UP);
 
@@ -95,13 +95,13 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         RelativeLayout single_row;
         public MyViewHolder(View itemView) {
             super(itemView);
-            single_row = (RelativeLayout) itemView.findViewById(R.id.shop_single_row_container);
-            img = (ImageView) itemView.findViewById(R.id.shop_image);
-            name = (TextView) itemView.findViewById(R.id.shop_name);
-            dist = (TextView) itemView.findViewById(R.id.shop_distance);
-            address = (TextView) itemView.findViewById(R.id.shop_address);
-            kids = (TextView) itemView.findViewById(R.id.shop_kidsfinity);
-            food_list_kidfinity_Score = (TextView) itemView.findViewById(R.id.shop_list_kidfinity_Score);
+            single_row = itemView.findViewById(R.id.shop_single_row_container);
+            img = itemView.findViewById(R.id.shop_image);
+            name = itemView.findViewById(R.id.shop_name);
+            dist = itemView.findViewById(R.id.shop_distance);
+            address = itemView.findViewById(R.id.shop_address);
+            kids = itemView.findViewById(R.id.shop_kidsfinity);
+            food_list_kidfinity_Score = itemView.findViewById(R.id.shop_list_kidfinity_Score);
 
         }
         void bindData(final MainBean m){
@@ -119,7 +119,7 @@ public class ShoppingListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 @Override
                 public void onClick(View v) {
                     // itemClickCallback.onItemClick(position);
-                    Intent intent = new Intent(context, ShopDetailActivity.class).putExtra("medical_data", (Serializable) m);
+                    Intent intent = new Intent(context, ShopDetailActivity.class).putExtra("medical_data", m);
                     context.startActivity(intent);
                 }
             });

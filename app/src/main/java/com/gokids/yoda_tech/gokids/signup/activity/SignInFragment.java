@@ -33,6 +33,7 @@ import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.home.activity.GoKidsHome;
 import com.gokids.yoda_tech.gokids.signup.async.SignInTask;
 import com.gokids.yoda_tech.gokids.utils.Constants;
+import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
 import com.gokids.yoda_tech.gokids.utils.Utils;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -78,12 +79,13 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
       //  AppEventsLogger.activateApp(getContext());
         View rootView = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
-        mailId = (EditText) rootView.findViewById(R.id.email_signin);
-        password  = (EditText) rootView.findViewById(R.id.pass_signin);
-        signIn = (Button) rootView.findViewById(R.id.signInButton);
-        forgot_password = (TextView) rootView.findViewById(R.id.forgot_password);
+        mailId = rootView.findViewById(R.id.email_signin);
+        password  = rootView.findViewById(R.id.pass_signin);
+        signIn = rootView.findViewById(R.id.signInButton);
+        forgot_password = rootView.findViewById(R.id.forgot_password);
         callbackManager = CallbackManager.Factory.create();
         gettingkeyhash();
+        MySharedPrefrence.getPrefrence(getActivity()).edit().putString("current_city","CITY1").commit();
 
 
 
@@ -169,8 +171,8 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
 
     public void setupLoginButton(View view) {
 
-        mLoginButton = (LoginButton) view.findViewById(R.id.login_button);
-      Button  LoginButtonfb = (Button) view.findViewById(R.id.LoginButtonfb);
+        mLoginButton = view.findViewById(R.id.login_button);
+      Button  LoginButtonfb = view.findViewById(R.id.LoginButtonfb);
         mLoginButton.setFragment(this);
         //mLoginButton.performClick();
 
@@ -211,7 +213,7 @@ public class SignInFragment extends Fragment implements GoogleApiClient.OnConnec
 
     public void setupSignInButton(View view) {
 
-        mSignInButton = (SignInButton) view.findViewById(R.id.sign_in_button);
+        mSignInButton = view.findViewById(R.id.sign_in_button);
         mSignInButton.setSize(SignInButton.SIZE_STANDARD);
 
         mSignInButton.setOnClickListener(new View.OnClickListener() {

@@ -129,38 +129,38 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
        df.setRoundingMode(RoundingMode.UP);
 
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.food_detail_toolbar);
-        address = (TextView) findViewById(R.id.food_detail_address_tv);
-        email = (TextView) findViewById(R.id.food_detail_email_tv);
-        kidfinityscore_detail = (TextView) findViewById(R.id.kidfinityscore_detail);
-        website = (TextView) findViewById(R.id.food_detail_website_tv);
-        knownfor = (TextView) findViewById(R.id.food_knownfor_tv);
-        timing = (TextView) findViewById(R.id.food_detail_timings_tv);
-        cuisines = (TextView) findViewById(R.id.food_detail_specialization_tv);
-        distance = (TextView) findViewById(R.id.food_detail_distance_tv);
-        img = (ImageView) findViewById(R.id.food_detail_image);
-        thumbs_up = (ImageView) findViewById(R.id.thumbs_up);
-        count_up = (TextView) findViewById(R.id.count_up);
-        count_down = (TextView) findViewById(R.id.count_down);
-        seekArc = (SeekArc) findViewById(R.id.seekArc);
+        Toolbar toolbar = findViewById(R.id.food_detail_toolbar);
+        address = findViewById(R.id.food_detail_address_tv);
+        email = findViewById(R.id.food_detail_email_tv);
+        kidfinityscore_detail = findViewById(R.id.kidfinityscore_detail);
+        website = findViewById(R.id.food_detail_website_tv);
+        knownfor = findViewById(R.id.food_knownfor_tv);
+        timing = findViewById(R.id.food_detail_timings_tv);
+        cuisines = findViewById(R.id.food_detail_specialization_tv);
+        distance = findViewById(R.id.food_detail_distance_tv);
+        img = findViewById(R.id.food_detail_image);
+        thumbs_up = findViewById(R.id.thumbs_up);
+        count_up = findViewById(R.id.count_up);
+        count_down = findViewById(R.id.count_down);
+        seekArc = findViewById(R.id.seekArc);
         seekArc.setOnTouchListener(new View.OnTouchListener(){
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
             }
         });
-        thumbs_down = (ImageView) findViewById(R.id.thumbs_down);
-        reviews_list = (RecyclerView) findViewById(R.id.food_detail_reviews_list);
-        eNoReview = (TextView) findViewById(R.id.review_no);
-        write_review = (Button) findViewById(R.id.food_detail_write_review);
-        bookmark = (ImageButton) findViewById(R.id.food_detail_bookmark);
-        chat = (ImageButton) findViewById(R.id.food_detail_chat);
-        direction = (ImageButton) findViewById(R.id.food_detail_direction);
-        scrollView = (ScrollView) findViewById(R.id.food_detail_scrollVie);
-        mLinearLayout = (LinearLayout) findViewById(R.id.food_detail_doctors_list);
-        mViewpager = (ViewPager) findViewById(R.id.image_pager);
+        thumbs_down = findViewById(R.id.thumbs_down);
+        reviews_list = findViewById(R.id.food_detail_reviews_list);
+        eNoReview = findViewById(R.id.review_no);
+        write_review = findViewById(R.id.food_detail_write_review);
+        bookmark = findViewById(R.id.food_detail_bookmark);
+        chat = findViewById(R.id.food_detail_chat);
+        direction = findViewById(R.id.food_detail_direction);
+        scrollView = findViewById(R.id.food_detail_scrollVie);
+        mLinearLayout = findViewById(R.id.food_detail_doctors_list);
+        mViewpager = findViewById(R.id.image_pager);
         mViewpager.setAdapter(new ImageSLiderAdapter(FoodDetailActivity.this,m.getImages()));
-        indicator = (CircleIndicator) findViewById(R.id.indicator);
+        indicator = findViewById(R.id.indicator);
         indicator.setViewPager(mViewpager);
        int indicatorcount = m.getImages().size();
         final Handler handler = new Handler();
@@ -303,7 +303,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                     if (!bookmarkFlag) {
                         bookmarkFlag = true;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_red_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS1/categoryItem/" + m.getRestaurantID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");;
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS1/categoryItem/" + m.getRestaurantID() + "/bookmark/1"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");
                         Log.e(TAG, "url" + url);
                         Ion.with(FoodDetailActivity.this)
                                 .load(url)
@@ -324,7 +324,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                     } else {
                         bookmarkFlag = false;
                         bookmark.setBackgroundResource(R.drawable.btn_badge_3x);
-                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS1/categoryItem/" + m.getRestaurantID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");;
+                        String url = Urls.BASE_URL + "api/setBookMark/email/" + prefrences.getString("emailId", "") + "/class/CLS1/categoryItem/" + m.getRestaurantID() + "/bookmark/-"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");
                         Ion.with(FoodDetailActivity.this)
                                 .load(url)
                                 .asJsonObject()
@@ -380,8 +380,8 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
                 final Dialog dialog = new Dialog(FoodDetailActivity.this);
                 dialog.setContentView(R.layout.review_layout);
                 // set the custom dialog components - text, image and button
-                final EditText input = (EditText) dialog.findViewById(R.id.review_text);
-                Button dialogButton = (Button) dialog.findViewById(R.id.btn_submit_review);
+                final EditText input = dialog.findViewById(R.id.review_text);
+                Button dialogButton = dialog.findViewById(R.id.btn_submit_review);
 
                 // if button is clicked, close the custom dialog
                 dialogButton.setOnClickListener(new View.OnClickListener() {
@@ -412,7 +412,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.food_detail_fab);
+        FloatingActionButton fab = findViewById(R.id.food_detail_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -550,7 +550,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     private void postReview(String reviewText) {
         if (!prefrences.getString("emailId", "").toString().trim().isEmpty()) {
-            String url = Urls.BASE_URL + "api/addDeleteReview/reviewee/" + m.getRestaurantID() + "/review/" + reviewText + "/email/" + prefrences.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");;
+            String url = Urls.BASE_URL + "api/addDeleteReview/reviewee/" + m.getRestaurantID() + "/review/" + reviewText + "/email/" + prefrences.getString("emailId", "") + "/reviewID/-"+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");
             Log.e(TAG, "url" + url);
 
 
@@ -596,7 +596,7 @@ public class FoodDetailActivity extends AppCompatActivity implements OnMapReadyC
 
     public void populateReviews() {
         reviews = new ArrayList<>();
-        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getRestaurantID()+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");;
+        String apipath=Urls.BASE_URL+"api/viewReviewPerReviewee/reviewee/" + m.getRestaurantID()+"/city/"+ MySharedPrefrence.getPrefrence(FoodDetailActivity.this).getString("current_city","");
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, apipath,
                 new Response.Listener<String>() {

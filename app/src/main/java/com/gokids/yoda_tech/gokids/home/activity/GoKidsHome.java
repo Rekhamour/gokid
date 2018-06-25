@@ -39,13 +39,19 @@ import com.gokids.yoda_tech.gokids.settings.activity.SettingsActivity;
 import com.gokids.yoda_tech.gokids.signup.activity.SignUpActivity;
 import com.gokids.yoda_tech.gokids.utils.Constants;
 import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
+import com.gokids.yoda_tech.gokids.utils.Urls;
 import com.gokids.yoda_tech.gokids.utils.Utils;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 
 public class GoKidsHome extends AppCompatActivity {
@@ -62,25 +68,107 @@ public class GoKidsHome extends AppCompatActivity {
     private RoundedImageView image;
     private String flag ="0";
     private String TAG= getClass().getName();
+    private HashMap<String, String> keyMap; // key-url map
+    private HashMap<String, String> valueMap;// url-key map to quickly check
+    // whether an url is
+    // already entered in our system
+    private String domain; // Use this attribute to generate urls for a custom
+    // domain name defaults to http://fkt.in
+    private char myChars[]; // This array is used for character to number
+    // mapping
+    private Random myRand; // Random object used to generate random integers
+    private int keyLength; // the key length in URL defaults to 8
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_kids_home);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarMain);
+        Toolbar toolbar = findViewById(R.id.toolbarMain);
         //setSupportActionBar(toolbar);
-        mNavigationView = (NavigationView) findViewById(R.id.navigation);
+        mNavigationView = findViewById(R.id.navigation);
         Log.e(TAG," test"+"   testingg");
-
+        registrationtokenapi();
         setGridViewAdapterForMenu();
         getSizeOfEachRow();
         setICDrawer();
         setUpDrawer();
+        //Log.e("short url","shortedurl"+shortenURL("https://play.google.com/store/apps/details?id=com.gokids.yoda_tech.gokids"));
         setupNavigationClickListener();
 
         startService();
     }
+
+
+        public String shortenURL(String longURL) {
+            String shortURL = "";
+            if (validateURL(longURL)) {
+                longURL = sanitizeURL(longURL);
+                if (valueMap.containsKey(longURL)) {
+                    shortURL = domain + "/" + valueMap.get(longURL);
+                } else {
+                    shortURL = domain + "/" + getKey(longURL);
+                }
+            }
+            // add http part
+            return shortURL;
+        }
+    boolean validateURL(String url) {
+        return true;
+    }
+    String sanitizeURL(String url) {
+        if (url.substring(0, 7).equals("http://"))
+            url = url.substring(7);
+
+        if (url.substring(0, 8).equals("https://"))
+            url = url.substring(8);
+
+        if (url.charAt(url.length() - 1) == '/')
+            url = url.substring(0, url.length() - 1);
+        return url;
+    }
+    private String getKey(String longURL) {
+        String key;
+        key = generateKey();
+        keyMap.put(key, longURL);
+        valueMap.put(longURL, key);
+        return key;
+    }
+    private String generateKey() {
+        String key = "";
+        boolean flag = true;
+        while (flag) {
+            key = "";
+            for (int i = 0; i <= keyLength; i++) {
+                key += myChars[myRand.nextInt(62)];
+            }
+            // System.out.println("Iteration: "+ counter + "Key: "+ key);
+            if (!keyMap.containsKey(key)) {
+                flag = false;
+            }
+        }
+        return key;
+    }
+    private void registrationtokenapi() {
+        String url= Urls.BASE_URL+"api/registerDeviceToken/deviceToken/"+MySharedPrefrence.getPrefrence(GoKidsHome.this).getString("FIREBASE_TOKEN","")+"/email/"+MySharedPrefrence.getPrefrence(GoKidsHome.this).getString("emailId","");
+        Log.e("url","url"+url);
+        Ion.with(getApplicationContext())
+                .load(url)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        if(e==null)
+                        {
+                            Log.e("reslt","reg id "+result);
+                        }
+
+
+                    }
+                });
+    }
+
     public void startService(){
         Intent intent = new Intent(this, GPSService.class);
         startService(intent);
@@ -88,6 +176,8 @@ public class GoKidsHome extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_home,menu);
+
         return true;
     }
 
@@ -102,6 +192,12 @@ public class GoKidsHome extends AppCompatActivity {
                 else {
                     mDrawerLayout.openDrawer(Gravity.START);
                 }
+                break;
+            case R.id.home_selectcity:
+                Intent intent= new Intent(GoKidsHome.this, CityActivity.class);
+                startActivity(intent);
+                return true;
+
         }
 
         return true;
@@ -123,7 +219,7 @@ public class GoKidsHome extends AppCompatActivity {
 
         homeMenuAdapter = new HomeMenuAdapter(GoKidsHome.this, intIDS,menuNames);
 
-        mGridView = (GridView) findViewById(R.id.gridView);
+        mGridView = findViewById(R.id.gridView);
         mGridView.setAdapter(homeMenuAdapter);
 
 
@@ -165,7 +261,7 @@ public class GoKidsHome extends AppCompatActivity {
     //Set up Drawer and Listener
     public void setUpDrawer() {
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.home);
+        mDrawerLayout = findViewById(R.id.home);
 
 
         mDrawerToggle = new ActionBarDrawerToggle(GoKidsHome.this, mDrawerLayout, 0, 0) {
@@ -199,8 +295,8 @@ public class GoKidsHome extends AppCompatActivity {
         MenuItem sign_out = menu.getItem(4);
         final View header = mNavigationView.getHeaderView(0);
 
-         name = (TextView) header.findViewById(R.id.nav_username);
-         image = (RoundedImageView) header.findViewById(R.id.nav_userImage);
+         name = header.findViewById(R.id.nav_username);
+         image = header.findViewById(R.id.nav_userImage);
         checkintentvalues();
         //setProfile();
 

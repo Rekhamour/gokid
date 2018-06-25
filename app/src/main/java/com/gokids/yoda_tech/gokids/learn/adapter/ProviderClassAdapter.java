@@ -61,15 +61,15 @@ public class ProviderClassAdapter extends BaseAdapter {
         view = inflater.inflate(R.layout.list_class_details, null);
 
 
-        ImageView bgImage = (ImageView) view.findViewById(R.id.imageView);
-        TextView titleView = (TextView) view.findViewById(R.id.title);
-        TextView name = (TextView) view.findViewById(R.id.name);
-        TextView address = (TextView) view.findViewById(R.id.address);
-        TextView amount = (TextView) view.findViewById(R.id.amount);
-        TextView distance = (TextView) view.findViewById(R.id.distance);
-        TextView kidScore = (TextView) view.findViewById(R.id.kidScore);
-        TextView kidsTit = (TextView) view.findViewById(R.id.kidsTit);
-        Button call = (Button) view.findViewById(R.id.call);
+        ImageView bgImage = view.findViewById(R.id.imageView);
+        TextView titleView = view.findViewById(R.id.title);
+        TextView name = view.findViewById(R.id.name);
+        TextView address = view.findViewById(R.id.address);
+        TextView amount = view.findViewById(R.id.amount);
+        TextView distance = view.findViewById(R.id.distance);
+        TextView kidScore = view.findViewById(R.id.kidScore);
+        TextView kidsTit = view.findViewById(R.id.kidsTit);
+        Button call = view.findViewById(R.id.call);
 
 
 
@@ -91,7 +91,7 @@ public class ProviderClassAdapter extends BaseAdapter {
             final Dialog dialog = new Dialog(mContext);
             dialog.setContentView(R.layout.dialog_call);
 
-            ListView lv = (ListView ) dialog.findViewById(R.id.lv);
+            ListView lv = dialog.findViewById(R.id.lv);
             dialog.setCancelable(true);
             dialog.setTitle("ListView");
 

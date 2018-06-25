@@ -36,7 +36,9 @@ public class MedicalMainActivty extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        final Spinner specialization_spinner = findViewById(R.id.specialization_spinner);
+
 
         tabLayout.addTab(tabLayout.newTab().setText(tabTitles[0]));
         tabLayout.addTab(tabLayout.newTab().setText(tabTitles[1]));
@@ -53,12 +55,15 @@ public class MedicalMainActivty extends AppCompatActivity {
                 }
                 if(position == 2) {
                     medical_select = "CAT14";
+                    //specialization_spinner.setVisibility(View.GONE);
                 }
                 if(position == 3) {
                     medical_select = "CAT16";
+                    specialization_spinner.setVisibility(View.GONE);
                 }
                 if(position == 4) {
                     medical_select = "CAT17";
+                    specialization_spinner.setVisibility(View.GONE);
                 }
                 if(position == 0) {
                     medical_select = "-";
@@ -75,12 +80,12 @@ public class MedicalMainActivty extends AppCompatActivity {
 
             }
         });
-        Spinner specialization_spinner = (Spinner) findViewById(R.id.specialization_spinner);
-        ArrayAdapter<CharSequence> spec_adapter = ArrayAdapter.createFromResource(this,R.array.spec_array,android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> spec_adapter = ArrayAdapter.createFromResource(this,R.array.spec_array,R.layout.spinner_textview);
         specialization_spinner.setAdapter(spec_adapter);
-        search = (Button) findViewById(R.id.search_btn);
+        search = findViewById(R.id.search_btn);
         specialization_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
+
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position != 0) {
                     spec_select = parent.getItemAtPosition(position).toString();

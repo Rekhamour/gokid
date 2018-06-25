@@ -10,6 +10,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -83,6 +85,8 @@ import com.gokids.yoda_tech.gokids.shop.activity.ToyFragment;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoplistAdapter;
 import com.gokids.yoda_tech.gokids.shop.activity.adapter.ShoppingListAdapter;
 import com.gokids.yoda_tech.gokids.signup.activity.SignUpActivity;
+import com.gokids.yoda_tech.gokids.sos.ContactsAdapter;
+import com.gokids.yoda_tech.gokids.sos.CustomAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -98,8 +102,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by manoj2prabhakar on 18/04/17.
@@ -140,6 +148,15 @@ public class Utils {
     {
         Intent intent= new Intent(context, FullImageActivity.class);
         intent.putExtra("position",position);
+        intent.putExtra("flag",0);
+        intent.putExtra("Allimageslist",images);
+        context.startActivity(intent);
+    }
+    public static void openfullimageDrawable(Context context, int position, ArrayList<Integer> images)
+    {
+        Intent intent= new Intent(context, FullImageActivity.class);
+        intent.putExtra("position",position);
+        intent.putExtra("flag",1);
         intent.putExtra("Allimageslist",images);
         context.startActivity(intent);
     }
@@ -391,7 +408,6 @@ public class Utils {
                     imgId = image.getString("ImageID");
                     imgOwnerId = image.getString("OwnerID");
                     imgURL = image.getString("ImageURL");
-
                     images = new Images(imgCounter,imgId,imgOwnerId,imgURL);
                     imagesArray.add(images);
 
@@ -820,7 +836,7 @@ public class Utils {
 
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
-
+///////////////////
             }
 
             @Override
@@ -1059,7 +1075,7 @@ public class Utils {
         final AlertDialog dialog = alert.create();
         dialog.show();
 
-        final Button continueclcik = (Button)alertLayout.findViewById(R.id.ok);
+        final Button continueclcik = alertLayout.findViewById(R.id.ok);
 
         continueclcik.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1086,8 +1102,8 @@ public class Utils {
         final AlertDialog dialog = alert.create();
         dialog.show();
 
-        final Button continueclcik = (Button)alertLayout.findViewById(R.id.ok);
-        final TextView lable = (TextView)alertLayout.findViewById(R.id.lable);
+        final Button continueclcik = alertLayout.findViewById(R.id.ok);
+        final TextView lable = alertLayout.findViewById(R.id.lable);
         lable.setText(msg);
 
         continueclcik.setOnClickListener(new View.OnClickListener() {
@@ -1116,8 +1132,8 @@ public class Utils {
         final AlertDialog dialog = alert.create();
         dialog.show();
 
-        final Button loginclick =(Button) alertLayout.findViewById(R.id.loginclick);
-        final Button continueclcik = (Button)alertLayout.findViewById(R.id.continueclick);
+        final Button loginclick = alertLayout.findViewById(R.id.loginclick);
+        final Button continueclcik = alertLayout.findViewById(R.id.continueclick);
         loginclick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1151,8 +1167,8 @@ public class Utils {
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
         // builder.setView(R.layout.search_layout);
-        final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
-        Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
+        final EditText queryTv= dialogView.findViewById(R.id.queryText);
+        Button searchbtn= dialogView.findViewById(R.id.searchText);
         hintlist.clear();
         final TextWatcher mTextwatcher= new TextWatcher() {
             @Override
@@ -1174,7 +1190,7 @@ public class Utils {
             }
         };
 
-        hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
+        hintlistview= dialogView.findViewById(R.id.search_hint_list);
         hintlistview.addOnItemTouchListener(
                 new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
@@ -1238,9 +1254,9 @@ public class Utils {
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
-        final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
-        Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
-        hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
+        final EditText queryTv= dialogView.findViewById(R.id.queryText);
+        Button searchbtn= dialogView.findViewById(R.id.searchText);
+        hintlistview= dialogView.findViewById(R.id.search_hint_list);
         lm= new LinearLayoutManager(context);
          final TextWatcher mTextwatcher= new TextWatcher() {
         @Override
@@ -1494,9 +1510,9 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
         // builder.setView(R.layout.search_layout);
-        final EditText queryTv=(EditText)dialogView.findViewById(R.id.queryText);
-        Button searchbtn=(Button)dialogView.findViewById(R.id.searchText);
-        hintlistview=(RecyclerView)dialogView.findViewById(R.id.search_hint_list);
+        final EditText queryTv= dialogView.findViewById(R.id.queryText);
+        Button searchbtn= dialogView.findViewById(R.id.searchText);
+        hintlistview= dialogView.findViewById(R.id.search_hint_list);
         lm= new LinearLayoutManager(context);
         hintlistview.setLayoutManager(lm);
         hintlist.clear();
@@ -1586,7 +1602,7 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
         });
 
     }
-    public static  double[] latlon = new double[2];
+    public static double[] latlon = new double[2];
 
     public static boolean getLatLongUsingGoogle(final Context ctx, String placeId, final String searchResultActivity, final RecyclerView rv_list, final String query) {
         context= ctx;
@@ -1785,5 +1801,52 @@ String apipath = "https://maps.googleapis.com/maps/api/place/queryautocomplete/j
         return isValid;
     }
 
+
+    public static void getContactsAlert(Context contextm) {
+        context=contextm;
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View alertLayout = inflater.inflate(R.layout.valid_contacts_dialog, null);
+        // this is set the view from XML inside AlertDialog
+        alert.setView(alertLayout);
+        // disallow cancel of AlertDialog on click of back button and outside touch
+        alert.setCancelable(false);
+
+        final AlertDialog dialog = alert.create();
+        dialog.show();
+
+        final Button cancelclcik = alertLayout.findViewById(R.id.okcontactclick);
+
+        cancelclcik.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
+
+
+
+
+    }
+
+
+    public static Address getLocationCity(Location loc){
+         Address city=null;
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+        try {
+            List<Address> addresses = geocoder.getFromLocation(loc.getLatitude(),loc.getLongitude(),1);
+            if(addresses.size() > 0) {
+              //  city = addresses.get(0).getLocality();
+                city = addresses.get(0);
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return city;
+    }
 }
 

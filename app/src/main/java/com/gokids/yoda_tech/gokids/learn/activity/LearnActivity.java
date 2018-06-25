@@ -25,13 +25,13 @@ public class LearnActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_learn);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarMain1);
+        Toolbar toolbar = findViewById(R.id.toolbarMain1);
         //toolbar.setTitle(getString(R.string.learn));
         getSupportActionBar().setTitle("Learn");
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.tablayout);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
 
         TabLayout.Tab beginner = tabLayout.newTab().setText(getResources().getString(R.string.beginner));
         TabLayout.Tab intermediate = tabLayout.newTab().setText(getResources().getString(R.string.inter));
@@ -62,7 +62,7 @@ public class LearnActivity extends AppCompatActivity {
             }
         });
 
-        Button button = (Button) findViewById(R.id.button);
+        Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

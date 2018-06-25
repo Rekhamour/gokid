@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.gokids.yoda_tech.gokids.sos.PeopleLocationActivity">
+    <fragment
+        android:id="@+id/map"
+        android:layout_gravity="center_vertical"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_below="@+id/map"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="40dp"
+                android:onClick="videocall"
+                android:src="@drawable/edit_boy"
+                android:layout_height="40dp"
+                tools:ignore="OnClick" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:id="@+id/SOS_name"
+                    android:text="rekha"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_height="40dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:id="@+id/SOS_distance"
+                    android:text="distance"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:layout_height="40dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

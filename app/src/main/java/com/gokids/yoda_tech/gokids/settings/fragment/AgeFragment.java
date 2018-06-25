@@ -49,9 +49,9 @@ public class AgeFragment extends Fragment {
         AddKidsActivity.setSeekBarProgress(20);
 
       //  mCircularSeekBar = (CircularSeekBar) rootView.findViewById(R.id.circularSeekBar);
-        mSeekbar = (SeekBar) rootView.findViewById(R.id.seek_bar_age);
-        seekBarText = (TextView) rootView.findViewById(R.id.seekBarText);
-        age_continue = (Button) rootView.findViewById(R.id.age_continue);
+        mSeekbar = rootView.findViewById(R.id.seek_bar_age);
+        seekBarText = rootView.findViewById(R.id.seekBarText);
+        age_continue = rootView.findViewById(R.id.age_continue);
         Log.e(TAG,"age in fragment"+age);
         setupSeeks();
        /* if(age>=0) {

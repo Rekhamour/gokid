@@ -29,6 +29,7 @@ import com.koushikdutta.ion.Ion;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,10 +40,12 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
 
     private ArrayList<SenderLocationsBean> locationslist=new ArrayList<>();
     private ArrayList<LatLng> Ltlonglist=new ArrayList<>();
+    private ArrayList<Location> latlongList=new ArrayList<Location>();
     private MarkerOptions options = new MarkerOptions();
     private String latslong;
     private LatLng loc;
     private LatLng Latlong;
+    private ClusterManager mClusterManager;
 
 
     @Override
@@ -52,43 +55,20 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
         sendSenderLocation();
 
 
-        //  SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-       // mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-      /*  String latlong = MySharedPrefrence.getPrefrence(SenderLocationActivity.this).getString("SOSlocation","");
-            Log.e("latlong string value","latlong string valy"+latlong);
-           String[] latandlong = latlong.split("(?!^,)");
-            if (latlong != null) {
-               loc = new LatLng(Double.parseDouble(latandlong[0]), Double.parseDouble(latandlong[1]));
-                Log.e("latlong", "latlong" + loc.latitude + " long" + loc.longitude);
-            } else {
-                loc = new LatLng(1.23, 103.23);
-            }*/
+        mClusterManager = new ClusterManager<>(this, googleMap);
+        googleMap.setOnCameraIdleListener(mClusterManager);
+        googleMap.setOnMarkerClickListener(mClusterManager);
+        googleMap.setOnInfoWindowClickListener(mClusterManager);
+        mClusterManager.cluster();
 
-       /*latlon = //Utils.getLatLong(SenderLocationActivity.this);
-        LatLng loc = null;
-        String nameOfPlace = " ";
-        if (latlon != null) {
-            loc = new LatLng (latlon.getLatitude(), latlon.getLongitude());
-        } else {
-            loc = new LatLng(1.23, 103.23);
-        }*/
-        Geocoder geocoder = new Geocoder(SenderLocationActivity.this, Locale.getDefault());
-        try {
-            List<Address> listAddresses = geocoder.getFromLocation(Latlong.latitude, Latlong.longitude, 1);
-            if(null!=listAddresses&&listAddresses.size()>0){
-                ///nameOfPlace = listAddresses.get(0).getAddressLine(0);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        googleMap.addMarker(new MarkerOptions().position(Latlong)
-                .title(""));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(Latlong));
+
     }
 
 
@@ -122,16 +102,7 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
                                         JsonObject obj = jsonArray.get(i).getAsJsonObject();
                                         String Counter = obj.get("Counter").getAsString();
                                         String SOSLocation = obj.get("SOSLocation").getAsString();
-                                        if(i==0)
-                                        {
-                                           latslong= SOSLocation;
-                                            Log.e("i m in func","i m in func latsandlong"+latslong);
-                                            MySharedPrefrence.getPrefrence(SenderLocationActivity.this).edit().putString("SOSlocation",SOSLocation).commit();
-                                            String latlong = MySharedPrefrence.getPrefrence(SenderLocationActivity.this).getString("SOSlocation","");
-                                            Log.e("i m in func","i m in func latlong"+latlong);
-
-                                        }
-                                       // String SosEmail = obj.get("SOSEmail").getAsString();
+                                    // String SosEmail = obj.get("SOSEmail").getAsString();
                                         String ContactEmail = "";//obj.get("ContactEmail").getAsString();
                                         String ContactPhone = obj.get("ContactPhone").getAsString();
                                         String ContactDeviceToken = "";//obj.get("ContactDeviceToken").getAsString();
@@ -146,6 +117,9 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
                                         bean.setContactName(ContactName);
                                         bean.setContactLocation(ContactLocation);
                                         bean.setSOSLocation(SOSLocation);
+                                        Location loc=new Location(SOSLocation);
+                                        mClusterManager.addItem(new MyItem(loc.getLatitude(), loc.getLongitude(), "PJ", "https://twitter.com/pjapplez"));
+
 
                                     }
 
@@ -160,64 +134,16 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
                         }
                     }
                 });
-        String latlong = MySharedPrefrence.getPrefrence(SenderLocationActivity.this).getString("SOSlocation","");
-        Log.e("latlong string value","latlong string valy"+latlong);
-        ArrayList aList= new ArrayList(Arrays.asList(latlong.split(",")));
-        //String[] latandlong = latlong.split("(?!^,)");
-        if (latlong != null) {
-            Latlong = new LatLng(Double.parseDouble(aList.get(0).toString()), Double.parseDouble(aList.get(1).toString()));
-            Log.e("latlong", "latlong" + Latlong.latitude + " long" + Latlong.longitude);
-        } else {
-            Latlong = new LatLng(1.23, 103.23);
-        }
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-         mapFragment.getMapAsync(this);
 
 
     }
 
-/*
-    private void setUpClusterer() {
-        // Position the map.
-        getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(51.503186, -0.126446), 10));
 
-        mClusterManager = new ClusterManager<MyItem>(this, getMap());
-
-        getMap().setOnCameraIdleListener(mClusterManager);
-        getMap().setOnMarkerClickListener(mClusterManager);
-
-        // Add cluster items (markers) to the cluster manager.
-        addItems();
-    }
-*/
-    private void addItems() {
-
-        // Set some lat/lng coordinates to start with.
-        double lat = 51.5145160;
-        double lng = -0.1270060;
-
-        // Add ten cluster items in close proximity, for purposes of this example.
-        for (int i = 0; i < 10; i++) {
-            double offset = i / 60d;
-            lat = lat + offset;
-            lng = lng + offset;
-            MyItem offsetItem = new MyItem(lat, lng);
-           // mClusterManager.addItem(offsetItem);
-        }
-     /*   for (LatLng point : Ltlonglist) {
-            options.position(point);
-            options.title("");
-            options.snippet("someDesc");
-            googleMap.addMarker(options);
-        }*/
-    }
 
     public void videocall(View view)
     {
-        Intent callIntent = new Intent("com.android.phone.videocall");
-        callIntent.putExtra("videocall", true);
-        callIntent.setData(Uri.parse("tel:" + "9996633927"));
+        Intent callIntent = new Intent(this,VideoActivity.class);
         startActivity(callIntent);
     }
 }

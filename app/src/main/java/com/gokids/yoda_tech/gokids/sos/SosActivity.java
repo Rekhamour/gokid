@@ -107,8 +107,8 @@ public class SosActivity extends AppCompatActivity {
                         if(e==null)
                         {
                            JsonArray array=  result.getAsJsonArray("results");
-                                 JsonObject obj= array.get(0).getAsJsonObject();
-                               String generatedaddress= obj.get("formatted_address").getAsString();
+                              //   JsonObject obj= array.get(0).getAsJsonObject();
+                                String generatedaddress="";// obj.get("formatted_address").getAsString();
                                address =generatedaddress;
                         }
                     }
@@ -225,7 +225,7 @@ public class SosActivity extends AppCompatActivity {
 
 
     public void videoRedirect(View view) {
-        Intent intent = new Intent(SosActivity.this,PeopleLocationActivity.class);
+        Intent intent = new Intent(SosActivity.this,SenderLocationActivity.class);
         startActivity(intent);
     }
 

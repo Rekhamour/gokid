@@ -97,10 +97,10 @@ android {
     }
 }
 repositories {
-    maven {
-        url 'https://maven.google.com'
-        // Alternative URL is 'https://dl.google.com/dl/android/maven2/'
-    }
+
+    jcenter()
+    maven { url 'https://maven.google.com' }
+    maven { url 'https://tokbox.bintray.com/maven' }
 }
 
 dependencies {
@@ -149,6 +149,8 @@ dependencies {
     compile 'com.shopify.mobilebuysdk:buy3:3.2.1'
     compile 'com.shopify.mobilebuysdk:buy3-pay-support:1.0.0'
     compile 'com.bignerdranch.android:recyclerview-multiselect:0.2'
+    compile 'com.opentok.android:opentok-android-sdk:2.14.0'
+    compile 'pub.devrel:easypermissions:0.4.0'
 
 }
 apply plugin: 'com.google.gms.google-services'

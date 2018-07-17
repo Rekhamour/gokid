@@ -1,0 +1,34 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp10margin"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:src="@drawable/video_call"
+        android:id="@+id/video_call_icon"
+        android:layout_height="wrap_content"
+        />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/dp10margin"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/SOS_name"
+            android:text="rekha"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/SOS_contact"
+            android:text="distance"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

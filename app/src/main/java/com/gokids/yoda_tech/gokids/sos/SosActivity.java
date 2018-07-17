@@ -225,7 +225,7 @@ public class SosActivity extends AppCompatActivity {
 
 
     public void videoRedirect(View view) {
-        Intent intent = new Intent(SosActivity.this,SenderLocationActivity.class);
+        Intent intent = new Intent(SosActivity.this,PeopleLocationActivity.class);
         startActivity(intent);
     }
 

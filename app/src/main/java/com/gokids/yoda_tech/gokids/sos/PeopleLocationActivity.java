@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
@@ -36,6 +37,7 @@ public class PeopleLocationActivity extends AppCompatActivity implements OnMapRe
 
     private ArrayList<SosLocationsBean> locationslist=new ArrayList<>();
     private ClusterManager mClusterManager;
+    private ListView list;
 
 
     @Override
@@ -44,6 +46,8 @@ public class PeopleLocationActivity extends AppCompatActivity implements OnMapRe
         setContentView(R.layout.activity_people_location);
         sendSenderLocation();
        // addPersonItems();
+        list= (ListView)findViewById(R.id.listofcontacts);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
@@ -92,7 +96,6 @@ public class PeopleLocationActivity extends AppCompatActivity implements OnMapRe
                                         String SosLocation = obj.get("SosLocation").getAsString();
                                         String SosPhoneNo = obj.get("SosPhoneNo").getAsString();
                                         String DeviceToken = obj.get("DeviceToken").getAsString();
-                                        //String CurrentLocation = obj.get("CurrentLocation").getAsString();
                                         SosLocationsBean bean = new SosLocationsBean();
 
                                         bean.setCounter(Counter);
@@ -107,6 +110,8 @@ public class PeopleLocationActivity extends AppCompatActivity implements OnMapRe
                                     /*Intent intent = new Intent(PeopleLocationActivity.this,PeopleLocationActivity.class);
                                     intent.putExtra("locationlist",locationslist);
                                     startActivity(intent);*/
+                                    list.setAdapter(new peoplelocationadapter(PeopleLocationActivity.this,R.layout.videocontacts_single_row,locationslist));
+
 
                                 } else {
 
@@ -122,8 +127,5 @@ public class PeopleLocationActivity extends AppCompatActivity implements OnMapRe
 
     }
 
-    public void videocall(View view) {
-        Intent intent= new Intent(PeopleLocationActivity.this,VideoActivity.class);
-        startActivity(intent);
-    }
+
 }

@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.gokids.yoda_tech.gokids.R;
 import com.gokids.yoda_tech.gokids.utils.MySharedPrefrence;
@@ -46,6 +48,7 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
     private LatLng loc;
     private LatLng Latlong;
     private ClusterManager mClusterManager;
+    private ListView list;
 
 
     @Override
@@ -53,6 +56,8 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_people_location);
         sendSenderLocation();
+        list= (ListView)findViewById(R.id.listofcontacts);
+        //list.setAdapter(new MyvideoContactsAdapter(SenderLocationActivity.this,R.layout.videocontacts_single_row,locationslist));
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -117,11 +122,15 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
                                         bean.setContactName(ContactName);
                                         bean.setContactLocation(ContactLocation);
                                         bean.setSOSLocation(SOSLocation);
+                                        locationslist.add(bean);
                                         Location loc=new Location(SOSLocation);
                                         mClusterManager.addItem(new MyItem(loc.getLatitude(), loc.getLongitude(), "PJ", "https://twitter.com/pjapplez"));
 
 
                                     }
+                                    Log.e("Senderlocation","listsize"+locationslist.size());
+
+                                    list.setAdapter(new MyvideoContactsAdapter(SenderLocationActivity.this,R.layout.videocontacts_single_row,locationslist));
 
 
                                 } else {
@@ -141,10 +150,6 @@ public class SenderLocationActivity extends AppCompatActivity implements OnMapRe
 
 
 
-    public void videocall(View view)
-    {
-        Intent callIntent = new Intent(this,VideoActivity.class);
-        startActivity(callIntent);
-    }
+
 }
 

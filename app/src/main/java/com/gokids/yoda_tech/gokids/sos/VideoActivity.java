@@ -188,6 +188,7 @@ public class VideoActivity extends AppCompatActivity implements  Session.Session
        mSession.disconnect();
         finish();
 
+
     }
 
 

@@ -5,6 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <FrameLayout
         android:layout_width="fill_parent"
@@ -24,4 +27,14 @@
             android:padding="2dp"
             android:background="#FFFFFF" />
     </FrameLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/cancel_call"
+            android:onClick="callHangup"
+            android:layout_marginBottom="@dimen/dp10margin"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>

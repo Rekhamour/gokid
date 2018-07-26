@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.gokids.yoda_tech.gokids.R;
@@ -25,8 +26,8 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class VideoActivity extends AppCompatActivity implements  Session.SessionListener,PublisherKit.PublisherListener{
     private static String API_KEY = "46143722";
-    private static String SESSION_ID = "";//"1_MX40NjE0MzcyMn5-MTUyOTk1NjcwMTk4NX5QY2VMeE9mUWU2SmlybzE0S2tzTVNuQ3J-fg";
-    private static String TOKEN = "";//"T1==cGFydG5lcl9pZD00NjE0MzcyMiZzaWc9ZDA5OWY1OTg5YTFhOTJiYmM1ODZmZGU0MTFhZjM4NzYwY2EwYWQ2NDpzZXNzaW9uX2lkPTFfTVg0ME5qRTBNemN5TW41LU1UVXlPVGsxTmpjd01UazROWDVRWTJWTWVFOW1VV1UyU21seWJ6RTBTMnR6VFZOdVEzSi1mZyZjcmVhdGVfdGltZT0xNTI5OTU2ODM0Jm5vbmNlPTAuMjg2NTI0NzIzMDQ3MTI2NiZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNTMyNTQ4ODMxJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9";
+    private static String SESSION_ID = "1_MX40NjE0MzcyMn5-MTUyOTk1NjcwMTk4NX5QY2VMeE9mUWU2SmlybzE0S2tzTVNuQ3J-fg";
+    private static String TOKEN = "T1==cGFydG5lcl9pZD00NjE0MzcyMiZzaWc9ZDA5OWY1OTg5YTFhOTJiYmM1ODZmZGU0MTFhZjM4NzYwY2EwYWQ2NDpzZXNzaW9uX2lkPTFfTVg0ME5qRTBNemN5TW41LU1UVXlPVGsxTmpjd01UazROWDVRWTJWTWVFOW1VV1UyU21seWJ6RTBTMnR6VFZOdVEzSi1mZyZjcmVhdGVfdGltZT0xNTI5OTU2ODM0Jm5vbmNlPTAuMjg2NTI0NzIzMDQ3MTI2NiZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNTMyNTQ4ODMxJmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9";
     private static final String LOG_TAG = VideoActivity.class.getSimpleName();
     private static final int RC_SETTINGS_SCREEN_PERM = 123;
     private static final int RC_VIDEO_APP_PERM = 124;
@@ -41,8 +42,8 @@ public class VideoActivity extends AppCompatActivity implements  Session.Session
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vedio_call);
-        getSessionId();
-        //requestPermissions();
+        //getSessionId();
+        requestPermissions();
     }
     private void getSessionId() {
         String url= Urls.BASE_URL+"api/service/moderator/"+ MySharedPrefrence.getPrefrence(VideoActivity.this).getString("emailId","");
@@ -89,8 +90,8 @@ public class VideoActivity extends AppCompatActivity implements  Session.Session
                             Log.e("url result","url to token"+url);
 
                             String status=result.get("status").getAsString();
-                            String tokenId =result.get("result").getAsString();
-                            TOKEN= tokenId;
+                            TOKEN =result.get("result").getAsString();
+                            //TOKEN= tokenId;
                             requestPermissions();
 
                             Log.e("url result","url to toekn"+TOKEN);
@@ -182,5 +183,12 @@ public class VideoActivity extends AppCompatActivity implements  Session.Session
     public void onError(PublisherKit publisherKit, OpentokError opentokError) {
         Log.e(LOG_TAG, "Publisher error: " + opentokError.getMessage());
     }
+    public void callHangup(View view)
+    {
+       mSession.disconnect();
+        finish();
+
+    }
+
 
 }

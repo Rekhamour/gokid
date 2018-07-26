@@ -2,6 +2,7 @@ package com.gokids.yoda_tech.gokids.sos;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,8 +50,13 @@ public View getView(int position, View convertView, ViewGroup parent) {
         @Override
         public void onClick(View view) {
 
-            Intent callIntent = new Intent(mcontext,VideoActivity.class);
-            mcontext.startActivity(callIntent);
+          //  Intent callIntent = new Intent(mcontext,VideoActivity.class);
+          //  mcontext.startActivity(callIntent);
+            //Intent intent= new Intent(Intent.ACTION_VIEW);
+          //  intent.setData(Uri.parse("skype:"+"jagnesh.chawla"+"?call&video=true"));
+            Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" +"+"+ list.get(position).getContactPhone()));
+            //startActivity(intent);
+            mcontext.startActivity(intent);
         }
     });
 
